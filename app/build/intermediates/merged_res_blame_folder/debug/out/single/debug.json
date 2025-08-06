@@ -1,0 +1,74 @@
+[
+    {
+        "merged": "com.littlegig.app-merged_res-86:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.littlegig.app-main-88:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.littlegig.app-main-88:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/xml_data_extraction_rules.xml.flat",
+        "source": "com.littlegig.app-main-88:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "com.littlegig.app-main-88:/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "com.littlegig.app-main-88:/mipmap-xhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/raw_map_style_dark.json.flat",
+        "source": "com.littlegig.app-main-88:/raw/map_style_dark.json"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "com.littlegig.app-main-88:/mipmap-mdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.littlegig.app-main-88:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.littlegig.app-main-88:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/xml_backup_rules.xml.flat",
+        "source": "com.littlegig.app-main-88:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "com.littlegig.app-main-88:/mipmap-hdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.littlegig.app-main-88:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/raw_map_style_light.json.flat",
+        "source": "com.littlegig.app-main-88:/raw/map_style_light.json"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.littlegig.app-main-88:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "com.littlegig.app-main-88:/mipmap-xxxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.littlegig.app-main-88:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.littlegig.app-main-88:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.littlegig.app-merged_res-86:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.littlegig.app-main-88:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    }
+]

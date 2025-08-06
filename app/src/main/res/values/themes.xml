@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.LittleGig" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Light theme with neumorphic design -->
+        <item name="colorPrimary">@color/little_gig_primary</item>
+        <item name="colorSecondary">@color/little_gig_secondary</item>
+        <item name="colorAccent">@color/little_gig_accent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+</resources>

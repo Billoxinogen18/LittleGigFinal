@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material Design 3 default colors -->
+    <color name="purple_80">#FFD0BCFF</color>
+    <color name="purple_grey_80">#FFCCC2DC</color>
+    <color name="pink_80">#FFEFB8C8</color>
+    
+    <color name="purple_40">#FF6650a4</color>
+    <color name="purple_grey_40">#FF625b71</color>
+    <color name="pink_40">#FF7D5260</color>
+    
+    <!-- LittleGig Brand Colors -->
+    <color name="little_gig_primary">#FF1E88E5</color>
+    <color name="little_gig_secondary">#FFFF6B35</color>
+    <color name="little_gig_accent">#FF4CAF50</color>
+    <color name="little_gig_surface">#FFF5F5F5</color>
+    <color name="little_gig_on_surface">#FF212121</color>
+    <color name="little_gig_error">#FFE53E3E</color>
+    
+    <!-- Status colors -->
+    <color name="status_active">#FF4CAF50</color>
+    <color name="status_used">#FF2196F3</color>
+    <color name="status_cancelled">#FFE53E3E</color>
+    <color name="status_expired">#FF757575</color>
+    
+    <!-- Common colors -->
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="transparent">#00000000</color>
+    
+    <!-- Flutterwave Theme Colors -->
+    <color name="colorPrimary">@color/little_gig_primary</color>
+    <color name="colorPrimaryDark">@color/little_gig_primary</color>
+    <color name="colorAccent">@color/little_gig_accent</color>
+</resources>
