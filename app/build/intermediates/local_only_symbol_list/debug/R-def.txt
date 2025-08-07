@@ -1,5 +1,17 @@
 R_DEF: Internal format may change without notice
 local
+bool enable_analytics
+bool enable_biometric_auth
+bool enable_crashlytics
+bool enable_debug_logging
+bool enable_image_caching
+bool enable_location_tracking
+bool enable_mock_data
+bool enable_payment_processing
+bool enable_performance_monitoring
+bool enable_push_notifications
+bool enable_ssl_pinning
+bool enable_test_mode
 color black
 color colorAccent
 color colorPrimary
@@ -25,6 +37,18 @@ color white
 drawable ic_launcher_background
 drawable ic_launcher_foreground
 drawable ic_notification
+integer bottom_navigation_height_dp
+integer cache_duration_minutes
+integer corner_radius_dp
+integer glass_blur_radius
+integer image_compression_quality
+integer max_bio_length
+integer max_chat_message_length
+integer max_event_images
+integer max_image_dimension
+integer max_media_uploads
+integer network_timeout_seconds
+integer retry_attempts
 mipmap ic_launcher
 mipmap ic_launcher_round
 raw map_style_dark
@@ -54,6 +78,7 @@ string category_tour
 string category_workshop
 string city
 string close
+string com.google.firebase.crashlytics.mapping_file_id
 string content_type
 string create_account
 string create_content

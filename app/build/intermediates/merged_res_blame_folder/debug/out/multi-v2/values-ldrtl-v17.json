@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.littlegig.app-mergeDebugResources-84:/values-ldrtl-v17/values-ldrtl-v17.xml",
+            "outputFile": "com.littlegig.app-mergeDebugResources-87:/values-ldrtl-v17/values-ldrtl-v17.xml",
             "map": [
                 {
-                    "source": "/Users/israelbill/.gradle/caches/8.14/transforms/a0bdc4d91e12accaec679d14ef027591/transformed/material-1.4.0-beta01/res/values-ldrtl-v17/values-ldrtl-v17.xml",
+                    "source": "/Users/israelbill/.gradle/caches/8.14/transforms/36c75178c544ec63c84903dff8089327/transformed/material-1.4.0-beta01/res/values-ldrtl-v17/values-ldrtl-v17.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",

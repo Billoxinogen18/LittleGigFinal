@@ -32,6 +32,7 @@ import com.littlegig.app.di.AppModule_ProvideFirebaseAuthFactory;
 import com.littlegig.app.di.AppModule_ProvideFirebaseFirestoreFactory;
 import com.littlegig.app.di.AppModule_ProvideFirebaseFunctionsFactory;
 import com.littlegig.app.di.AppModule_ProvideFirebaseStorageFactory;
+import com.littlegig.app.di.AppModule_ProvideNetworkMonitorFactory;
 import com.littlegig.app.di.AppModule_ProvideNotificationRepositoryFactory;
 import com.littlegig.app.presentation.MainActivity;
 import com.littlegig.app.presentation.account.AccountViewModel;
@@ -60,6 +61,7 @@ import com.littlegig.app.service.LittleGigFirebaseMessagingService;
 import com.littlegig.app.service.LittleGigFirebaseMessagingService_MembersInjector;
 import com.littlegig.app.services.LocationService;
 import com.littlegig.app.services.PlacesService;
+import com.littlegig.app.utils.NetworkMonitor;
 import dagger.hilt.android.ActivityRetainedLifecycle;
 import dagger.hilt.android.ViewModelLifecycle;
 import dagger.hilt.android.flags.HiltWrapper_FragmentGetContextFix_FragmentGetContextFixModule;
@@ -642,6 +644,8 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     private final SingletonCImpl singletonCImpl = this;
 
+    private Provider<NetworkMonitor> provideNetworkMonitorProvider;
+
     private Provider<FirebaseAuth> provideFirebaseAuthProvider;
 
     private Provider<FirebaseFirestore> provideFirebaseFirestoreProvider;
@@ -684,27 +688,29 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     @SuppressWarnings("unchecked")
     private void initialize(final ApplicationContextModule applicationContextModuleParam) {
-      this.provideFirebaseAuthProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseAuth>(singletonCImpl, 1));
-      this.provideFirebaseFirestoreProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseFirestore>(singletonCImpl, 2));
-      this.provideContextProvider = DoubleCheck.provider(new SwitchingProvider<Context>(singletonCImpl, 3));
-      this.authRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<AuthRepository>(singletonCImpl, 0));
-      this.locationServiceProvider = DoubleCheck.provider(new SwitchingProvider<LocationService>(singletonCImpl, 4));
-      this.provideFirebaseStorageProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseStorage>(singletonCImpl, 6));
-      this.eventRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<EventRepository>(singletonCImpl, 5));
-      this.userRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<UserRepository>(singletonCImpl, 7));
-      this.ticketRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<TicketRepository>(singletonCImpl, 8));
-      this.provideFirebaseFunctionsProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseFunctions>(singletonCImpl, 10));
-      this.chatRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ChatRepository>(singletonCImpl, 9));
-      this.paymentRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<PaymentRepository>(singletonCImpl, 11));
-      this.sharingRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<SharingRepository>(singletonCImpl, 12));
-      this.provideConfigRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ConfigRepository>(singletonCImpl, 13));
-      this.recapRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<RecapRepository>(singletonCImpl, 14));
-      this.placesServiceProvider = DoubleCheck.provider(new SwitchingProvider<PlacesService>(singletonCImpl, 15));
-      this.provideNotificationRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<NotificationRepository>(singletonCImpl, 16));
+      this.provideNetworkMonitorProvider = DoubleCheck.provider(new SwitchingProvider<NetworkMonitor>(singletonCImpl, 0));
+      this.provideFirebaseAuthProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseAuth>(singletonCImpl, 2));
+      this.provideFirebaseFirestoreProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseFirestore>(singletonCImpl, 3));
+      this.provideContextProvider = DoubleCheck.provider(new SwitchingProvider<Context>(singletonCImpl, 4));
+      this.authRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<AuthRepository>(singletonCImpl, 1));
+      this.locationServiceProvider = DoubleCheck.provider(new SwitchingProvider<LocationService>(singletonCImpl, 5));
+      this.provideFirebaseStorageProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseStorage>(singletonCImpl, 7));
+      this.eventRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<EventRepository>(singletonCImpl, 6));
+      this.userRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<UserRepository>(singletonCImpl, 8));
+      this.ticketRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<TicketRepository>(singletonCImpl, 9));
+      this.provideFirebaseFunctionsProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseFunctions>(singletonCImpl, 11));
+      this.chatRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ChatRepository>(singletonCImpl, 10));
+      this.paymentRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<PaymentRepository>(singletonCImpl, 12));
+      this.sharingRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<SharingRepository>(singletonCImpl, 13));
+      this.provideConfigRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ConfigRepository>(singletonCImpl, 14));
+      this.recapRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<RecapRepository>(singletonCImpl, 15));
+      this.placesServiceProvider = DoubleCheck.provider(new SwitchingProvider<PlacesService>(singletonCImpl, 16));
+      this.provideNotificationRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<NotificationRepository>(singletonCImpl, 17));
     }
 
     @Override
-    public void injectLittleGigApplication(LittleGigApplication littleGigApplication) {
+    public void injectLittleGigApplication(LittleGigApplication arg0) {
+      injectLittleGigApplication2(arg0);
     }
 
     @Override
@@ -722,6 +728,12 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       return new ServiceCBuilder(singletonCImpl);
     }
 
+    @CanIgnoreReturnValue
+    private LittleGigApplication injectLittleGigApplication2(LittleGigApplication instance) {
+      LittleGigApplication_MembersInjector.injectNetworkMonitor(instance, provideNetworkMonitorProvider.get());
+      return instance;
+    }
+
     private static final class SwitchingProvider<T> implements Provider<T> {
       private final SingletonCImpl singletonCImpl;
 
@@ -736,55 +748,58 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       @Override
       public T get() {
         switch (id) {
-          case 0: // com.littlegig.app.data.repository.AuthRepository 
+          case 0: // com.littlegig.app.utils.NetworkMonitor 
+          return (T) AppModule_ProvideNetworkMonitorFactory.provideNetworkMonitor(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 1: // com.littlegig.app.data.repository.AuthRepository 
           return (T) new AuthRepository(singletonCImpl.provideFirebaseAuthProvider.get(), singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideContextProvider.get());
 
-          case 1: // com.google.firebase.auth.FirebaseAuth 
+          case 2: // com.google.firebase.auth.FirebaseAuth 
           return (T) AppModule_ProvideFirebaseAuthFactory.provideFirebaseAuth();
 
-          case 2: // com.google.firebase.firestore.FirebaseFirestore 
+          case 3: // com.google.firebase.firestore.FirebaseFirestore 
           return (T) AppModule_ProvideFirebaseFirestoreFactory.provideFirebaseFirestore();
 
-          case 3: // android.content.Context 
+          case 4: // android.content.Context 
           return (T) AppModule_ProvideContextFactory.provideContext(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 4: // com.littlegig.app.services.LocationService 
+          case 5: // com.littlegig.app.services.LocationService 
           return (T) new LocationService(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.authRepositoryProvider.get());
 
-          case 5: // com.littlegig.app.data.repository.EventRepository 
+          case 6: // com.littlegig.app.data.repository.EventRepository 
           return (T) new EventRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideFirebaseStorageProvider.get(), singletonCImpl.provideContextProvider.get());
 
-          case 6: // com.google.firebase.storage.FirebaseStorage 
+          case 7: // com.google.firebase.storage.FirebaseStorage 
           return (T) AppModule_ProvideFirebaseStorageFactory.provideFirebaseStorage();
 
-          case 7: // com.littlegig.app.data.repository.UserRepository 
+          case 8: // com.littlegig.app.data.repository.UserRepository 
           return (T) new UserRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideFirebaseStorageProvider.get(), singletonCImpl.provideContextProvider.get());
 
-          case 8: // com.littlegig.app.data.repository.TicketRepository 
+          case 9: // com.littlegig.app.data.repository.TicketRepository 
           return (T) new TicketRepository(singletonCImpl.provideFirebaseFirestoreProvider.get());
 
-          case 9: // com.littlegig.app.data.repository.ChatRepository 
+          case 10: // com.littlegig.app.data.repository.ChatRepository 
           return (T) new ChatRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideFirebaseFunctionsProvider.get());
 
-          case 10: // com.google.firebase.functions.FirebaseFunctions 
+          case 11: // com.google.firebase.functions.FirebaseFunctions 
           return (T) AppModule_ProvideFirebaseFunctionsFactory.provideFirebaseFunctions();
 
-          case 11: // com.littlegig.app.data.repository.PaymentRepository 
+          case 12: // com.littlegig.app.data.repository.PaymentRepository 
           return (T) new PaymentRepository(singletonCImpl.provideFirebaseFunctionsProvider.get());
 
-          case 12: // com.littlegig.app.data.repository.SharingRepository 
+          case 13: // com.littlegig.app.data.repository.SharingRepository 
           return (T) new SharingRepository(singletonCImpl.provideFirebaseFunctionsProvider.get());
 
-          case 13: // com.littlegig.app.data.repository.ConfigRepository 
+          case 14: // com.littlegig.app.data.repository.ConfigRepository 
           return (T) AppModule_ProvideConfigRepositoryFactory.provideConfigRepository(singletonCImpl.provideFirebaseFirestoreProvider.get());
 
-          case 14: // com.littlegig.app.data.repository.RecapRepository 
+          case 15: // com.littlegig.app.data.repository.RecapRepository 
           return (T) new RecapRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideFirebaseStorageProvider.get(), singletonCImpl.provideContextProvider.get());
 
-          case 15: // com.littlegig.app.services.PlacesService 
+          case 16: // com.littlegig.app.services.PlacesService 
           return (T) new PlacesService(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 16: // com.littlegig.app.data.repository.NotificationRepository 
+          case 17: // com.littlegig.app.data.repository.NotificationRepository 
           return (T) AppModule_ProvideNotificationRepositoryFactory.provideNotificationRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideContextProvider.get());
 
           default: throw new AssertionError(id);

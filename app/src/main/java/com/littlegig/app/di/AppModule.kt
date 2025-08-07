@@ -8,6 +8,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.littlegig.app.services.FlutterwavePaymentService
 import com.littlegig.app.data.repository.NotificationRepository
 import com.littlegig.app.data.repository.ConfigRepository
+import com.littlegig.app.utils.ErrorHandler
+import com.littlegig.app.utils.NetworkMonitor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,4 +53,16 @@ object AppModule {
     fun provideConfigRepository(
         firestore: FirebaseFirestore
     ): ConfigRepository = ConfigRepository(firestore)
+    
+    @Provides
+    @Singleton
+    fun provideErrorHandler(@ApplicationContext context: Context): ErrorHandler {
+        return ErrorHandler(context)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideNetworkMonitor(@ApplicationContext context: Context): NetworkMonitor {
+        return NetworkMonitor(context)
+    }
 }

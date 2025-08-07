@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.littlegig.app-mergeDebugResources-84:/values-watch-v21/values-watch-v21.xml",
+            "outputFile": "com.littlegig.app-mergeDebugResources-87:/values-watch-v21/values-watch-v21.xml",
             "map": [
                 {
-                    "source": "/Users/israelbill/.gradle/caches/8.14/transforms/ff70b56f9970f6a07cfbafc3e79c64d8/transformed/appcompat-1.6.1/res/values-watch-v21/values-watch-v21.xml",
+                    "source": "/Users/israelbill/.gradle/caches/8.14/transforms/6cd355f18205fa2424ed7ee1af41afee/transformed/appcompat-1.6.1/res/values-watch-v21/values-watch-v21.xml",
                     "from": {
                         "startLines": "2,6,10",
                         "startColumns": "4,4,4",

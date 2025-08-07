@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <bool name="enable_analytics">true</bool>
+    <bool name="enable_biometric_auth">false</bool>
+    <bool name="enable_crashlytics">true</bool>
+    <bool name="enable_debug_logging">false</bool>
+    <bool name="enable_image_caching">true</bool>
+    <bool name="enable_location_tracking">true</bool>
+    <bool name="enable_mock_data">false</bool>
+    <bool name="enable_payment_processing">true</bool>
+    <bool name="enable_performance_monitoring">true</bool>
+    <bool name="enable_push_notifications">true</bool>
+    <bool name="enable_ssl_pinning">true</bool>
+    <bool name="enable_test_mode">false</bool>
     <color name="black">#FF000000</color>
     <color name="colorAccent">@color/little_gig_accent</color>
     <color name="colorPrimary">@color/little_gig_primary</color>
@@ -22,6 +34,18 @@
     <color name="status_used">#FF2196F3</color>
     <color name="transparent">#00000000</color>
     <color name="white">#FFFFFFFF</color>
+    <integer name="bottom_navigation_height_dp">80</integer>
+    <integer name="cache_duration_minutes">10</integer>
+    <integer name="corner_radius_dp">12</integer>
+    <integer name="glass_blur_radius">20</integer>
+    <integer name="image_compression_quality">80</integer>
+    <integer name="max_bio_length">200</integer>
+    <integer name="max_chat_message_length">1000</integer>
+    <integer name="max_event_images">5</integer>
+    <integer name="max_image_dimension">1024</integer>
+    <integer name="max_media_uploads">10</integer>
+    <integer name="network_timeout_seconds">30</integer>
+    <integer name="retry_attempts">3</integer>
     <string name="about_littlegig">About LittleGig</string>
     <string name="account">Account</string>
     <string name="add_photos">Add Photos</string>
@@ -47,6 +71,7 @@
     <string name="category_workshop">Workshop</string>
     <string name="city">City</string>
     <string name="close">Close</string>
+    <string name="com.google.firebase.crashlytics.mapping_file_id" ns1:ignore="UnusedResources,TypographyDashes" translatable="false">00000000000000000000000000000000</string>
     <string name="content_type">Content Type</string>
     <string name="create_account">Create Account</string>
     <string name="create_content">Create Content</string>

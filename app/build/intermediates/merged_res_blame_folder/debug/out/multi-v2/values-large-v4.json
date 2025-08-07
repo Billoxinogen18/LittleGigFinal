@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.littlegig.app-mergeDebugResources-84:/values-large-v4/values-large-v4.xml",
+            "outputFile": "com.littlegig.app-mergeDebugResources-87:/values-large-v4/values-large-v4.xml",
             "map": [
                 {
-                    "source": "/Users/israelbill/.gradle/caches/8.14/transforms/ff70b56f9970f6a07cfbafc3e79c64d8/transformed/appcompat-1.6.1/res/values-large-v4/values-large-v4.xml",
+                    "source": "/Users/israelbill/.gradle/caches/8.14/transforms/6cd355f18205fa2424ed7ee1af41afee/transformed/appcompat-1.6.1/res/values-large-v4/values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
                         "startColumns": "4,4,4,4,4,4,4,4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "/Users/israelbill/.gradle/caches/8.14/transforms/a0bdc4d91e12accaec679d14ef027591/transformed/material-1.4.0-beta01/res/values-large-v4/values-large-v4.xml",
+                    "source": "/Users/israelbill/.gradle/caches/8.14/transforms/36c75178c544ec63c84903dff8089327/transformed/material-1.4.0-beta01/res/values-large-v4/values-large-v4.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",

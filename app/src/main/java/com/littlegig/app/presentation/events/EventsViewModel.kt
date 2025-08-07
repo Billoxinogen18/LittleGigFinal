@@ -18,6 +18,10 @@ import kotlinx.coroutines.flow.first
 import com.littlegig.app.data.repository.SharingRepository
 import com.littlegig.app.data.repository.ConfigRepository
 import com.littlegig.app.data.repository.FeedWeights
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,8 +38,47 @@ class EventsViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
     
+    // Throttling for like/rate actions to reduce write bursts
+    private val likeEvents = MutableSharedFlow<Pair<String, Boolean>>()
+    private val rateEvents = MutableSharedFlow<Pair<String, Float>>()
+    
     init {
         loadEvents()
+        setupThrottledActions()
+    }
+    
+    private fun setupThrottledActions() {
+        viewModelScope.launch {
+            // Debounce likes by 500ms
+            likeEvents.debounce(500).collect { (eventId, isLiked) ->
+                try {
+                    val currentUser = authRepository.currentUser.value
+                    if (currentUser != null) {
+                        eventRepository.toggleEventLike(eventId, currentUser.id)
+                    }
+                } catch (e: Exception) {
+                    _uiState.value = _uiState.value.copy(
+                        error = "Failed to like event: ${e.message}"
+                    )
+                }
+            }
+        }
+        
+        viewModelScope.launch {
+            // Debounce ratings by 1 second
+            rateEvents.debounce(1000).collect { (eventId, rating) ->
+                try {
+                    val currentUser = authRepository.currentUser.value
+                    if (currentUser != null) {
+                        eventRepository.rateEvent(eventId, currentUser.id, rating)
+                    }
+                } catch (e: Exception) {
+                    _uiState.value = _uiState.value.copy(
+                        error = "Failed to rate event: ${e.message}"
+                    )
+                }
+            }
+        }
     }
     
     fun loadEvents() {
@@ -130,17 +173,7 @@ class EventsViewModel @Inject constructor(
     
     fun toggleEventLike(eventId: String) {
         viewModelScope.launch {
-            try {
-                val currentUser = authRepository.currentUser.value
-                if (currentUser != null) {
-                    eventRepository.toggleEventLike(eventId, currentUser.id)
-                    loadEvents() // Reload to update UI
-                }
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    error = "Failed to like event: ${e.message}"
-                )
-            }
+            likeEvents.emit(Pair(eventId, true))
         }
     }
     
@@ -204,17 +237,7 @@ class EventsViewModel @Inject constructor(
 
     fun rateEvent(eventId: String, rating: Float) {
         viewModelScope.launch {
-            try {
-                val currentUser = authRepository.currentUser.value
-                if (currentUser != null) {
-                    eventRepository.rateEvent(eventId, currentUser.id, rating)
-                    loadEvents() // Reload to update UI
-                }
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    error = "Failed to rate event: ${e.message}"
-                )
-            }
+            rateEvents.emit(Pair(eventId, rating))
         }
     }
     

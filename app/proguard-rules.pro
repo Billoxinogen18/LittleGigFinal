@@ -25,6 +25,9 @@
 -keepattributes *Annotation*
 -keepattributes EnclosingMethod
 -keepattributes InnerClasses
+-dontwarn com.google.firebase.**
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
 
 # Retrofit
 -keepattributes Signature, InnerClasses, EnclosingMethod
@@ -52,3 +55,22 @@
 -keepclassmembers,allowobfuscation class * {
   @com.google.gson.annotations.SerializedName <fields>;
 }
+
+# Hilt / Dagger
+-dontwarn dagger.**
+-dontwarn javax.inject.**
+-keep class dagger.** { *; }
+-keep class javax.inject.** { *; }
+-keep class * extends dagger.android.DaggerApplication
+-keep class * extends dagger.android.DaggerService
+-keep class * extends dagger.android.DaggerIntentService
+-keep class * extends dagger.android.support.DaggerFragment
+-keep class * extends dagger.android.support.DaggerAppCompatActivity
+-keep class * extends dagger.android.support.DaggerApplication
+
+# Kotlin coroutines
+-dontwarn kotlinx.coroutines.**
+
+# Coil
+-dontwarn coil.**
+-keep class coil.** { *; }
