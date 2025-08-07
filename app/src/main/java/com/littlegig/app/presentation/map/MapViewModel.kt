@@ -5,16 +5,21 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.littlegig.app.data.model.Event
 import com.littlegig.app.data.repository.EventRepository
+import com.littlegig.app.data.repository.AuthRepository
+import com.google.firebase.functions.FirebaseFunctions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.tasks.await
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    private val authRepository: AuthRepository,
+    private val functions: FirebaseFunctions
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(MapUiState())
@@ -48,6 +53,27 @@ class MapViewModel @Inject constructor(
         // For now, we'll use a default location (Nairobi, Kenya)
         val defaultLocation = LatLng(-1.2921, 36.8219)
         _uiState.value = _uiState.value.copy(userLocation = defaultLocation)
+    }
+    
+    suspend fun getActiveUsersNearby(lat: Double, lon: Double, radiusKm: Int = 5): List<LatLng> {
+        return try {
+            val data = mapOf(
+                "latitude" to lat,
+                "longitude" to lon,
+                "radius" to radiusKm
+            )
+            val result = functions.getHttpsCallable("getActiveUsersNearby").call(data).await().data as? Map<*, *>
+            val users = result?.get("users") as? List<Map<*, *>> ?: emptyList()
+            users.mapNotNull {
+                val u = it as? Map<String, Any>
+                val loc = (u?.get("location") as? Map<String, Any>)
+                val la = (loc?.get("latitude") as? Number)?.toDouble()
+                val lo = (loc?.get("longitude") as? Number)?.toDouble()
+                if (la != null && lo != null) LatLng(la, lo) else null
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
     
     fun searchEventsNearLocation(location: LatLng, radiusKm: Double = 10.0) {

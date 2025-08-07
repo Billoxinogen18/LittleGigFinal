@@ -2,21 +2,25 @@ package com.littlegig.app.data.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.util.Date
 
 @Parcelize
 data class Chat(
     val id: String = "",
-    val name: String = "",
-    val type: ChatType = ChatType.DIRECT,
+    val name: String? = null,
+    val chatType: ChatType = ChatType.DIRECT,
     val participants: List<String> = emptyList(),
     val admins: List<String> = emptyList(),
-    val lastMessage: Message? = null,
-    val lastMessageTime: Long = 0L,
+    val lastMessage: String? = null,
+    val lastMessageTime: Long = System.currentTimeMillis(),
+    val lastMessageSenderId: String? = null,
     val unreadCount: Int = 0,
     val isActive: Boolean = true,
     val createdAt: Long = System.currentTimeMillis(),
     val eventId: String? = null, // For event-based groups
-    val imageUrl: String = ""
+    val imageUrl: String = "",
+    val pinnedMessageId: String? = null,
+    val announcement: String? = null
 ) : Parcelable
 
 enum class ChatType {
@@ -35,8 +39,10 @@ data class Message(
     val content: String = "",
     val messageType: MessageType = MessageType.TEXT,
     val mediaUrls: List<String> = emptyList(),
+    val metadata: Map<String, String> = emptyMap(),
     val timestamp: Long = System.currentTimeMillis(),
     val isRead: Boolean = false,
+    val readBy: List<String> = emptyList(),
     val sharedTicket: SharedTicket? = null
 ) : Parcelable
 

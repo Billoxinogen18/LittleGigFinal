@@ -36,6 +36,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.app.Activity
 
 @Composable
 fun TicketsScreen(
@@ -45,6 +49,19 @@ fun TicketsScreen(
     val uiState by viewModel.uiState.collectAsState(initial = TicketsUiState())
     val isDark = isSystemInDarkTheme()
     
+    // QR Code scanner launcher
+    val qrScannerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val scannedData = result.data?.getStringExtra("SCAN_RESULT")
+            scannedData?.let { qrData ->
+                // Handle QR code data - could be a ticket ID or event URL
+                viewModel.handleQrCodeScan(qrData)
+            }
+        }
+    }
+
     // Proper dark/light mode background
     Box(
         modifier = Modifier
@@ -91,7 +108,12 @@ fun TicketsScreen(
                         )
                         
                         IconButton(
-                            onClick = { /* TODO: Scan QR code */ }
+                            onClick = { 
+                                // Launch QR scanner
+                                val intent = Intent("com.google.zxing.client.android.SCAN")
+                                intent.putExtra("SCAN_MODE", "QR_CODE_MODE")
+                                qrScannerLauncher.launch(intent)
+                            }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.QrCodeScanner,
@@ -200,7 +222,9 @@ fun TicketsScreen(
                                 Spacer(modifier = Modifier.height(20.dp))
                                 
                                 Button(
-                                    onClick = { /* TODO: Navigate to events */ },
+                                    onClick = { 
+                                        navController.navigate("events")
+                                    },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = LittleGigPrimary
                                     )

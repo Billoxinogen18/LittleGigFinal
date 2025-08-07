@@ -118,4 +118,5 @@
     
     <!-- Placeholder for Google Maps API Key -->
     <string name="google_maps_key">AIzaSyAWjP5QFRy8ijfaf-2KDN0ac9hZavOjPlQ</string>
+    <string name="google_places_key">AIzaSyAWjP5QFRy8ijfaf-2KDN0ac9hZavOjPlQ</string>
 </resources>

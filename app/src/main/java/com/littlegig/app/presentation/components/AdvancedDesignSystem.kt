@@ -1,12 +1,19 @@
 package com.littlegig.app.presentation.components
 
+import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.compose.animation.core.*
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,6 +52,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -57,6 +66,181 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import org.json.JSONObject
+import java.net.URL
+import com.littlegig.app.R
+
+// Enhanced haptic feedback and animations
+@Composable
+fun HapticButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    content: @Composable () -> Unit
+) {
+    val context = LocalContext.current
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.95f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+    
+    Box(
+        modifier = modifier
+            .scale(scale)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        // Haptic feedback with error handling
+                        try {
+                            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                                vibratorManager.defaultVibrator
+                            } else {
+                                @Suppress("DEPRECATION")
+                                context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                            }
+                            
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+                            } else {
+                                @Suppress("DEPRECATION")
+                                vibrator.vibrate(50)
+                            }
+                        } catch (e: SecurityException) {
+                            // Permission denied, continue without vibration
+                        } catch (e: Exception) {
+                            // Any other error, continue without vibration
+                        }
+                        
+                        onClick()
+                    }
+                )
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        content()
+    }
+}
+
+@Composable
+fun LoadingPulseAnimation(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    
+    Box(
+        modifier = modifier.graphicsLayer(alpha = alpha),
+        contentAlignment = Alignment.Center
+    ) {
+        content()
+    }
+}
+
+@Composable
+fun ShimmerLoadingCard(
+    modifier: Modifier = Modifier
+) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val shimmerOffset by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        )
+    )
+    
+    AdvancedNeumorphicCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(200.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.linearGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.White.copy(alpha = 0.1f),
+                            Color.Transparent
+                        ),
+                        start = Offset(shimmerOffset * 1000f, 0f),
+                        end = Offset((shimmerOffset + 0.3f) * 1000f, 100f)
+                    )
+                )
+        )
+    }
+}
+
+@Composable
+fun FloatingActionButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    icon: @Composable () -> Unit
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.9f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+    
+    HapticButton(
+        onClick = onClick,
+        modifier = modifier
+            .scale(scale)
+            .size(56.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .drawBehind {
+                    drawCircle(
+                        brush = Brush.radialGradient(
+                            colors = listOf(
+                                LittleGigPrimary.copy(alpha = 0.8f),
+                                LittleGigPrimary.copy(alpha = 0.6f),
+                                LittleGigPrimary.copy(alpha = 0.4f)
+                            )
+                        ),
+                        radius = size.minDimension / 2
+                    )
+                }
+                .clip(CircleShape)
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(
+                            LittleGigPrimary,
+                            LittleGigPrimary.copy(alpha = 0.8f)
+                        )
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            icon()
+        }
+    }
+}
 
 // Liquid Glass Bottom Navigation - Proper glassmorphism with neumorphic effects
 @Composable
@@ -71,17 +255,16 @@ fun LiquidGlassBottomNavigation(
         BottomNavItem("tickets", "Tickets", Icons.Default.Receipt),
         BottomNavItem("map", "LittleMap", Icons.Default.Map),
         BottomNavItem("chat", "Chat", Icons.Default.Chat),
-        BottomNavItem("upload", "Upload", Icons.Default.Upload),
-        BottomNavItem("account", "Account", Icons.Default.AccountCircle)
+        BottomNavItem("upload", "Upload", Icons.Default.Upload)
     )
     
-    // Elevated floating bottom navigation with proper glassmorphism
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .padding(bottom = 24.dp) // Reasonable elevation from bottom
-    ) {
+            // Elevated floating bottom navigation with proper glassmorphism
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(bottom = 38.dp) // Increased elevation from bottom (24 + 14)
+        ) {
         // Frosted glass background with proper neumorphic effects
         Surface(
             modifier = Modifier
@@ -966,6 +1149,40 @@ fun NeumorphicPlacesAutocomplete(
     onPlaceSelected: (PlaceSuggestion) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val apiKey = context.getString(R.string.google_places_key)
+    
+    LaunchedEffect(query) {
+        if (query.length > 2) {
+            // Fetch suggestions using HTTP request
+            try {
+                val url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=$apiKey&types=establishment"
+                val response = URL(url).readText()
+                val json = JSONObject(response)
+                val predictions = json.getJSONArray("predictions")
+                
+                val newSuggestions = mutableListOf<PlaceSuggestion>()
+                for (i in 0 until predictions.length()) {
+                    val prediction = predictions.getJSONObject(i)
+                    val placeId = prediction.getString("place_id")
+                    val description = prediction.getString("description")
+                    
+                    newSuggestions.add(PlaceSuggestion(
+                        placeId = placeId,
+                        name = description,
+                        address = description,
+                        latitude = 0.0,
+                        longitude = 0.0
+                    ))
+                }
+                
+                // Update suggestions
+                onPlaceSelected(PlaceSuggestion("", "", "", 0.0, 0.0))
+            } catch (e: Exception) {
+                // Handle error silently
+            }
+        }
+    }
     val isDark = isSystemInDarkTheme()
     var showSuggestions by remember { mutableStateOf(false) }
     

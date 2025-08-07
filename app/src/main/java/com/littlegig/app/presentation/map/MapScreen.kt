@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.*
+import androidx.compose.ui.graphics.Color
 import com.littlegig.app.data.model.Event
 import com.littlegig.app.presentation.components.*
 import com.littlegig.app.presentation.theme.*
@@ -32,6 +33,7 @@ fun MapScreen(
     val uiState by viewModel.uiState.collectAsState(initial = MapUiState())
     val context = LocalContext.current
     val isDark = isSystemInDarkTheme()
+    var activeUserPoints by remember { mutableStateOf<List<LatLng>>(emptyList()) }
     
     // Default location (Nairobi, Kenya)
     val defaultLocation = LatLng(-1.2921, 36.8219)
@@ -90,10 +92,19 @@ fun MapScreen(
                         title = event.title,
                         snippet = "${event.location.name} • ${event.currency} ${event.price}",
                         onInfoWindowClick = {
-                            // Navigate to event details
+                            navController.navigate("event_details/${event.id}")
                         }
                     )
                 }
+            }
+            // Simple heat visualization via translucent circles at active user points
+            activeUserPoints.forEach { p ->
+                Circle(
+                    center = p,
+                    radius = 150.0,
+                    strokeColor = Color.Transparent,
+                    fillColor = Color.Red.copy(alpha = 0.15f)
+                )
             }
         }
         
@@ -128,7 +139,8 @@ fun MapScreen(
                     
                     FloatingActionButton(
                         onClick = {
-                            // Center map on user location
+                            // Center map on user location and fetch active users nearby
+                            viewModel.getCurrentLocation()
                         },
                         containerColor = LittleGigPrimary,
                         contentColor = androidx.compose.ui.graphics.Color.White
@@ -139,6 +151,13 @@ fun MapScreen(
                         )
                     }
                 }
+            }
+        }
+        // Fetch active users heat around current location when available
+        LaunchedEffect(uiState.userLocation) {
+            uiState.userLocation?.let { loc ->
+                val pts = viewModel.getActiveUsersNearby(loc.latitude, loc.longitude, 5)
+                activeUserPoints = pts
             }
         }
     }

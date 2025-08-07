@@ -5,13 +5,15 @@ import com.littlegig.app.presentation.MainActivity_GeneratedInjector;
 import com.littlegig.app.presentation.account.AccountViewModel_HiltModules;
 import com.littlegig.app.presentation.auth.AuthViewModel_HiltModules;
 import com.littlegig.app.presentation.business.BusinessDashboardViewModel_HiltModules;
+import com.littlegig.app.presentation.chat.ChatDetailsViewModel_HiltModules;
 import com.littlegig.app.presentation.chat.ChatViewModel_HiltModules;
 import com.littlegig.app.presentation.events.EventDetailsViewModel_HiltModules;
 import com.littlegig.app.presentation.events.EventsViewModel_HiltModules;
 import com.littlegig.app.presentation.map.MapViewModel_HiltModules;
+import com.littlegig.app.presentation.recaps.RecapsUploadViewModel_HiltModules;
 import com.littlegig.app.presentation.tickets.TicketsViewModel_HiltModules;
 import com.littlegig.app.presentation.upload.UploadViewModel_HiltModules;
-import com.littlegig.app.services.LocationService_HiltModules;
+import com.littlegig.app.service.LittleGigFirebaseMessagingService_GeneratedInjector;
 import dagger.Binds;
 import dagger.Component;
 import dagger.Module;
@@ -144,7 +146,8 @@ public final class LittleGigApplication_HiltComponents {
 
   @Subcomponent
   @ServiceScoped
-  public abstract static class ServiceC implements ServiceComponent,
+  public abstract static class ServiceC implements LittleGigFirebaseMessagingService_GeneratedInjector,
+      ServiceComponent,
       GeneratedComponent {
     @Subcomponent.Builder
     abstract interface Builder extends ServiceComponentBuilder {
@@ -156,14 +159,15 @@ public final class LittleGigApplication_HiltComponents {
           AccountViewModel_HiltModules.KeyModule.class,
           AuthViewModel_HiltModules.KeyModule.class,
           BusinessDashboardViewModel_HiltModules.KeyModule.class,
+          ChatDetailsViewModel_HiltModules.KeyModule.class,
           ChatViewModel_HiltModules.KeyModule.class,
           EventDetailsViewModel_HiltModules.KeyModule.class,
           EventsViewModel_HiltModules.KeyModule.class,
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class,
-          LocationService_HiltModules.KeyModule.class,
           MapViewModel_HiltModules.KeyModule.class,
+          RecapsUploadViewModel_HiltModules.KeyModule.class,
           TicketsViewModel_HiltModules.KeyModule.class,
           UploadViewModel_HiltModules.KeyModule.class
       }
@@ -204,12 +208,13 @@ public final class LittleGigApplication_HiltComponents {
           AccountViewModel_HiltModules.BindsModule.class,
           AuthViewModel_HiltModules.BindsModule.class,
           BusinessDashboardViewModel_HiltModules.BindsModule.class,
+          ChatDetailsViewModel_HiltModules.BindsModule.class,
           ChatViewModel_HiltModules.BindsModule.class,
           EventDetailsViewModel_HiltModules.BindsModule.class,
           EventsViewModel_HiltModules.BindsModule.class,
           HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
-          LocationService_HiltModules.BindsModule.class,
           MapViewModel_HiltModules.BindsModule.class,
+          RecapsUploadViewModel_HiltModules.BindsModule.class,
           TicketsViewModel_HiltModules.BindsModule.class,
           UploadViewModel_HiltModules.BindsModule.class
       }

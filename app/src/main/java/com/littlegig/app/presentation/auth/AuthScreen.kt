@@ -203,9 +203,9 @@ fun AuthScreen(
                     Button(
                         onClick = {
                             if (isSignUp) {
-                                viewModel.signUpWithEmail(email, password, displayName, phoneNumber, userType)
+                                viewModel.signUp(email, password, userType)
                             } else {
-                                viewModel.signInWithEmail(email, password)
+                                viewModel.signIn(email, password)
                             }
                         },
                         enabled = !uiState.isLoading && 

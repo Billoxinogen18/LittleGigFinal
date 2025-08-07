@@ -3,22 +3,36 @@ package com.littlegig.app;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.Context;
 import android.view.View;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.littlegig.app.data.repository.AuthRepository;
+import com.littlegig.app.data.repository.ChatRepository;
+import com.littlegig.app.data.repository.ConfigRepository;
 import com.littlegig.app.data.repository.EventRepository;
+import com.littlegig.app.data.repository.NotificationRepository;
+import com.littlegig.app.data.repository.PaymentRepository;
+import com.littlegig.app.data.repository.RecapRepository;
+import com.littlegig.app.data.repository.SharingRepository;
 import com.littlegig.app.data.repository.TicketRepository;
+import com.littlegig.app.data.repository.UserRepository;
 import com.littlegig.app.di.AppModule;
+import com.littlegig.app.di.AppModule_ProvideConfigRepositoryFactory;
+import com.littlegig.app.di.AppModule_ProvideContextFactory;
 import com.littlegig.app.di.AppModule_ProvideFirebaseAuthFactory;
 import com.littlegig.app.di.AppModule_ProvideFirebaseFirestoreFactory;
+import com.littlegig.app.di.AppModule_ProvideFirebaseFunctionsFactory;
 import com.littlegig.app.di.AppModule_ProvideFirebaseStorageFactory;
+import com.littlegig.app.di.AppModule_ProvideNotificationRepositoryFactory;
 import com.littlegig.app.presentation.MainActivity;
 import com.littlegig.app.presentation.account.AccountViewModel;
 import com.littlegig.app.presentation.account.AccountViewModel_HiltModules_KeyModule_ProvideFactory;
@@ -26,6 +40,8 @@ import com.littlegig.app.presentation.auth.AuthViewModel;
 import com.littlegig.app.presentation.auth.AuthViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.littlegig.app.presentation.business.BusinessDashboardViewModel;
 import com.littlegig.app.presentation.business.BusinessDashboardViewModel_HiltModules_KeyModule_ProvideFactory;
+import com.littlegig.app.presentation.chat.ChatDetailsViewModel;
+import com.littlegig.app.presentation.chat.ChatDetailsViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.littlegig.app.presentation.chat.ChatViewModel;
 import com.littlegig.app.presentation.chat.ChatViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.littlegig.app.presentation.events.EventDetailsViewModel;
@@ -40,8 +56,10 @@ import com.littlegig.app.presentation.tickets.TicketsViewModel;
 import com.littlegig.app.presentation.tickets.TicketsViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.littlegig.app.presentation.upload.UploadViewModel;
 import com.littlegig.app.presentation.upload.UploadViewModel_HiltModules_KeyModule_ProvideFactory;
+import com.littlegig.app.service.LittleGigFirebaseMessagingService;
+import com.littlegig.app.service.LittleGigFirebaseMessagingService_MembersInjector;
 import com.littlegig.app.services.LocationService;
-import com.littlegig.app.services.LocationService_HiltModules_KeyModule_ProvideFactory;
+import com.littlegig.app.services.PlacesService;
 import dagger.hilt.android.ActivityRetainedLifecycle;
 import dagger.hilt.android.ViewModelLifecycle;
 import dagger.hilt.android.flags.HiltWrapper_FragmentGetContextFix_FragmentGetContextFixModule;
@@ -56,6 +74,7 @@ import dagger.hilt.android.internal.lifecycle.DefaultViewModelFactories;
 import dagger.hilt.android.internal.lifecycle.DefaultViewModelFactories_InternalFactoryFactory_Factory;
 import dagger.hilt.android.internal.managers.ActivityRetainedComponentManager_LifecycleModule_ProvideActivityRetainedLifecycleFactory;
 import dagger.hilt.android.internal.modules.ApplicationContextModule;
+import dagger.hilt.android.internal.modules.ApplicationContextModule_ProvideContextFactory;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.DoubleCheck;
 import dagger.internal.Preconditions;
@@ -78,11 +97,9 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
     return new Builder();
   }
 
-  public static LittleGigApplication_HiltComponents.SingletonC create() {
-    return new Builder().build();
-  }
-
   public static final class Builder {
+    private ApplicationContextModule applicationContextModule;
+
     private Builder() {
     }
 
@@ -95,12 +112,8 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       return this;
     }
 
-    /**
-     * @deprecated This module is declared, but an instance is not used in the component. This method is a no-op. For more, see https://dagger.dev/unused-modules.
-     */
-    @Deprecated
     public Builder applicationContextModule(ApplicationContextModule applicationContextModule) {
-      Preconditions.checkNotNull(applicationContextModule);
+      this.applicationContextModule = Preconditions.checkNotNull(applicationContextModule);
       return this;
     }
 
@@ -115,7 +128,8 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
     }
 
     public LittleGigApplication_HiltComponents.SingletonC build() {
-      return new SingletonCImpl();
+      Preconditions.checkBuilderRequirement(applicationContextModule, ApplicationContextModule.class);
+      return new SingletonCImpl(applicationContextModule);
     }
   }
 
@@ -404,7 +418,7 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     @Override
     public Set<String> getViewModelKeys() {
-      return ImmutableSet.<String>of(AccountViewModel_HiltModules_KeyModule_ProvideFactory.provide(), AuthViewModel_HiltModules_KeyModule_ProvideFactory.provide(), BusinessDashboardViewModel_HiltModules_KeyModule_ProvideFactory.provide(), ChatViewModel_HiltModules_KeyModule_ProvideFactory.provide(), EventDetailsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), EventsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), LocationService_HiltModules_KeyModule_ProvideFactory.provide(), MapViewModel_HiltModules_KeyModule_ProvideFactory.provide(), RecapsUploadViewModel_HiltModules_KeyModule_ProvideFactory.provide(), TicketsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), UploadViewModel_HiltModules_KeyModule_ProvideFactory.provide());
+      return ImmutableSet.<String>of(AccountViewModel_HiltModules_KeyModule_ProvideFactory.provide(), AuthViewModel_HiltModules_KeyModule_ProvideFactory.provide(), BusinessDashboardViewModel_HiltModules_KeyModule_ProvideFactory.provide(), ChatDetailsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), ChatViewModel_HiltModules_KeyModule_ProvideFactory.provide(), EventDetailsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), EventsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), MapViewModel_HiltModules_KeyModule_ProvideFactory.provide(), RecapsUploadViewModel_HiltModules_KeyModule_ProvideFactory.provide(), TicketsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), UploadViewModel_HiltModules_KeyModule_ProvideFactory.provide());
     }
 
     @Override
@@ -436,13 +450,13 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     private Provider<BusinessDashboardViewModel> businessDashboardViewModelProvider;
 
+    private Provider<ChatDetailsViewModel> chatDetailsViewModelProvider;
+
     private Provider<ChatViewModel> chatViewModelProvider;
 
     private Provider<EventDetailsViewModel> eventDetailsViewModelProvider;
 
     private Provider<EventsViewModel> eventsViewModelProvider;
-
-    private Provider<LocationService> locationServiceProvider;
 
     private Provider<MapViewModel> mapViewModelProvider;
 
@@ -468,10 +482,10 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       this.accountViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 0);
       this.authViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 1);
       this.businessDashboardViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 2);
-      this.chatViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
-      this.eventDetailsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
-      this.eventsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
-      this.locationServiceProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 6);
+      this.chatDetailsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
+      this.chatViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
+      this.eventDetailsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
+      this.eventsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 6);
       this.mapViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 7);
       this.recapsUploadViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 8);
       this.ticketsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 9);
@@ -480,7 +494,7 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     @Override
     public Map<String, Provider<ViewModel>> getHiltViewModelMap() {
-      return ImmutableMap.<String, Provider<ViewModel>>builderWithExpectedSize(11).put("com.littlegig.app.presentation.account.AccountViewModel", ((Provider) accountViewModelProvider)).put("com.littlegig.app.presentation.auth.AuthViewModel", ((Provider) authViewModelProvider)).put("com.littlegig.app.presentation.business.BusinessDashboardViewModel", ((Provider) businessDashboardViewModelProvider)).put("com.littlegig.app.presentation.chat.ChatViewModel", ((Provider) chatViewModelProvider)).put("com.littlegig.app.presentation.events.EventDetailsViewModel", ((Provider) eventDetailsViewModelProvider)).put("com.littlegig.app.presentation.events.EventsViewModel", ((Provider) eventsViewModelProvider)).put("com.littlegig.app.services.LocationService", ((Provider) locationServiceProvider)).put("com.littlegig.app.presentation.map.MapViewModel", ((Provider) mapViewModelProvider)).put("com.littlegig.app.presentation.recaps.RecapsUploadViewModel", ((Provider) recapsUploadViewModelProvider)).put("com.littlegig.app.presentation.tickets.TicketsViewModel", ((Provider) ticketsViewModelProvider)).put("com.littlegig.app.presentation.upload.UploadViewModel", ((Provider) uploadViewModelProvider)).build();
+      return ImmutableMap.<String, Provider<ViewModel>>builderWithExpectedSize(11).put("com.littlegig.app.presentation.account.AccountViewModel", ((Provider) accountViewModelProvider)).put("com.littlegig.app.presentation.auth.AuthViewModel", ((Provider) authViewModelProvider)).put("com.littlegig.app.presentation.business.BusinessDashboardViewModel", ((Provider) businessDashboardViewModelProvider)).put("com.littlegig.app.presentation.chat.ChatDetailsViewModel", ((Provider) chatDetailsViewModelProvider)).put("com.littlegig.app.presentation.chat.ChatViewModel", ((Provider) chatViewModelProvider)).put("com.littlegig.app.presentation.events.EventDetailsViewModel", ((Provider) eventDetailsViewModelProvider)).put("com.littlegig.app.presentation.events.EventsViewModel", ((Provider) eventsViewModelProvider)).put("com.littlegig.app.presentation.map.MapViewModel", ((Provider) mapViewModelProvider)).put("com.littlegig.app.presentation.recaps.RecapsUploadViewModel", ((Provider) recapsUploadViewModelProvider)).put("com.littlegig.app.presentation.tickets.TicketsViewModel", ((Provider) ticketsViewModelProvider)).put("com.littlegig.app.presentation.upload.UploadViewModel", ((Provider) uploadViewModelProvider)).build();
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -505,7 +519,7 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       public T get() {
         switch (id) {
           case 0: // com.littlegig.app.presentation.account.AccountViewModel 
-          return (T) new AccountViewModel(singletonCImpl.authRepositoryProvider.get());
+          return (T) new AccountViewModel(singletonCImpl.authRepositoryProvider.get(), singletonCImpl.locationServiceProvider.get(), singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.userRepositoryProvider.get());
 
           case 1: // com.littlegig.app.presentation.auth.AuthViewModel 
           return (T) new AuthViewModel(singletonCImpl.authRepositoryProvider.get());
@@ -513,29 +527,29 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
           case 2: // com.littlegig.app.presentation.business.BusinessDashboardViewModel 
           return (T) new BusinessDashboardViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.ticketRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get());
 
-          case 3: // com.littlegig.app.presentation.chat.ChatViewModel 
-          return (T) new ChatViewModel();
+          case 3: // com.littlegig.app.presentation.chat.ChatDetailsViewModel 
+          return (T) new ChatDetailsViewModel(singletonCImpl.chatRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get());
 
-          case 4: // com.littlegig.app.presentation.events.EventDetailsViewModel 
-          return (T) new EventDetailsViewModel(singletonCImpl.eventRepositoryProvider.get());
+          case 4: // com.littlegig.app.presentation.chat.ChatViewModel 
+          return (T) new ChatViewModel(singletonCImpl.chatRepositoryProvider.get(), singletonCImpl.userRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get());
 
-          case 5: // com.littlegig.app.presentation.events.EventsViewModel 
-          return (T) new EventsViewModel(singletonCImpl.eventRepositoryProvider.get());
+          case 5: // com.littlegig.app.presentation.events.EventDetailsViewModel 
+          return (T) new EventDetailsViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get(), singletonCImpl.userRepositoryProvider.get(), singletonCImpl.paymentRepositoryProvider.get());
 
-          case 6: // com.littlegig.app.services.LocationService 
-          return (T) new LocationService();
+          case 6: // com.littlegig.app.presentation.events.EventsViewModel 
+          return (T) new EventsViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get(), singletonCImpl.sharingRepositoryProvider.get(), singletonCImpl.provideConfigRepositoryProvider.get());
 
           case 7: // com.littlegig.app.presentation.map.MapViewModel 
-          return (T) new MapViewModel(singletonCImpl.eventRepositoryProvider.get());
+          return (T) new MapViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get(), singletonCImpl.provideFirebaseFunctionsProvider.get());
 
           case 8: // com.littlegig.app.presentation.recaps.RecapsUploadViewModel 
-          return (T) new RecapsUploadViewModel();
+          return (T) new RecapsUploadViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.recapRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get());
 
           case 9: // com.littlegig.app.presentation.tickets.TicketsViewModel 
           return (T) new TicketsViewModel(singletonCImpl.ticketRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get());
 
           case 10: // com.littlegig.app.presentation.upload.UploadViewModel 
-          return (T) new UploadViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get());
+          return (T) new UploadViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get(), singletonCImpl.placesServiceProvider.get());
 
           default: throw new AssertionError(id);
         }
@@ -609,37 +623,84 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
 
     }
+
+    @Override
+    public void injectLittleGigFirebaseMessagingService(LittleGigFirebaseMessagingService arg0) {
+      injectLittleGigFirebaseMessagingService2(arg0);
+    }
+
+    @CanIgnoreReturnValue
+    private LittleGigFirebaseMessagingService injectLittleGigFirebaseMessagingService2(
+        LittleGigFirebaseMessagingService instance) {
+      LittleGigFirebaseMessagingService_MembersInjector.injectNotificationRepository(instance, singletonCImpl.provideNotificationRepositoryProvider.get());
+      return instance;
+    }
   }
 
   private static final class SingletonCImpl extends LittleGigApplication_HiltComponents.SingletonC {
+    private final ApplicationContextModule applicationContextModule;
+
     private final SingletonCImpl singletonCImpl = this;
 
     private Provider<FirebaseAuth> provideFirebaseAuthProvider;
 
     private Provider<FirebaseFirestore> provideFirebaseFirestoreProvider;
 
+    private Provider<Context> provideContextProvider;
+
     private Provider<AuthRepository> authRepositoryProvider;
+
+    private Provider<LocationService> locationServiceProvider;
 
     private Provider<FirebaseStorage> provideFirebaseStorageProvider;
 
     private Provider<EventRepository> eventRepositoryProvider;
 
+    private Provider<UserRepository> userRepositoryProvider;
+
     private Provider<TicketRepository> ticketRepositoryProvider;
 
-    private SingletonCImpl() {
+    private Provider<FirebaseFunctions> provideFirebaseFunctionsProvider;
 
-      initialize();
+    private Provider<ChatRepository> chatRepositoryProvider;
+
+    private Provider<PaymentRepository> paymentRepositoryProvider;
+
+    private Provider<SharingRepository> sharingRepositoryProvider;
+
+    private Provider<ConfigRepository> provideConfigRepositoryProvider;
+
+    private Provider<RecapRepository> recapRepositoryProvider;
+
+    private Provider<PlacesService> placesServiceProvider;
+
+    private Provider<NotificationRepository> provideNotificationRepositoryProvider;
+
+    private SingletonCImpl(ApplicationContextModule applicationContextModuleParam) {
+      this.applicationContextModule = applicationContextModuleParam;
+      initialize(applicationContextModuleParam);
 
     }
 
     @SuppressWarnings("unchecked")
-    private void initialize() {
+    private void initialize(final ApplicationContextModule applicationContextModuleParam) {
       this.provideFirebaseAuthProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseAuth>(singletonCImpl, 1));
       this.provideFirebaseFirestoreProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseFirestore>(singletonCImpl, 2));
+      this.provideContextProvider = DoubleCheck.provider(new SwitchingProvider<Context>(singletonCImpl, 3));
       this.authRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<AuthRepository>(singletonCImpl, 0));
-      this.provideFirebaseStorageProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseStorage>(singletonCImpl, 4));
-      this.eventRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<EventRepository>(singletonCImpl, 3));
-      this.ticketRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<TicketRepository>(singletonCImpl, 5));
+      this.locationServiceProvider = DoubleCheck.provider(new SwitchingProvider<LocationService>(singletonCImpl, 4));
+      this.provideFirebaseStorageProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseStorage>(singletonCImpl, 6));
+      this.eventRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<EventRepository>(singletonCImpl, 5));
+      this.userRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<UserRepository>(singletonCImpl, 7));
+      this.ticketRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<TicketRepository>(singletonCImpl, 8));
+      this.provideFirebaseFunctionsProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseFunctions>(singletonCImpl, 10));
+      this.chatRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ChatRepository>(singletonCImpl, 9));
+      this.paymentRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<PaymentRepository>(singletonCImpl, 11));
+      this.sharingRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<SharingRepository>(singletonCImpl, 12));
+      this.provideConfigRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ConfigRepository>(singletonCImpl, 13));
+      this.recapRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<RecapRepository>(singletonCImpl, 14));
+      this.placesServiceProvider = DoubleCheck.provider(new SwitchingProvider<PlacesService>(singletonCImpl, 15));
+      this.provideNotificationRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<NotificationRepository>(singletonCImpl, 16));
     }
 
     @Override
@@ -676,7 +737,7 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       public T get() {
         switch (id) {
           case 0: // com.littlegig.app.data.repository.AuthRepository 
-          return (T) new AuthRepository(singletonCImpl.provideFirebaseAuthProvider.get(), singletonCImpl.provideFirebaseFirestoreProvider.get());
+          return (T) new AuthRepository(singletonCImpl.provideFirebaseAuthProvider.get(), singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideContextProvider.get());
 
           case 1: // com.google.firebase.auth.FirebaseAuth 
           return (T) AppModule_ProvideFirebaseAuthFactory.provideFirebaseAuth();
@@ -684,14 +745,47 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
           case 2: // com.google.firebase.firestore.FirebaseFirestore 
           return (T) AppModule_ProvideFirebaseFirestoreFactory.provideFirebaseFirestore();
 
-          case 3: // com.littlegig.app.data.repository.EventRepository 
-          return (T) new EventRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideFirebaseStorageProvider.get());
+          case 3: // android.content.Context 
+          return (T) AppModule_ProvideContextFactory.provideContext(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 4: // com.google.firebase.storage.FirebaseStorage 
+          case 4: // com.littlegig.app.services.LocationService 
+          return (T) new LocationService(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.authRepositoryProvider.get());
+
+          case 5: // com.littlegig.app.data.repository.EventRepository 
+          return (T) new EventRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideFirebaseStorageProvider.get(), singletonCImpl.provideContextProvider.get());
+
+          case 6: // com.google.firebase.storage.FirebaseStorage 
           return (T) AppModule_ProvideFirebaseStorageFactory.provideFirebaseStorage();
 
-          case 5: // com.littlegig.app.data.repository.TicketRepository 
+          case 7: // com.littlegig.app.data.repository.UserRepository 
+          return (T) new UserRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideFirebaseStorageProvider.get(), singletonCImpl.provideContextProvider.get());
+
+          case 8: // com.littlegig.app.data.repository.TicketRepository 
           return (T) new TicketRepository(singletonCImpl.provideFirebaseFirestoreProvider.get());
+
+          case 9: // com.littlegig.app.data.repository.ChatRepository 
+          return (T) new ChatRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideFirebaseFunctionsProvider.get());
+
+          case 10: // com.google.firebase.functions.FirebaseFunctions 
+          return (T) AppModule_ProvideFirebaseFunctionsFactory.provideFirebaseFunctions();
+
+          case 11: // com.littlegig.app.data.repository.PaymentRepository 
+          return (T) new PaymentRepository(singletonCImpl.provideFirebaseFunctionsProvider.get());
+
+          case 12: // com.littlegig.app.data.repository.SharingRepository 
+          return (T) new SharingRepository(singletonCImpl.provideFirebaseFunctionsProvider.get());
+
+          case 13: // com.littlegig.app.data.repository.ConfigRepository 
+          return (T) AppModule_ProvideConfigRepositoryFactory.provideConfigRepository(singletonCImpl.provideFirebaseFirestoreProvider.get());
+
+          case 14: // com.littlegig.app.data.repository.RecapRepository 
+          return (T) new RecapRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideFirebaseStorageProvider.get(), singletonCImpl.provideContextProvider.get());
+
+          case 15: // com.littlegig.app.services.PlacesService 
+          return (T) new PlacesService(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 16: // com.littlegig.app.data.repository.NotificationRepository 
+          return (T) AppModule_ProvideNotificationRepositoryFactory.provideNotificationRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideContextProvider.get());
 
           default: throw new AssertionError(id);
         }

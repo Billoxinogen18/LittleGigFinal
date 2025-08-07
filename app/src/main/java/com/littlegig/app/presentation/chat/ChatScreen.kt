@@ -40,6 +40,8 @@ fun ChatScreen(
     viewModel: ChatViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState(initial = ChatUiState())
+    val chats by viewModel.chats.collectAsState()
+    val searchResults by viewModel.searchResults.collectAsState()
     val isDark = isSystemInDarkTheme()
     var showSearch by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
@@ -89,20 +91,31 @@ fun ChatScreen(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         
-                        IconButton(
-                            onClick = { showSearch = !showSearch }
-                        ) {
-                            Icon(
-                                imageVector = if (showSearch) Icons.Default.Close else Icons.Default.Search,
-                                contentDescription = if (showSearch) "Close Search" else "Search Users",
-                                tint = LittleGigPrimary
-                            )
+                        Row {
+                            IconButton(
+                                onClick = { showSearch = !showSearch }
+                            ) {
+                                Icon(
+                                    imageVector = if (showSearch) Icons.Default.Close else Icons.Default.Search,
+                                    contentDescription = if (showSearch) "Close Search" else "Search Users",
+                                    tint = LittleGigPrimary
+                                )
+                            }
+                            
+                            IconButton(
+                                onClick = { viewModel.startNewChat() }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "New Chat",
+                                    tint = LittleGigPrimary
+                                )
+                            }
                         }
                     }
                     
-                    // Search Bar
                     if (showSearch) {
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         
                         OutlinedTextField(
                             value = searchQuery,
@@ -110,8 +123,9 @@ fun ChatScreen(
                                 searchQuery = it
                                 viewModel.searchUsers(it)
                             },
-                            placeholder = { Text("Search users to start a chat...") },
+                            label = { Text("Search users...") },
                             modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = LittleGigPrimary,
                                 unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
@@ -120,7 +134,7 @@ fun ChatScreen(
                                 Icon(
                                     imageVector = Icons.Default.Search,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    tint = LittleGigPrimary
                                 )
                             }
                         )
@@ -128,437 +142,363 @@ fun ChatScreen(
                 }
             }
             
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             
-            when {
-                uiState.isLoading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+            // Search Results
+            if (showSearch && searchResults.isNotEmpty()) {
+                AdvancedGlassmorphicCard {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
                     ) {
-                        AdvancedGlassmorphicCard {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(32.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator(
-                                    color = LittleGigPrimary,
-                                    strokeWidth = 3.dp
-                                )
-                            }
-                        }
-                    }
-                }
-                showSearch && uiState.searchResults.isNotEmpty() -> {
-                    // Search Results
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(uiState.searchResults) { user ->
-                            UserSearchCard(
-                                user = user,
-                                onClick = { 
-                                    viewModel.startChat(user.id)
-                                    showSearch = false
-                                    searchQuery = ""
-                                }
-                            )
-                        }
-                    }
-                }
-                showSearch && searchQuery.isNotBlank() && uiState.searchResults.isEmpty() -> {
-                    // No search results
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        AdvancedGlassmorphicCard {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(32.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(48.dp),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                
-                                Spacer(modifier = Modifier.height(16.dp))
-                                
-                                Text(
-                                    text = "No users found",
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontWeight = FontWeight.Bold
-                                    ),
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                                
-                                Spacer(modifier = Modifier.height(8.dp))
-                                
-                                Text(
-                                    text = "Try a different search term",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                                )
-                            }
-                        }
-                    }
-                }
-                uiState.chats.isEmpty() && !showSearch -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        AdvancedGlassmorphicCard {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(32.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                // Glowing orb effect
-                                Box(
-                                    modifier = Modifier
-                                        .size(80.dp)
-                                        .drawBehind {
-                                            // Outer glow
-                                            drawCircle(
-                                                color = LittleGigPrimary.copy(alpha = 0.3f),
-                                                center = androidx.compose.ui.geometry.Offset(size.width / 2, size.height / 2),
-                                                radius = 40.dp.toPx()
-                                            )
-                                            // Inner glow
-                                            drawCircle(
-                                                color = LittleGigPrimary.copy(alpha = 0.6f),
-                                                center = androidx.compose.ui.geometry.Offset(size.width / 2, size.height / 2),
-                                                radius = 30.dp.toPx()
-                                            )
-                                            // Core
-                                            drawCircle(
-                                                color = LittleGigPrimary,
-                                                center = androidx.compose.ui.geometry.Offset(size.width / 2, size.height / 2),
-                                                radius = 20.dp.toPx()
+                        Text(
+                            text = "Search Results",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.SemiBold
+                            ),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        
+                        Spacer(modifier = Modifier.height(12.dp))
+                        
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(searchResults) { user ->
+                                HapticButton(
+                                    onClick = { 
+                                        viewModel.createChatWithUser(user.id)
+                                        showSearch = false
+                                        searchQuery = ""
+                                    }
+                                ) {
+                                    AdvancedNeumorphicCard(
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(12.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            // User Avatar
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(40.dp)
+                                                    .clip(CircleShape)
+                                                    .background(LittleGigPrimary.copy(alpha = 0.1f)),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                if (user.profilePictureUrl.isNotEmpty()) {
+                                                    AsyncImage(
+                                                        model = user.profilePictureUrl,
+                                                        contentDescription = null,
+                                                        modifier = Modifier.fillMaxSize(),
+                                                        contentScale = ContentScale.Crop
+                                                    )
+                                                } else {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Person,
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(24.dp),
+                                                        tint = LittleGigPrimary
+                                                    )
+                                                }
+                                            }
+                                            
+                                            Spacer(modifier = Modifier.width(12.dp))
+                                            
+                                            Column(modifier = Modifier.weight(1f)) {
+                                                Text(
+                                                    text = user.displayName.ifEmpty { user.name },
+                                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                                        fontWeight = FontWeight.Medium
+                                                    ),
+                                                    color = MaterialTheme.colorScheme.onSurface
+                                                )
+                                                
+                                                Text(
+                                                    text = user.email,
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                            
+                                            Icon(
+                                                imageVector = Icons.Default.Chat,
+                                                contentDescription = "Start Chat",
+                                                tint = LittleGigPrimary,
+                                                modifier = Modifier.size(20.dp)
                                             )
                                         }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Chat,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(16.dp),
-                                        tint = MaterialTheme.colorScheme.onSurface
-                                    )
-                                }
-                                
-                                Spacer(modifier = Modifier.height(24.dp))
-                                
-                                Text(
-                                    text = "No chats yet",
-                                    style = MaterialTheme.typography.headlineSmall.copy(
-                                        fontWeight = FontWeight.Bold
-                                    ),
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                                
-                                Spacer(modifier = Modifier.height(8.dp))
-                                
-                                Text(
-                                    text = "Search for users to start conversations",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                                )
-                                
-                                Spacer(modifier = Modifier.height(16.dp))
-                                
-                                Button(
-                                    onClick = { showSearch = true },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = LittleGigPrimary
-                                    )
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Search,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text("Search Users")
+                                    }
                                 }
                             }
                         }
                     }
                 }
-                else -> {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(uiState.chats) { chat ->
-                            ChatCard(
-                                chat = chat,
-                                onClick = { 
-                                    // Navigate to chat details
+                
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            
+            // Chats List
+            if (chats.isNotEmpty()) {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(chats) { chat ->
+                        HapticButton(
+                            onClick = { 
+                                navController.navigate("chat_details/${chat.id}")
+                            }
+                        ) {
+                            AdvancedNeumorphicCard(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    // Chat Avatar
+                                    Box(
+                                        modifier = Modifier
+                                            .size(50.dp)
+                                            .clip(CircleShape)
+                                            .background(LittleGigPrimary.copy(alpha = 0.1f)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        when (chat.chatType) {
+                                            com.littlegig.app.data.model.ChatType.DIRECT -> {
+                                                if (chat.participants.isNotEmpty()) {
+                                                    // Show first participant avatar
+                                                    Icon(
+                                                        imageVector = Icons.Default.Person,
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(30.dp),
+                                                        tint = LittleGigPrimary
+                                                    )
+                                                } else {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Person,
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(30.dp),
+                                                        tint = LittleGigPrimary
+                                                    )
+                                                }
+                                            }
+                                            com.littlegig.app.data.model.ChatType.GROUP -> {
+                                                Icon(
+                                                    imageVector = Icons.Default.Group,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(30.dp),
+                                                    tint = LittleGigPrimary
+                                                )
+                                            }
+                                            com.littlegig.app.data.model.ChatType.EVENT -> {
+                                                Icon(
+                                                    imageVector = Icons.Default.Event,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(30.dp),
+                                                    tint = LittleGigPrimary
+                                                )
+                                            }
+                                        }
+                                    }
+                                    
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            text = chat.name ?: "Chat",
+                                            style = MaterialTheme.typography.titleMedium.copy(
+                                                fontWeight = FontWeight.SemiBold
+                                            ),
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                        
+                                        if (chat.lastMessage != null) {
+                                            Text(
+                                                text = chat.lastMessage,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                maxLines = 2
+                                            )
+                                        }
+                                        
+                                        Text(
+                                            text = "Participants: ${chat.participants.size}",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                    
+                                    // Unread indicator
+                                    if (chat.unreadCount > 0) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(20.dp)
+                                                .clip(CircleShape)
+                                                .background(LittleGigPrimary),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = chat.unreadCount.toString(),
+                                                style = MaterialTheme.typography.labelSmall,
+                                                color = Color.White
+                                            )
+                                        }
+                                    }
                                 }
+                            }
+                        }
+                    }
+                }
+            } else {
+                // Empty state
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AdvancedGlassmorphicCard {
+                        Column(
+                            modifier = Modifier.padding(32.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Chat,
+                                contentDescription = null,
+                                modifier = Modifier.size(64.dp),
+                                tint = LittleGigPrimary
                             )
+                            
+                            Spacer(modifier = Modifier.height(16.dp))
+                            
+                            Text(
+                                text = "No Chats Yet",
+                                style = MaterialTheme.typography.headlineSmall.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            
+                            Spacer(modifier = Modifier.height(8.dp))
+                            
+                            Text(
+                                text = "Start a conversation with other users",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            
+                            Spacer(modifier = Modifier.height(24.dp))
+                            
+                            HapticButton(
+                                onClick = { showSearch = true }
+                            ) {
+                                AdvancedNeumorphicCard {
+                                    Row(
+                                        modifier = Modifier.padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Search,
+                                            contentDescription = null,
+                                            tint = LittleGigPrimary,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                        
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        
+                                        Text(
+                                            text = "Find People to Chat",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = LittleGigPrimary
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun UserSearchCard(
-    user: UserSearchResult,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Profile Image
-            AsyncImage(
-                model = user.profileImageUrl,
-                contentDescription = user.name,
+        
+        // Loading state
+        if (uiState.isLoading) {
+            Box(
                 modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-            
-            Spacer(modifier = Modifier.width(12.dp))
-            
-            Column(
-                modifier = Modifier.weight(1f)
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
             ) {
-                // Name
-                Text(
-                    text = user.name,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                
-                Spacer(modifier = Modifier.height(4.dp))
-                
-                // Rank
-                Text(
-                    text = user.rank.name,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            
-            // Start Chat Button
-            Button(
-                onClick = onClick,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = LittleGigPrimary
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Chat,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text("Chat")
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ChatCard(
-    chat: ChatPreview,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Profile Image
-            AsyncImage(
-                model = chat.profileImageUrl,
-                contentDescription = chat.name,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-            
-            Spacer(modifier = Modifier.width(12.dp))
-            
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                // Name
-                Text(
-                    text = chat.name,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                
-                Spacer(modifier = Modifier.height(4.dp))
-                
-                // Last Message
-                Text(
-                    text = chat.lastMessage,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2
-                )
-                
-                Spacer(modifier = Modifier.height(4.dp))
-                
-                // Time
-                Text(
-                    text = chat.lastMessageTime,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            
-            // Unread count
-            if (chat.unreadCount > 0) {
-                Surface(
-                    shape = CircleShape,
-                    color = LittleGigPrimary
-                ) {
-                    Text(
-                        text = chat.unreadCount.toString(),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White,
-                        modifier = Modifier.padding(8.dp)
+                LoadingPulseAnimation {
+                    CircularProgressIndicator(
+                        color = LittleGigPrimary,
+                        modifier = Modifier.size(48.dp)
                     )
                 }
             }
         }
-    }
-}
-
-data class ChatPreview(
-    val id: String,
-    val name: String,
-    val profileImageUrl: String,
-    val lastMessage: String,
-    val lastMessageTime: String,
-    val unreadCount: Int = 0
-)
-
-data class UserSearchResult(
-    val id: String,
-    val name: String,
-    val profileImageUrl: String,
-    val rank: UserRank
-)
-
-@HiltViewModel
-class ChatViewModel @Inject constructor() : ViewModel() {
-    
-    private val _uiState = MutableStateFlow(ChatUiState())
-    val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
-    
-    init {
-        loadChats()
-    }
-    
-    private fun loadChats() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-            
-            // TODO: Load chats from repository
-            // For now, show empty state
-            _uiState.value = _uiState.value.copy(
-                chats = emptyList(),
-                isLoading = false
-            )
-        }
-    }
-    
-    fun searchUsers(query: String) {
-        viewModelScope.launch {
-            if (query.isBlank()) {
-                _uiState.value = _uiState.value.copy(searchResults = emptyList())
-                return@launch
+        
+        // Error state
+        if (uiState.error != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
+            ) {
+                AdvancedNeumorphicCard(
+                    modifier = Modifier.padding(32.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Error,
+                            contentDescription = null,
+                            tint = Color(0xFFEF4444),
+                            modifier = Modifier.size(48.dp)
+                        )
+                        
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        Text(
+                            text = "Error",
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = Color(0xFFEF4444)
+                        )
+                        
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        Text(
+                            text = uiState.error ?: "An error occurred",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        HapticButton(
+                            onClick = { viewModel.clearError() }
+                        ) {
+                            AdvancedNeumorphicCard {
+                                Text(
+                                    text = "Retry",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = LittleGigPrimary,
+                                    modifier = Modifier.padding(16.dp)
+                                )
+                            }
+                        }
+                    }
+                }
             }
-            
-            // TODO: Implement actual user search
-            // For now, show mock results
-            val mockUsers = listOf(
-                UserSearchResult(
-                    id = "1",
-                    name = "John Doe",
-                    profileImageUrl = "",
-                    rank = UserRank.POPULAR
-                ),
-                UserSearchResult(
-                    id = "2", 
-                    name = "Jane Smith",
-                    profileImageUrl = "",
-                    rank = UserRank.INFLUENCER
-                )
-            ).filter { it.name.contains(query, ignoreCase = true) }
-            
-            _uiState.value = _uiState.value.copy(searchResults = mockUsers)
-        }
-    }
-    
-    fun startChat(userId: String) {
-        viewModelScope.launch {
-            // TODO: Create chat with user
-            // For now, just add to chats list
-            val newChat = ChatPreview(
-                id = "chat_$userId",
-                name = "User $userId",
-                profileImageUrl = "",
-                lastMessage = "Chat started!",
-                lastMessageTime = "Now"
-            )
-            
-            _uiState.value = _uiState.value.copy(
-                chats = _uiState.value.chats + newChat
-            )
         }
     }
 }
 
-data class ChatUiState(
-    val chats: List<ChatPreview> = emptyList(),
-    val searchResults: List<UserSearchResult> = emptyList(),
-    val isLoading: Boolean = false,
-    val error: String? = null
-) 
+ 

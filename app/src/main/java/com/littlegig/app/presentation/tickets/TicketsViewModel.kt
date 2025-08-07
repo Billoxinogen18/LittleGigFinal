@@ -67,10 +67,36 @@ class TicketsViewModel @Inject constructor(
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
     }
+
+    fun handleQrCodeScan(qrData: String) {
+        viewModelScope.launch {
+            try {
+                // Parse QR code data - could be a ticket ID, event URL, or other format
+                // For now, we'll just show a success message
+                _uiState.value = _uiState.value.copy(
+                    isSuccess = true,
+                    successMessage = "QR Code scanned: $qrData"
+                )
+                
+                // In a real app, you would:
+                // 1. Parse the QR data to extract ticket/event information
+                // 2. Validate the ticket/event
+                // 3. Update the ticket status or navigate to event details
+                // 4. Show appropriate UI feedback
+                
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    error = "Failed to process QR code: ${e.message}"
+                )
+            }
+        }
+    }
 }
 
 data class TicketsUiState(
     val tickets: List<Ticket> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isSuccess: Boolean = false,
+    val successMessage: String? = null
 )

@@ -80,6 +80,7 @@
     <string name="google_app_id" translatable="false">1:673023203315:android:8cee838874ea150aee6486</string>
     <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAW7TB_Uf8e1liqLK0278SptQ9nQiMzwZw</string>
     <string name="google_maps_key">AIzaSyAWjP5QFRy8ijfaf-2KDN0ac9hZavOjPlQ</string>
+    <string name="google_places_key">AIzaSyAWjP5QFRy8ijfaf-2KDN0ac9hZavOjPlQ</string>
     <string name="google_storage_bucket" translatable="false">wanlive2-1518047494273.appspot.com</string>
     <string name="help_support">Help &amp; Support</string>
     <string name="influencer">Influencer</string>

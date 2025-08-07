@@ -2,6 +2,7 @@ package com.littlegig.app.data.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.util.Date
 
 @Parcelize
 data class Recap(
@@ -11,18 +12,20 @@ data class Recap(
     val userName: String = "",
     val userImageUrl: String = "",
     val mediaUrls: List<String> = emptyList(),
-    val mediaType: MediaType = MediaType.IMAGE,
-    val caption: String = "",
+    val recapType: RecapType = RecapType.PHOTO,
+    val caption: String? = null,
     val location: Location = Location(),
     val likes: Int = 0,
     val views: Int = 0,
+    val likedBy: List<String> = emptyList(),
+    val viewedBy: List<String> = emptyList(),
     val createdAt: Long = System.currentTimeMillis(),
     val duration: Long = 5000L, // 5 seconds default
     val isActive: Boolean = true
 ) : Parcelable
 
-enum class MediaType {
-    IMAGE,
+enum class RecapType {
+    PHOTO,
     VIDEO
 }
 

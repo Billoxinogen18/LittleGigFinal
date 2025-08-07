@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-53:12
-INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-53:12
-INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-53:12
-INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-53:12
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-62:12
+INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-62:12
+INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-62:12
+INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-62:12
 MERGED from [androidx.databinding:viewbinding:8.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/66068411002d7a984c450892053cb450/transformed/jetified-viewbinding-8.1.0/AndroidManifest.xml:2:1-7:12
 MERGED from [io.coil-kt:coil-compose:2.4.0] /Users/israelbill/.gradle/caches/8.14/transforms/2a4d458d02b75abbe9a8d0d3f66b15fa/transformed/jetified-coil-compose-2.4.0/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.accompanist:accompanist-permissions:0.30.1] /Users/israelbill/.gradle/caches/8.14/transforms/634915085e79ba8586552147b6b91678/transformed/jetified-accompanist-permissions-0.30.1/AndroidManifest.xml:17:1-25:12
@@ -243,23 +243,27 @@ uses-permission#android.permission.ACCESS_COARSE_LOCATION
 ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:8:5-81
 	android:name
 		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:8:22-78
+uses-permission#android.permission.VIBRATE
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:9:5-66
+	android:name
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:9:22-63
 uses-permission#android.permission.CAMERA
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:9:5-65
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:10:5-65
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:9:22-62
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:10:22-62
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:10:5-80
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:11:5-80
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:10:22-77
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:11:22-77
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:11:5-12:38
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:12:5-13:38
 	android:maxSdkVersion
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:12:9-35
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:13:9-35
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:11:22-78
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:12:22-78
 application
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:14:5-51:19
-INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:14:5-51:19
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:15:5-60:19
+INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:15:5-60:19
 MERGED from [androidx.compose.ui:ui-test-manifest:1.5.0] /Users/israelbill/.gradle/caches/8.14/transforms/7d2676e62a4b9bcf8c84a1a6c2346268/transformed/jetified-ui-test-manifest-1.5.0/AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-test-manifest:1.5.0] /Users/israelbill/.gradle/caches/8.14/transforms/7d2676e62a4b9bcf8c84a1a6c2346268/transformed/jetified-ui-test-manifest-1.5.0/AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.5.0] /Users/israelbill/.gradle/caches/8.14/transforms/6ff76316d945b891e5d305ba3802feb2/transformed/jetified-ui-tooling-release/AndroidManifest.xml:22:5-26:19
@@ -367,63 +371,69 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/israelbill/.gradle/c
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.10.1] /Users/israelbill/.gradle/caches/8.14/transforms/50980042d9ba1c86bb35097e8acce91c/transformed/core-1.10.1/AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:22:9-35
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:23:9-35
 	android:label
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:20:9-41
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:21:9-41
 	android:fullBackupContent
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:18:9-54
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:19:9-54
 	android:roundIcon
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:21:9-54
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:22:9-54
 	tools:targetApi
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:24:9-29
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:25:9-29
 	android:icon
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:19:9-43
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:20:9-43
 	android:allowBackup
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:16:9-35
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:17:9-35
 	android:theme
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:23:9-47
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:24:9-47
 	android:dataExtractionRules
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:17:9-65
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:18:9-65
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:15:9-45
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:16:9-45
 activity#com.littlegig.app.presentation.MainActivity
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:26:9-35:20
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:27:9-36:20
 	android:label
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:29:13-45
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:30:13-45
 	android:exported
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:28:13-36
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:29:13-36
 	android:theme
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:30:13-51
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:31:13-51
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:27:13-54
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:28:13-54
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:31:13-34:29
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:32:13-35:29
 action#android.intent.action.MAIN
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:32:17-69
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:33:17-69
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:32:25-66
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:33:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:33:17-77
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:34:17-77
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:33:27-74
-meta-data#com.google.android.geo.API_KEY
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:38:9-40:55
-	android:value
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:40:13-52
-	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:39:13-58
-service#com.littlegig.app.services.LittleGigMessagingService
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:43:9-49:19
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:34:27-74
+service#com.littlegig.app.service.LittleGigFirebaseMessagingService
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:38:9-44:19
 	android:exported
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:45:13-37
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:40:13-37
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:44:13-63
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:39:13-70
 intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:46:13-48:29
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:41:13-43:29
 action#com.google.firebase.MESSAGING_EVENT
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:47:17-78
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:42:17-78
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:47:25-75
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:42:25-75
+meta-data#com.google.android.geo.API_KEY
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:47:9-49:55
+	android:value
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:49:13-52
+	android:name
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:48:13-58
+service#com.littlegig.app.services.LittleGigMessagingService
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:52:9-58:19
+	android:exported
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:54:13-37
+	android:name
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:53:13-63
 uses-sdk
 INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml

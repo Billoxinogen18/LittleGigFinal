@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.littlegig.app.data.model.Event
+import androidx.compose.foundation.clickable
 import com.littlegig.app.presentation.components.*
 import com.littlegig.app.presentation.theme.*
 import java.text.SimpleDateFormat
@@ -201,6 +202,28 @@ fun LiquidGlassEventCard(
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
+                // Friends-going and share
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Placeholder for friends-going count; injected by parent via overlay row if needed
+                    Text(
+                        text = "Invite friends",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (isDark) DarkOnSurfaceVariant else LightOnSurfaceVariant
+                    )
+                    IconButton(onClick = { /* share deep link */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = "Share",
+                            tint = LittleGigPrimary
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                
                 // Tickets availability
                 if (event.capacity > 0) {
                     Row(
@@ -224,6 +247,22 @@ fun LiquidGlassEventCard(
                             color = LittleGigSecondary,
                             trackColor = if (isDark) DarkSurfaceVariant else LightSurfaceVariant
                         )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedButton(onClick = { /* join waitlist */ }, shape = RoundedCornerShape(12.dp)) {
+                            Icon(Icons.Default.NotificationsActive, contentDescription = null, tint = LittleGigPrimary)
+                            Spacer(Modifier.width(6.dp))
+                            Text("Waitlist", color = LittleGigPrimary)
+                        }
+                        OutlinedButton(onClick = { /* price alert */ }, shape = RoundedCornerShape(12.dp)) {
+                            Icon(Icons.Default.PriceChange, contentDescription = null, tint = LittleGigSecondary)
+                            Spacer(Modifier.width(6.dp))
+                            Text("Price alerts", color = LittleGigSecondary)
+                        }
                     }
                 }
             }

@@ -1,108 +1,63 @@
 package com.littlegig.app.data.repository
 
-import android.app.Activity
-import com.google.firebase.firestore.FirebaseFirestore
-import com.littlegig.app.data.model.PaymentResult
-import com.littlegig.app.services.FlutterwavePaymentService
+import com.google.firebase.functions.FirebaseFunctions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class PaymentRepository @Inject constructor(
-    private val firestore: FirebaseFirestore,
-    private val flutterwaveService: FlutterwavePaymentService
+    private val functions: FirebaseFunctions
 ) {
     
-    suspend fun processTicketPayment(
-        activity: Activity,
+    suspend fun processTicketPurchase(
         eventId: String,
         userId: String,
-        quantity: Int,
-        totalAmount: Double,
-        userEmail: String,
-        userName: String,
-        userPhone: String
-    ): Result<PaymentResult> {
+        amount: Double,
+        eventTitle: String
+    ): Result<String> {
         return try {
-            val result = flutterwaveService.processTicketPayment(
-                activity = activity,
-                eventId = eventId,
-                userId = userId,
-                quantity = quantity,
-                totalAmount = totalAmount,
-                userEmail = userEmail,
-                userName = userName,
-                userPhone = userPhone
+            val data = mapOf(
+                "eventId" to eventId,
+                "userId" to userId,
+                "amount" to amount,
+                "eventTitle" to eventTitle,
+                "currency" to "KES"
             )
             
-            if (result.isSuccess) {
-                val paymentResult = result.getOrNull()!!
-                
-                // Save payment record to Firestore
-                val paymentRecord = PaymentRecord(
-                    userId = userId,
-                    type = "ticket",
-                    amount = totalAmount,
-                    currency = "KES",
-                    status = if (paymentResult.success) "completed" else "failed",
-                    paymentId = paymentResult.paymentId,
-                    description = "Ticket purchase for event $eventId",
-                    timestamp = System.currentTimeMillis()
-                )
-                
-                firestore.collection("payments").add(paymentRecord).await()
-                
-                Result.success(paymentResult)
+            val result = functions
+                .getHttpsCallable("processTicketPurchase")
+                .call(data)
+                .await()
+            
+            val response = result.data as? Map<*, *>
+            val paymentUrl = response?.get("paymentUrl") as? String
+            
+            if (paymentUrl != null) {
+                Result.success(paymentUrl)
             } else {
-                Result.failure(result.exceptionOrNull() ?: Exception("Payment failed"))
+                Result.failure(Exception("Failed to get payment URL"))
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
     
-    suspend fun processInfluencerAdPayment(
-        activity: Activity,
-        advertisementId: String,
-        influencerId: String,
-        budget: Double,
-        userEmail: String,
-        userName: String,
-        userPhone: String
-    ): Result<PaymentResult> {
+    suspend fun verifyPayment(paymentReference: String): Result<Boolean> {
         return try {
-            val result = flutterwaveService.processInfluencerAdPayment(
-                activity = activity,
-                advertisementId = advertisementId,
-                influencerId = influencerId,
-                budget = budget,
-                userEmail = userEmail,
-                userName = userName,
-                userPhone = userPhone
+            val data = mapOf(
+                "paymentReference" to paymentReference
             )
             
-            if (result.isSuccess) {
-                val paymentResult = result.getOrNull()!!
-                
-                // Save payment record to Firestore
-                val paymentRecord = PaymentRecord(
-                    userId = influencerId,
-                    type = "advertisement",
-                    amount = budget,
-                    currency = "KES",
-                    status = if (paymentResult.success) "completed" else "failed",
-                    paymentId = paymentResult.paymentId,
-                    description = "Advertisement payment for ad $advertisementId",
-                    timestamp = System.currentTimeMillis()
-                )
-                
-                firestore.collection("payments").add(paymentRecord).await()
-                
-                Result.success(paymentResult)
-            } else {
-                Result.failure(result.exceptionOrNull() ?: Exception("Payment failed"))
-            }
+            val result = functions
+                .getHttpsCallable("verifyPayment")
+                .call(data)
+                .await()
+            
+            val response = result.data as? Map<*, *>
+            val isSuccessful = response?.get("success") as? Boolean ?: false
+            
+            Result.success(isSuccessful)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -110,44 +65,31 @@ class PaymentRepository @Inject constructor(
     
     suspend fun getPaymentHistory(userId: String): Result<List<PaymentRecord>> {
         return try {
-            val snapshot = firestore.collection("payments")
-                .whereEqualTo("userId", userId)
-                .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
-                .get()
+            val data = mapOf(
+                "userId" to userId
+            )
+            
+            val result = functions
+                .getHttpsCallable("getPaymentHistory")
+                .call(data)
                 .await()
             
-            val payments = snapshot.documents.mapNotNull { doc ->
-                doc.toObject(PaymentRecord::class.java)?.copy(id = doc.id)
+            val response = result.data as? Map<*, *>
+            val payments = response?.get("payments") as? List<Map<*, *>> ?: emptyList()
+            
+            val paymentRecords = payments.mapNotNull { payment ->
+                PaymentRecord(
+                    id = payment["id"] as? String ?: "",
+                    eventId = payment["eventId"] as? String ?: "",
+                    eventTitle = payment["eventTitle"] as? String ?: "",
+                    amount = (payment["amount"] as? Number)?.toDouble() ?: 0.0,
+                    status = payment["status"] as? String ?: "pending",
+                    date = (payment["date"] as? Number)?.toLong() ?: 0L,
+                    paymentReference = payment["paymentReference"] as? String ?: ""
+                )
             }
             
-            Result.success(payments)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-    
-    suspend fun refundPayment(paymentId: String, reason: String): Result<Boolean> {
-        return try {
-            // Update payment record status to refunded
-            val paymentQuery = firestore.collection("payments")
-                .whereEqualTo("paymentId", paymentId)
-                .get()
-                .await()
-            
-            if (!paymentQuery.isEmpty) {
-                val paymentDoc = paymentQuery.documents.first()
-                paymentDoc.reference.update(
-                    mapOf(
-                        "status" to "refunded",
-                        "refundReason" to reason,
-                        "refundDate" to System.currentTimeMillis()
-                    )
-                ).await()
-                
-                Result.success(true)
-            } else {
-                Result.failure(Exception("Payment not found"))
-            }
+            Result.success(paymentRecords)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -155,13 +97,11 @@ class PaymentRepository @Inject constructor(
 }
 
 data class PaymentRecord(
-    val id: String = "",
-    val userId: String = "",
-    val type: String = "", // "ticket" or "advertisement"
-    val amount: Double = 0.0,
-    val currency: String = "KSH",
-    val status: String = "", // "completed", "failed", "refunded"
-    val paymentId: String = "",
-    val description: String = "",
-    val timestamp: Long = 0L
+    val id: String,
+    val eventId: String,
+    val eventTitle: String,
+    val amount: Double,
+    val status: String,
+    val date: Long,
+    val paymentReference: String
 )

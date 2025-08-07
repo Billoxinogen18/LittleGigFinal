@@ -27,11 +27,14 @@ fun AccountScreen(
     onSignOut: () -> Unit,
     viewModel: AccountViewModel = hiltViewModel()
 ) {
-    // Use the new liquid glass account screen
-    LiquidGlassAccountScreen(
-        navController = navController,
-        onSignOut = onSignOut,
-        viewModel = viewModel
+    // Use the new account dashboard
+    AccountDashboard(
+        viewModel = viewModel,
+        onNavigateToEditProfile = { navController.navigate("edit_profile") },
+        onNavigateToSettings = { navController.navigate("settings") },
+        onNavigateToPayments = { navController.navigate("payments") },
+        onNavigateToTickets = { navController.navigate("tickets") },
+        onSignOut = onSignOut
     )
 }
 

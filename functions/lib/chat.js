@@ -1,31 +1,8 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateTypingStatus = exports.redeemTicket = exports.shareTicket = exports.sendMessage = exports.createChat = void 0;
-const functions = __importStar(require("firebase-functions"));
-const admin = __importStar(require("firebase-admin"));
+exports.updateTypingStatus = exports.redeemTicket = exports.shareTicket = exports.setAnnouncement = exports.pinMessage = exports.sendMessage = exports.createChat = void 0;
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
 // Chat System Cloud Functions
 exports.createChat = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
@@ -143,6 +120,53 @@ exports.sendMessage = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('internal', 'Failed to send message');
     }
 });
+// Pin a message (admin/host only)
+exports.pinMessage = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    }
+    const userId = context.auth.uid;
+    const { chatId, messageId } = data;
+    try {
+        const chatDoc = await admin.firestore().collection('chats').doc(chatId).get();
+        if (!chatDoc.exists)
+            throw new functions.https.HttpsError('not-found', 'Chat not found');
+        const chat = chatDoc.data();
+        if (!(chat.admins || []).includes(userId)) {
+            throw new functions.https.HttpsError('permission-denied', 'Only admins can pin');
+        }
+        await chatDoc.ref.update({ pinnedMessageId: messageId, pinnedAt: admin.firestore.FieldValue.serverTimestamp() });
+        return { success: true };
+    }
+    catch (e) {
+        console.error('pinMessage error', e);
+        throw new functions.https.HttpsError('internal', 'Failed to pin message');
+    }
+});
+// Set announcement (admin/host only)
+exports.setAnnouncement = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    }
+    const userId = context.auth.uid;
+    const { chatId, text } = data;
+    try {
+        const chatRef = admin.firestore().collection('chats').doc(chatId);
+        const chatDoc = await chatRef.get();
+        if (!chatDoc.exists)
+            throw new functions.https.HttpsError('not-found', 'Chat not found');
+        const chat = chatDoc.data();
+        if (!(chat.admins || []).includes(userId)) {
+            throw new functions.https.HttpsError('permission-denied', 'Only admins can set announcement');
+        }
+        await chatRef.update({ announcement: text || '', announcementAt: admin.firestore.FieldValue.serverTimestamp() });
+        return { success: true };
+    }
+    catch (e) {
+        console.error('setAnnouncement error', e);
+        throw new functions.https.HttpsError('internal', 'Failed to set announcement');
+    }
+});
 exports.shareTicket = functions.https.onCall(async (data, context) => {
     var _a;
     if (!context.auth) {
@@ -213,6 +237,7 @@ exports.redeemTicket = functions.https.onCall(async (data, context) => {
             }
             const message = messageDoc.data();
             const sharedTicket = message === null || message === void 0 ? void 0 : message.sharedTicket;
+            `3231`;
             if (!sharedTicket || sharedTicket.ticketId !== ticketId) {
                 throw new functions.https.HttpsError('invalid-argument', 'Invalid ticket');
             }

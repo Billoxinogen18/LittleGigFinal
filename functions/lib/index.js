@@ -1,539 +1,481 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEventReminders = exports.flutterwaveWebhookHandler = exports.expireOldTickets = exports.updateAdAnalytics = exports.processRefund = exports.processInfluencerAdPayment = exports.processTicketPayment = exports.verifyFlutterwavePayment = exports.initializeFlutterwavePayment = void 0;
-const functions = __importStar(require("firebase-functions"));
-const admin = __importStar(require("firebase-admin"));
-// @ts-ignore
-const flutterwave_node_v3_1 = __importDefault(require("flutterwave-node-v3"));
+exports.createDynamicLink = exports.sendEventReminders = exports.notifyPriceDrop = exports.notifyWaitlistOnCapacity = exports.cleanupOldData = exports.sendPushNotification = exports.getActiveUsersNearby = exports.updateUserLocation = exports.calculateUserRanks = exports.getPaymentHistory = exports.verifyPayment = exports.processTicketPurchase = void 0;
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+const axios_1 = require("axios");
 admin.initializeApp();
-// Export all new functions
-__exportStar(require("./ranking"), exports);
-__exportStar(require("./recaps"), exports);
-__exportStar(require("./chat"), exports);
-// export * from './activeNow';
-// Initialize Flutterwave SDK with LIVE credentials
-const flw = new flutterwave_node_v3_1.default("FLWPUBK-3fa265a8e3265a459035c2d9bbfa798c-X", // LIVE Public Key
-"FLWSECK-e30b0920b7b209167ef35802a287a5ef-1987eb05964vt-X" // LIVE Secret Key
-);
-// Initialize Flutterwave payment with proper V3 SDK
-exports.initializeFlutterwavePayment = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
-    }
-    const { amount, currency = 'KES', email, phone_number, tx_ref, customer_name, payment_type = 'card', meta = {} } = data;
+const db = admin.firestore();
+// Payment Processing with Flutterwave
+exports.processTicketPurchase = functions.region('us-central1').runWith({ memory: '512MB', timeoutSeconds: 60, minInstances: 1 }).https.onCall(async (data, context) => {
     try {
-        // Create order record in Firestore first
-        const orderRef = admin.firestore().collection('orders').doc();
-        await orderRef.set({
-            userId: context.auth.uid,
-            amount: amount,
-            currency: currency,
-            flutterwave_tx_ref: tx_ref,
-            status: 'pending',
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            customer: {
-                email: email,
-                phone_number: phone_number,
-                name: customer_name
-            },
-            meta: meta
-        });
-        // Create payment initialization with Flutterwave V3 SDK
+        const { eventId, userId, amount, eventTitle, currency = 'KES' } = data;
+        if (!context.auth) {
+            throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+        }
+        // Generate unique payment reference
+        const paymentReference = `LG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        // Create payment record
         const paymentData = {
-            tx_ref: tx_ref,
-            amount: amount,
-            currency: currency,
-            redirect_url: `https://littlegig.app/payment/callback?orderId=${orderRef.id}`,
-            customer: {
-                email: email,
-                phone_number: phone_number,
-                name: customer_name
-            },
-            customizations: {
-                title: 'LittleGig Payment',
-                description: 'Payment for LittleGig services',
-                logo: 'https://littlegig.app/logo.png'
-            },
-            meta: meta,
-            payment_options: payment_type === 'card' ? 'card' : 'mpesa,ussd,banktransfer,mobilemoneyghana,mobilemoneyuganda'
+            eventId,
+            userId,
+            amount,
+            currency,
+            status: 'pending',
+            paymentReference,
+            eventTitle,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
         };
-        // Use Flutterwave V3 SDK to initiate payment
-        const response = await flw.Payment.initiate(paymentData);
-        if (response.status === 'success') {
-            return {
-                success: true,
-                paymentUrl: response.data.link,
-                paymentId: response.data.id,
-                orderId: orderRef.id,
-                message: 'Payment initialized successfully'
-            };
-        }
-        else {
-            // Update order status to failed
-            await orderRef.update({
-                status: 'failed',
-                failure_reason: response.message || 'Link generation failed'
-            });
-            throw new Error(response.message || 'Failed to initialize payment');
-        }
+        await db.collection('payments').add(paymentData);
+        // Generate Flutterwave payment URL
+        const flutterwaveUrl = `https://checkout.flutterwave.com/v3/hosted/pay/${paymentReference}?amount=${amount}&currency=${currency}&tx_ref=${paymentReference}&redirect_url=${encodeURIComponent('https://littlegig.app/payment/callback')}&meta[eventId]=${eventId}&meta[userId]=${userId}`;
+        return {
+            success: true,
+            paymentUrl: flutterwaveUrl,
+            paymentReference
+        };
     }
     catch (error) {
-        console.error('Payment initialization error:', error);
-        return {
-            success: false,
-            message: error instanceof Error ? error.message : 'Payment initialization failed'
-        };
+        console.error('Payment processing error:', error);
+        throw new functions.https.HttpsError('internal', 'Payment processing failed');
     }
 });
-// Verify Flutterwave payment with proper V3 SDK
-exports.verifyFlutterwavePayment = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
-    }
-    const { transaction_id } = data;
+// Verify Payment
+exports.verifyPayment = functions.region('us-central1').runWith({ memory: '512MB', timeoutSeconds: 60, minInstances: 1 }).https.onCall(async (data, context) => {
     try {
-        // Use Flutterwave V3 SDK to verify payment
-        const response = await flw.Transaction.verify({ id: String(transaction_id) });
-        if (response.status === 'success') {
-            const transactionData = response.data;
-            // Find the original order in Firestore using the tx_ref from the response
-            const orderQuery = admin.firestore().collection('orders')
-                .where('flutterwave_tx_ref', '==', transactionData.tx_ref)
-                .limit(1);
-            const orderSnapshot = await orderQuery.get();
-            if (orderSnapshot.empty) {
-                console.error(`No order found for tx_ref: ${transactionData.tx_ref}`);
-                throw new functions.https.HttpsError('not-found', 'Order record not found.');
+        const { paymentReference } = data;
+        if (!context.auth) {
+            throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+        }
+        // Verify with Flutterwave API
+        const response = await axios_1.default.get(`https://api.flutterwave.com/v3/transactions/${paymentReference}/verify`, {
+            headers: {
+                'Authorization': `Bearer ${functions.config().flutterwave.secret_key}`,
+                'Content-Type': 'application/json'
             }
-            const orderDoc = orderSnapshot.docs[0];
-            const orderData = orderDoc.data();
-            // CRITICAL CHECKS:
-            const isStatusSuccessful = transactionData.status === 'successful';
-            const isAmountCorrect = transactionData.amount === orderData.amount;
-            const isCurrencyCorrect = transactionData.currency === orderData.currency;
-            const isOrderPending = orderData.status === 'pending';
-            if (isStatusSuccessful && isAmountCorrect && isCurrencyCorrect && isOrderPending) {
-                // All checks passed. Payment is verified.
-                // Use a Firestore transaction to ensure atomic updates
-                await admin.firestore().runTransaction(async (t) => {
-                    // Update the order status to 'paid'
-                    t.update(orderDoc.ref, {
-                        status: 'paid',
-                        verifiedAt: admin.firestore.FieldValue.serverTimestamp()
-                    });
-                    // Create a new document in the 'transactions' collection for auditing
-                    const transactionRef = admin.firestore().collection('transactions').doc(String(transactionData.id));
-                    t.set(transactionRef, {
-                        orderId: orderDoc.id,
-                        flutterwave_flw_ref: transactionData.flw_ref,
-                        status: transactionData.status,
-                        paymentMethod: transactionData.payment_type,
-                        amount: transactionData.amount,
-                        currency: transactionData.currency,
-                        customer: transactionData.customer,
-                        verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
-                    });
+        });
+        const result = response.data;
+        if (result.status === 'success' && result.data.status === 'successful') {
+            // Update payment status
+            const paymentQuery = await db.collection('payments')
+                .where('paymentReference', '==', paymentReference)
+                .get();
+            if (!paymentQuery.empty) {
+                const paymentDoc = paymentQuery.docs[0];
+                await paymentDoc.ref.update({
+                    status: 'completed',
+                    flutterwaveTransactionId: result.data.id,
+                    updatedAt: admin.firestore.FieldValue.serverTimestamp()
                 });
-                return {
-                    success: true,
-                    paymentId: transactionData.id,
-                    amount: transactionData.amount,
-                    currency: transactionData.currency,
-                    message: 'Payment verified successfully'
-                };
+                // Create ticket
+                const paymentData = paymentDoc.data();
+                await createTicket(paymentData.eventId, paymentData.userId, paymentData.amount);
             }
-            else {
-                // One or more checks failed. Do not give value.
-                console.warn('Payment verification failed.', {
-                    tx_ref: transactionData.tx_ref,
-                    checks: { isStatusSuccessful, isAmountCorrect, isCurrencyCorrect, isOrderPending },
-                    flutterwaveData: transactionData,
-                    orderData: orderData
-                });
-                // Update order to failed status for record keeping
-                await orderDoc.ref.update({
-                    status: 'failed',
-                    failure_reason: 'Verification failed'
-                });
-                throw new functions.https.HttpsError('aborted', 'Payment verification failed.');
-            }
+            return { success: true };
         }
         else {
-            throw new Error(response.message || 'Payment verification failed');
+            return { success: false };
         }
     }
     catch (error) {
         console.error('Payment verification error:', error);
-        return {
-            success: false,
-            message: error instanceof Error ? error.message : 'Payment verification failed'
-        };
+        throw new functions.https.HttpsError('internal', 'Payment verification failed');
     }
 });
-exports.processTicketPayment = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
-    }
-    const { eventId, userId, quantity, totalAmount, transaction_id } = data;
+// Create Ticket
+async function createTicket(eventId, userId, amount) {
+    const ticketData = {
+        eventId,
+        userId,
+        amount,
+        status: 'active',
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        ticketCode: `TKT_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`
+    };
+    await db.collection('tickets').add(ticketData);
+    // Update event ticket count
+    const eventRef = db.collection('events').doc(eventId);
+    await eventRef.update({
+        ticketsSold: admin.firestore.FieldValue.increment(1)
+    });
+}
+// Get Payment History
+exports.getPaymentHistory = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 30 }).https.onCall(async (data, context) => {
     try {
-        // Use Flutterwave V3 SDK to verify payment
-        const response = await flw.Transaction.verify({ id: String(transaction_id) });
-        if (response.status === 'success') {
-            const transactionData = response.data;
-            if (transactionData.status === 'successful' && transactionData.amount === totalAmount) {
-                // Calculate commission (4%)
-                const commission = totalAmount * 0.04;
-                // Create ticket record
-                const ticketData = {
-                    eventId,
-                    userId,
-                    quantity,
-                    totalAmount,
-                    commission,
-                    paymentId: transaction_id,
-                    status: 'ACTIVE',
-                    purchaseDate: admin.firestore.FieldValue.serverTimestamp(),
-                };
-                // Save ticket to Firestore
-                await admin.firestore().collection('tickets').add(ticketData);
-                // Update event ticket count
-                const eventRef = admin.firestore().collection('events').doc(eventId);
-                await eventRef.update({
-                    ticketsSold: admin.firestore.FieldValue.increment(quantity)
-                });
-                // Record payment transaction
-                const paymentRecord = {
-                    userId,
-                    type: 'ticket',
-                    amount: totalAmount,
-                    currency: 'KES',
-                    status: 'completed',
-                    paymentId: transaction_id,
-                    description: `Ticket purchase for event ${eventId}`,
-                    timestamp: admin.firestore.FieldValue.serverTimestamp(),
-                };
-                await admin.firestore().collection('payments').add(paymentRecord);
-                return {
-                    success: true,
-                    paymentId: transaction_id,
-                    message: 'Payment processed successfully'
-                };
-            }
-            else {
-                throw new Error(`Payment verification failed: ${transactionData.status}`);
-            }
+        const { userId } = data;
+        if (!context.auth) {
+            throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
         }
-        else {
-            throw new Error(response.message || 'Payment verification failed');
-        }
-    }
-    catch (error) {
-        console.error('Payment processing error:', error);
-        return {
-            success: false,
-            message: error instanceof Error ? error.message : 'Payment processing failed'
-        };
-    }
-});
-exports.processInfluencerAdPayment = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
-    }
-    const { advertisementId, influencerId, budget, transaction_id } = data;
-    try {
-        // Use Flutterwave V3 SDK to verify payment
-        const response = await flw.Transaction.verify({ id: String(transaction_id) });
-        if (response.status === 'success') {
-            const transactionData = response.data;
-            if (transactionData.status === 'successful' && transactionData.amount === budget) {
-                // Update advertisement with payment info
-                await admin.firestore().collection('advertisements').doc(advertisementId).update({
-                    paymentId: transaction_id,
-                    status: 'ACTIVE',
-                    startDate: admin.firestore.FieldValue.serverTimestamp(),
-                    endDate: new Date(Date.now() + (7 * 24 * 60 * 60 * 1000)), // 7 days from now
-                });
-                // Record payment transaction
-                const paymentRecord = {
-                    userId: influencerId,
-                    type: 'advertisement',
-                    amount: budget,
-                    currency: 'KES',
-                    status: 'completed',
-                    paymentId: transaction_id,
-                    description: `Advertisement payment for ad ${advertisementId}`,
-                    timestamp: admin.firestore.FieldValue.serverTimestamp(),
-                };
-                await admin.firestore().collection('payments').add(paymentRecord);
-                return {
-                    success: true,
-                    paymentId: transaction_id,
-                    message: 'Advertisement payment processed successfully'
-                };
-            }
-            else {
-                throw new Error(`Payment verification failed: ${transactionData.status}`);
-            }
-        }
-        else {
-            throw new Error(response.message || 'Payment verification failed');
-        }
-    }
-    catch (error) {
-        console.error('Advertisement payment error:', error);
-        return {
-            success: false,
-            message: error instanceof Error ? error.message : 'Payment processing failed'
-        };
-    }
-});
-exports.processRefund = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
-    }
-    const { paymentId, reason } = data;
-    try {
-        // Process refund with Flutterwave V3 SDK
-        const payload = {
-            id: String(paymentId),
-            amount: null,
-            reason: reason
-        };
-        const response = await flw.Transaction.refund(payload);
-        if (response.status === 'success') {
-            const refund = response.data;
-            if (refund.status === 'successful') {
-                // Update payment record
-                await admin.firestore().collection('payments')
-                    .where('paymentId', '==', paymentId)
-                    .get()
-                    .then((snapshot) => {
-                    snapshot.forEach((doc) => {
-                        doc.ref.update({
-                            status: 'refunded',
-                            refundReason: reason,
-                            refundDate: admin.firestore.FieldValue.serverTimestamp(),
-                        });
-                    });
-                });
-                return {
-                    success: true,
-                    message: 'Refund processed successfully'
-                };
-            }
-            else {
-                throw new Error(`Refund failed with status: ${refund.status}`);
-            }
-        }
-        else {
-            throw new Error(response.message || 'Refund processing failed');
-        }
-    }
-    catch (error) {
-        console.error('Refund processing error:', error);
-        return {
-            success: false,
-            message: error instanceof Error ? error.message : 'Refund processing failed'
-        };
-    }
-});
-// Scheduled function to update advertisement analytics
-exports.updateAdAnalytics = functions.pubsub.schedule('every 1 hours').onRun(async (context) => {
-    try {
-        // Get all active advertisements
-        const activeAds = await admin.firestore()
-            .collection('advertisements')
-            .where('status', '==', 'ACTIVE')
+        const paymentsSnapshot = await db.collection('payments')
+            .where('userId', '==', userId)
+            .orderBy('createdAt', 'desc')
             .get();
-        // Update analytics for each ad (this is a simplified example)
-        const updatePromises = activeAds.docs.map(async (doc) => {
-            const impressions = Math.floor(Math.random() * 100); // Simulate impressions
-            const clicks = Math.floor(Math.random() * 10); // Simulate clicks
-            const reach = Math.floor(Math.random() * 500); // Simulate reach
-            return doc.ref.update({
-                impressions: admin.firestore.FieldValue.increment(impressions),
-                clicks: admin.firestore.FieldValue.increment(clicks),
-                reach: admin.firestore.FieldValue.increment(reach),
-                updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        const payments = paymentsSnapshot.docs.map(doc => (Object.assign({ id: doc.id }, doc.data())));
+        return { payments };
+    }
+    catch (error) {
+        console.error('Get payment history error:', error);
+        throw new functions.https.HttpsError('internal', 'Failed to get payment history');
+    }
+});
+// Ranking System - Calculate User Ranks
+exports.calculateUserRanks = functions.region('us-central1').runWith({ memory: '512MB', timeoutSeconds: 540 }).pubsub.schedule('every 24 hours').onRun(async (context) => {
+    try {
+        const usersSnapshot = await db.collection('users').get();
+        const users = usersSnapshot.docs.map(doc => (Object.assign({ id: doc.id }, doc.data())));
+        // Calculate engagement scores for each user
+        for (const user of users) {
+            const engagementScore = await calculateEngagementScore(user.id);
+            const rank = determineUserRank(engagementScore);
+            await db.collection('users').doc(user.id).update({
+                rank,
+                engagementScore,
+                lastRankUpdate: admin.firestore.FieldValue.serverTimestamp()
             });
+        }
+        console.log('User ranks updated successfully');
+    }
+    catch (error) {
+        console.error('Rank calculation error:', error);
+    }
+});
+// Calculate Engagement Score
+async function calculateEngagementScore(userId) {
+    const [eventsCreated, eventsAttended, recapsCreated, totalLikes, totalViews] = await Promise.all([
+        getEventsCreated(userId),
+        getEventsAttended(userId),
+        getRecapsCreated(userId),
+        getTotalLikes(userId),
+        getTotalViews(userId)
+    ]);
+    // Weighted scoring system
+    const score = (eventsCreated * 10 + // 40% weight
+        eventsAttended * 5 + // 15% weight
+        recapsCreated * 8 + // 35% weight
+        totalLikes * 2 + // 5% weight
+        totalViews * 0.1 // 5% weight
+    );
+    return Math.round(score);
+}
+async function getEventsCreated(userId) {
+    const snapshot = await db.collection('events')
+        .where('organizerId', '==', userId)
+        .get();
+    return snapshot.size;
+}
+async function getEventsAttended(userId) {
+    const snapshot = await db.collection('tickets')
+        .where('userId', '==', userId)
+        .where('status', '==', 'active')
+        .get();
+    return snapshot.size;
+}
+async function getRecapsCreated(userId) {
+    const snapshot = await db.collection('recaps')
+        .where('userId', '==', userId)
+        .get();
+    return snapshot.size;
+}
+async function getTotalLikes(userId) {
+    const snapshot = await db.collection('recaps')
+        .where('userId', '==', userId)
+        .get();
+    let totalLikes = 0;
+    snapshot.docs.forEach(doc => {
+        totalLikes += doc.data().likes || 0;
+    });
+    return totalLikes;
+}
+async function getTotalViews(userId) {
+    const snapshot = await db.collection('recaps')
+        .where('userId', '==', userId)
+        .get();
+    let totalViews = 0;
+    snapshot.docs.forEach(doc => {
+        totalViews += doc.data().views || 0;
+    });
+    return totalViews;
+}
+// Determine User Rank
+function determineUserRank(engagementScore) {
+    if (engagementScore >= 1000)
+        return 'SUPERSTAR';
+    if (engagementScore >= 500)
+        return 'ROCKSTAR';
+    if (engagementScore >= 250)
+        return 'FAMOUS';
+    if (engagementScore >= 100)
+        return 'INFLUENCER';
+    if (engagementScore >= 50)
+        return 'POPULAR';
+    if (engagementScore >= 25)
+        return 'PARTY_POPPER';
+    if (engagementScore >= 10)
+        return 'BEGINNER';
+    return 'NOVICE';
+}
+// Active Now System - Update User Location
+exports.updateUserLocation = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 30 }).https.onCall(async (data, context) => {
+    try {
+        const { latitude, longitude, isActive } = data;
+        if (!context.auth) {
+            throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+        }
+        const userId = context.auth.uid;
+        await db.collection('users').doc(userId).update({
+            location: {
+                latitude,
+                longitude,
+                updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            },
+            isActiveNow: isActive
         });
-        await Promise.all(updatePromises);
-        console.log(`Updated analytics for ${activeAds.docs.length} advertisements`);
+        return { success: true };
     }
     catch (error) {
-        console.error('Error updating ad analytics:', error);
+        console.error('Update location error:', error);
+        throw new functions.https.HttpsError('internal', 'Failed to update location');
     }
 });
-// Function to check and expire old tickets
-exports.expireOldTickets = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
+// Get Active Users Near Location
+exports.getActiveUsersNearby = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 30 }).https.onCall(async (data, context) => {
     try {
-        const now = admin.firestore.Timestamp.now();
-        // Get events that have passed
-        const pastEvents = await admin.firestore()
-            .collection('events')
-            .where('dateTime', '<', now.toMillis())
-            .get();
-        const eventIds = pastEvents.docs.map(doc => doc.id);
-        if (eventIds.length > 0) {
-            // Update tickets for past events to expired
-            const expiredTickets = await admin.firestore()
-                .collection('tickets')
-                .where('eventId', 'in', eventIds)
-                .where('status', '==', 'ACTIVE')
-                .get();
-            const updatePromises = expiredTickets.docs.map(doc => doc.ref.update({ status: 'EXPIRED' }));
-            await Promise.all(updatePromises);
-            console.log(`Expired ${expiredTickets.docs.length} tickets`);
+        const { latitude, longitude, radius = 5 } = data; // radius in km
+        if (!context.auth) {
+            throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
         }
+        const usersSnapshot = await db.collection('users')
+            .where('isActiveNow', '==', true)
+            .get();
+        const nearbyUsers = usersSnapshot.docs
+            .map(doc => (Object.assign({ id: doc.id }, doc.data())))
+            .filter(user => {
+            const userData = user;
+            if (!userData.location)
+                return false;
+            const distance = calculateDistance(latitude, longitude, userData.location.latitude, userData.location.longitude);
+            return distance <= radius;
+        });
+        return { users: nearbyUsers };
     }
     catch (error) {
-        console.error('Error expiring tickets:', error);
+        console.error('Get nearby users error:', error);
+        throw new functions.https.HttpsError('internal', 'Failed to get nearby users');
     }
 });
-// Webhook handler for Flutterwave asynchronous payment confirmations
-exports.flutterwaveWebhookHandler = functions.https.onRequest(async (req, res) => {
-    // Verify the webhook signature for security
-    const signature = req.headers['flutterwave-signature'];
-    if (!signature) {
-        console.error('No signature found in webhook');
-        res.status(401).send('No signature found');
-        return;
-    }
-    // Acknowledge the request immediately
-    res.sendStatus(200);
-    // Process the webhook payload
-    const payload = req.body;
-    console.log('Received Flutterwave Webhook:', payload);
-    if (payload.event === 'charge.completed') {
-        const transactionData = payload.data;
-        try {
-            // Find the original order in Firestore using the tx_ref
-            const orderQuery = admin.firestore().collection('orders')
-                .where('flutterwave_tx_ref', '==', transactionData.tx_ref)
-                .limit(1);
-            const orderSnapshot = await orderQuery.get();
-            if (!orderSnapshot.empty) {
-                const orderDoc = orderSnapshot.docs[0];
-                const orderData = orderDoc.data();
-                // Perform the same verification checks as in verifyPayment
-                const isStatusSuccessful = transactionData.status === 'successful';
-                const isAmountCorrect = transactionData.amount === orderData.amount;
-                const isCurrencyCorrect = transactionData.currency === orderData.currency;
-                const isOrderPending = orderData.status === 'pending';
-                if (isStatusSuccessful && isAmountCorrect && isCurrencyCorrect && isOrderPending) {
-                    // Update order status to 'paid'
-                    await orderDoc.ref.update({
-                        status: 'paid',
-                        webhookVerifiedAt: admin.firestore.FieldValue.serverTimestamp()
-                    });
-                    // Create transaction record for auditing
-                    const transactionRef = admin.firestore().collection('transactions').doc(String(transactionData.id));
-                    await transactionRef.set({
-                        orderId: orderDoc.id,
-                        flutterwave_flw_ref: transactionData.flw_ref,
-                        status: transactionData.status,
-                        paymentMethod: transactionData.payment_type,
-                        amount: transactionData.amount,
-                        currency: transactionData.currency,
-                        customer: transactionData.customer,
-                        webhookVerifiedAt: admin.firestore.FieldValue.serverTimestamp(),
-                    });
-                    console.log(`Payment verified via webhook for tx_ref: ${transactionData.tx_ref}`);
+// Calculate Distance between two points
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth's radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+// Send Push Notification
+exports.sendPushNotification = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 30, minInstances: 1 }).https.onCall(async (data, context) => {
+    var _a;
+    try {
+        const { userId, title, body, data: notificationData } = data;
+        if (!context.auth) {
+            throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+        }
+        const userDoc = await db.collection('users').doc(userId).get();
+        const fcmToken = (_a = userDoc.data()) === null || _a === void 0 ? void 0 : _a.fcmToken;
+        if (!fcmToken) {
+            throw new functions.https.HttpsError('not-found', 'User FCM token not found');
+        }
+        const message = {
+            token: fcmToken,
+            notification: {
+                title,
+                body
+            },
+            data: notificationData || {},
+            android: {
+                priority: 'high',
+                notification: {
+                    sound: 'default',
+                    channelId: 'littlegig_channel'
                 }
-                else {
-                    console.warn('Webhook verification failed for tx_ref:', transactionData.tx_ref);
-                    await orderDoc.ref.update({
-                        status: 'failed',
-                        failure_reason: 'Webhook verification failed'
-                    });
+            }
+        };
+        const response = await admin.messaging().send(message);
+        return { success: true, messageId: response };
+    }
+    catch (error) {
+        console.error('Send notification error:', error);
+        throw new functions.https.HttpsError('internal', 'Failed to send notification');
+    }
+});
+// Cleanup Old Data
+exports.cleanupOldData = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 540 }).pubsub.schedule('0 0 * * 0').onRun(async (context) => {
+    try {
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+        // Clean up old recaps
+        const oldRecapsSnapshot = await db.collection('recaps')
+            .where('createdAt', '<', oneMonthAgo)
+            .get();
+        const batch = db.batch();
+        oldRecapsSnapshot.docs.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+        await batch.commit();
+        console.log(`Cleaned up ${oldRecapsSnapshot.size} old recaps`);
+    }
+    catch (error) {
+        console.error('Cleanup error:', error);
+    }
+});
+// --- Growth Features: Waitlist and Price Drop Alerts ---
+exports.notifyWaitlistOnCapacity = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 60 }).firestore
+    .document('events/{eventId}')
+    .onUpdate(async (change, context) => {
+    const before = change.before.data();
+    const after = change.after.data();
+    const eventId = context.params.eventId;
+    try {
+        // If tickets sold decreased or capacity increased -> new slots
+        const beforeRemaining = (before.capacity || 0) - (before.ticketsSold || 0);
+        const afterRemaining = (after.capacity || 0) - (after.ticketsSold || 0);
+        if (afterRemaining > beforeRemaining && afterRemaining > 0) {
+            const waitlistSnap = await db
+                .collection('events')
+                .doc(eventId)
+                .collection('waitlist')
+                .orderBy('createdAt', 'asc')
+                .limit(afterRemaining)
+                .get();
+            const notifications = [];
+            for (const doc of waitlistSnap.docs) {
+                const userId = doc.data().userId;
+                notifications.push(sendEventNotification(userId, after.title || 'Event', 'Spots just opened up! Tap to buy now', { type: 'waitlist', eventId }));
+            }
+            await Promise.all(notifications);
+        }
+        return null;
+    }
+    catch (error) {
+        console.error('notifyWaitlistOnCapacity error', error);
+        return null;
+    }
+});
+exports.notifyPriceDrop = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 60 }).firestore
+    .document('events/{eventId}')
+    .onUpdate(async (change, context) => {
+    const before = change.before.data();
+    const after = change.after.data();
+    const eventId = context.params.eventId;
+    try {
+        if ((before.price || 0) > (after.price || 0)) {
+            const alertsSnap = await db
+                .collection('events')
+                .doc(eventId)
+                .collection('priceAlerts')
+                .get();
+            const notifications = [];
+            for (const doc of alertsSnap.docs) {
+                const userId = doc.data().userId;
+                notifications.push(sendEventNotification(userId, after.title || 'Event', 'Price just dropped! Don’t miss out', { type: 'price_drop', eventId }));
+            }
+            await Promise.all(notifications);
+        }
+        return null;
+    }
+    catch (error) {
+        console.error('notifyPriceDrop error', error);
+        return null;
+    }
+});
+async function sendEventNotification(userId, title, body, data) {
+    var _a;
+    try {
+        const userDoc = await db.collection('users').doc(userId).get();
+        const fcmToken = (_a = userDoc.data()) === null || _a === void 0 ? void 0 : _a.fcmToken;
+        if (!fcmToken)
+            return null;
+        const message = {
+            token: fcmToken,
+            notification: { title, body },
+            data,
+            android: { priority: 'high' }
+        };
+        return admin.messaging().send(message);
+    }
+    catch (e) {
+        console.error('sendEventNotification error', e);
+        return null;
+    }
+}
+// Event reminders for RSVPs (run hourly to find events starting soon)
+exports.sendEventReminders = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 540 }).pubsub.schedule('every 60 minutes').onRun(async () => {
+    try {
+        const now = Date.now();
+        const soon = now + 2 * 60 * 60 * 1000; // 2 hours
+        const eventsSnap = await db.collection('events')
+            .where('isActive', '==', true)
+            .get();
+        const tasks = [];
+        for (const doc of eventsSnap.docs) {
+            const event = doc.data();
+            const dateTime = (event.dateTime && typeof event.dateTime.toMillis === 'function') ? event.dateTime.toMillis() : (event.dateTime || 0);
+            if (dateTime >= now && dateTime <= soon) {
+                const rsvps = await db.collection('events').doc(doc.id).collection('rsvps').get();
+                for (const rsvp of rsvps.docs) {
+                    const userId = rsvp.data().userId;
+                    tasks.push(sendEventNotification(userId, event.title || 'Event starting soon', 'Happening in a couple of hours. See you there!', { type: 'event_reminder', eventId: doc.id }));
                 }
             }
         }
-        catch (error) {
-            console.error('Error processing webhook:', error);
-        }
+        await Promise.all(tasks);
+        return null;
+    }
+    catch (e) {
+        console.error('sendEventReminders error', e);
+        return null;
     }
 });
-// Function to send push notifications for event reminders
-exports.sendEventReminders = functions.pubsub.schedule('every 1 hours').onRun(async (context) => {
+// Create Dynamic Link for sharing (requires config: dynamiclinks.domain, dynamiclinks.android_package, dynamiclinks.api_key)
+exports.createDynamicLink = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 30, minInstances: 1 }).https.onCall(async (data, context) => {
+    var _a, _b, _c;
     try {
-        const now = new Date();
-        const reminderTime = new Date(now.getTime() + (24 * 60 * 60 * 1000)); // 24 hours from now
-        // Get events happening in 24 hours
-        const upcomingEvents = await admin.firestore()
-            .collection('events')
-            .where('dateTime', '>', now.getTime())
-            .where('dateTime', '<', reminderTime.getTime())
-            .get();
-        for (const eventDoc of upcomingEvents.docs) {
-            const event = eventDoc.data();
-            // Get all active tickets for this event
-            const tickets = await admin.firestore()
-                .collection('tickets')
-                .where('eventId', '==', eventDoc.id)
-                .where('status', '==', 'ACTIVE')
-                .get();
-            // Send notification to each ticket holder
-            const notificationPromises = tickets.docs.map(async (ticketDoc) => {
-                const ticket = ticketDoc.data();
-                // Get user's FCM token (you'd need to store this when user logs in)
-                const userDoc = await admin.firestore()
-                    .collection('users')
-                    .doc(ticket.userId)
-                    .get();
-                const user = userDoc.data();
-                if (user === null || user === void 0 ? void 0 : user.fcmToken) {
-                    const message = {
-                        notification: {
-                            title: 'Event Reminder',
-                            body: `${event.title} is happening tomorrow!`,
-                        },
-                        data: {
-                            type: 'event_reminder',
-                            eventId: eventDoc.id,
-                            ticketId: ticketDoc.id,
-                        },
-                        token: user.fcmToken,
-                    };
-                    return admin.messaging().send(message);
-                }
-                return null;
-            });
-            await Promise.all(notificationPromises.filter(Boolean));
+        const { link, title, imageUrl } = data;
+        const domain = (_a = functions.config().dynamiclinks) === null || _a === void 0 ? void 0 : _a.domain;
+        const androidPackage = (_b = functions.config().dynamiclinks) === null || _b === void 0 ? void 0 : _b.android_package;
+        const apiKey = (_c = functions.config().dynamiclinks) === null || _c === void 0 ? void 0 : _c.api_key;
+        if (!domain || !androidPackage || !apiKey) {
+            throw new functions.https.HttpsError('failed-precondition', 'Dynamic Links not configured');
         }
-        console.log(`Sent reminders for ${upcomingEvents.docs.length} events`);
+        const payload = {
+            dynamicLinkInfo: {
+                domainUriPrefix: domain,
+                link,
+                androidInfo: { androidPackageName: androidPackage },
+                socialMetaTagInfo: {
+                    socialTitle: title || 'LittleGig',
+                    socialDescription: 'Discover amazing events',
+                    socialImageLink: imageUrl || ''
+                }
+            },
+            suffix: { option: 'SHORT' }
+        };
+        const resp = await axios_1.default.post(`https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${apiKey}`, payload, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const json = resp.data;
+        if (json.error) {
+            console.error('Dynamic link error', json.error);
+            throw new functions.https.HttpsError('internal', 'Failed to create dynamic link');
+        }
+        return { shortLink: json.shortLink };
     }
-    catch (error) {
-        console.error('Error sending event reminders:', error);
+    catch (e) {
+        console.error('createDynamicLink error', e);
+        throw new functions.https.HttpsError('internal', 'Failed to create dynamic link');
     }
 });
 //# sourceMappingURL=index.js.map

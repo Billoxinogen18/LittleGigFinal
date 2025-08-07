@@ -2,6 +2,9 @@
 package com.littlegig.app.presentation.account;
 
 import com.littlegig.app.data.repository.AuthRepository;
+import com.littlegig.app.data.repository.EventRepository;
+import com.littlegig.app.data.repository.UserRepository;
+import com.littlegig.app.services.LocationService;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.QualifierMetadata;
@@ -20,20 +23,37 @@ import javax.inject.Provider;
 public final class AccountViewModel_Factory implements Factory<AccountViewModel> {
   private final Provider<AuthRepository> authRepositoryProvider;
 
-  public AccountViewModel_Factory(Provider<AuthRepository> authRepositoryProvider) {
+  private final Provider<LocationService> locationServiceProvider;
+
+  private final Provider<EventRepository> eventRepositoryProvider;
+
+  private final Provider<UserRepository> userRepositoryProvider;
+
+  public AccountViewModel_Factory(Provider<AuthRepository> authRepositoryProvider,
+      Provider<LocationService> locationServiceProvider,
+      Provider<EventRepository> eventRepositoryProvider,
+      Provider<UserRepository> userRepositoryProvider) {
     this.authRepositoryProvider = authRepositoryProvider;
+    this.locationServiceProvider = locationServiceProvider;
+    this.eventRepositoryProvider = eventRepositoryProvider;
+    this.userRepositoryProvider = userRepositoryProvider;
   }
 
   @Override
   public AccountViewModel get() {
-    return newInstance(authRepositoryProvider.get());
+    return newInstance(authRepositoryProvider.get(), locationServiceProvider.get(), eventRepositoryProvider.get(), userRepositoryProvider.get());
   }
 
-  public static AccountViewModel_Factory create(Provider<AuthRepository> authRepositoryProvider) {
-    return new AccountViewModel_Factory(authRepositoryProvider);
+  public static AccountViewModel_Factory create(Provider<AuthRepository> authRepositoryProvider,
+      Provider<LocationService> locationServiceProvider,
+      Provider<EventRepository> eventRepositoryProvider,
+      Provider<UserRepository> userRepositoryProvider) {
+    return new AccountViewModel_Factory(authRepositoryProvider, locationServiceProvider, eventRepositoryProvider, userRepositoryProvider);
   }
 
-  public static AccountViewModel newInstance(AuthRepository authRepository) {
-    return new AccountViewModel(authRepository);
+  public static AccountViewModel newInstance(AuthRepository authRepository,
+      LocationService locationService, EventRepository eventRepository,
+      UserRepository userRepository) {
+    return new AccountViewModel(authRepository, locationService, eventRepository, userRepository);
   }
 }

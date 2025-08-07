@@ -23,11 +23,11 @@ class AuthViewModel @Inject constructor(
     
     val currentUser = authRepository.currentUser
     
-    fun signInWithEmail(email: String, password: String) {
+    fun signIn(email: String, password: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
-            authRepository.signInWithEmail(email, password)
+            authRepository.signIn(email, password)
                 .onSuccess {
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
@@ -40,17 +40,11 @@ class AuthViewModel @Inject constructor(
         }
     }
     
-    fun signUpWithEmail(
-        email: String, 
-        password: String, 
-        displayName: String,
-        phoneNumber: String,
-        userType: UserType
-    ) {
+    fun signUp(email: String, password: String, userType: UserType) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
-            authRepository.signUpWithEmail(email, password, displayName, phoneNumber, userType)
+            authRepository.signUp(email, password, userType)
                 .onSuccess {
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
@@ -77,16 +71,11 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
-            authRepository.signInWithGoogle(account)
-                .onSuccess {
-                    _uiState.value = _uiState.value.copy(isLoading = false)
-                }
-                .onFailure { error ->
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        error = error.message
-                    )
-                }
+            // TODO: Implement Google Sign-In when needed
+            _uiState.value = _uiState.value.copy(
+                isLoading = false,
+                error = "Google Sign-In not implemented yet"
+            )
         }
     }
     

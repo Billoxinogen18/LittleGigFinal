@@ -140,6 +140,51 @@ export const sendMessage = functions.https.onCall(async (data, context) => {
     }
 });
 
+// Pin a message (admin/host only)
+export const pinMessage = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    }
+    const userId = context.auth.uid;
+    const { chatId, messageId } = data;
+    try {
+        const chatDoc = await admin.firestore().collection('chats').doc(chatId).get();
+        if (!chatDoc.exists) throw new functions.https.HttpsError('not-found', 'Chat not found');
+        const chat = chatDoc.data() as any;
+        if (!(chat.admins || []).includes(userId)) {
+            throw new functions.https.HttpsError('permission-denied', 'Only admins can pin');
+        }
+        await chatDoc.ref.update({ pinnedMessageId: messageId, pinnedAt: admin.firestore.FieldValue.serverTimestamp() });
+        return { success: true };
+    } catch (e) {
+        console.error('pinMessage error', e);
+        throw new functions.https.HttpsError('internal', 'Failed to pin message');
+    }
+});
+
+// Set announcement (admin/host only)
+export const setAnnouncement = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    }
+    const userId = context.auth.uid;
+    const { chatId, text } = data;
+    try {
+        const chatRef = admin.firestore().collection('chats').doc(chatId);
+        const chatDoc = await chatRef.get();
+        if (!chatDoc.exists) throw new functions.https.HttpsError('not-found', 'Chat not found');
+        const chat = chatDoc.data() as any;
+        if (!(chat.admins || []).includes(userId)) {
+            throw new functions.https.HttpsError('permission-denied', 'Only admins can set announcement');
+        }
+        await chatRef.update({ announcement: text || '', announcementAt: admin.firestore.FieldValue.serverTimestamp() });
+        return { success: true };
+    } catch (e) {
+        console.error('setAnnouncement error', e);
+        throw new functions.https.HttpsError('internal', 'Failed to set announcement');
+    }
+});
+
 export const shareTicket = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
@@ -224,7 +269,7 @@ export const redeemTicket = functions.https.onCall(async (data, context) => {
             }
             
             const message = messageDoc.data();
-            const sharedTicket = message?.sharedTicket;
+            const sharedTicket = message?.sharedTicket;`3231`
             
             if (!sharedTicket || sharedTicket.ticketId !== ticketId) {
                 throw new functions.https.HttpsError('invalid-argument', 'Invalid ticket');

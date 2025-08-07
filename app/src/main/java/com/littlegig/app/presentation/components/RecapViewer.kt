@@ -28,7 +28,7 @@ import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.littlegig.app.data.model.Recap
 import com.littlegig.app.data.model.RecapViewerState
-import com.littlegig.app.data.model.MediaType
+import com.littlegig.app.data.model.RecapType
 import com.littlegig.app.presentation.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -198,8 +198,8 @@ fun NeumorphicRecapViewer(
                     }
             ) {
                 // Media content
-                when (currentRecap.mediaType) {
-                    MediaType.IMAGE -> {
+                                    when (currentRecap.recapType) {
+                        RecapType.PHOTO -> {
                         AsyncImage(
                             model = currentRecap.mediaUrls.firstOrNull(),
                             contentDescription = null,
@@ -207,7 +207,7 @@ fun NeumorphicRecapViewer(
                             contentScale = ContentScale.Crop
                         )
                     }
-                    MediaType.VIDEO -> {
+                                            RecapType.VIDEO -> {
                         // Video player would go here
                         Box(
                             modifier = Modifier.fillMaxSize(),
@@ -224,14 +224,14 @@ fun NeumorphicRecapViewer(
                 }
                 
                 // Caption overlay
-                if (currentRecap.caption.isNotBlank()) {
+                if (!currentRecap.caption.isNullOrBlank()) {
                     Box(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = currentRecap.caption,
+                            text = currentRecap.caption ?: "",
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White,
                             modifier = Modifier

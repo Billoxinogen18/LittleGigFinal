@@ -24,6 +24,7 @@ color transparent
 color white
 drawable ic_launcher_background
 drawable ic_launcher_foreground
+drawable ic_notification
 mipmap ic_launcher
 mipmap ic_launcher_round
 raw map_style_dark
@@ -86,6 +87,7 @@ string google_api_key
 string google_app_id
 string google_crash_reporting_api_key
 string google_maps_key
+string google_places_key
 string google_storage_bucket
 string help_support
 string influencer

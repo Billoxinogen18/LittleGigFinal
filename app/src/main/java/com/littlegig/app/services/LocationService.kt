@@ -9,17 +9,28 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.OnTokenCanceledListener
+import com.littlegig.app.data.repository.AuthRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@HiltViewModel
-class LocationService @Inject constructor() : ViewModel() {
+@Singleton
+class LocationService @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val authRepository: AuthRepository
+) {
+    
+    private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     
     private val _isActiveNow = MutableStateFlow(false)
     val isActiveNow: StateFlow<Boolean> = _isActiveNow.asStateFlow()
@@ -46,9 +57,49 @@ class LocationService @Inject constructor() : ViewModel() {
         }
     }
     
-    fun toggleActiveNow(isActive: Boolean) {
-        _isActiveNow.value = isActive
-        // TODO: Update backend with active status
+    suspend fun toggleActiveNow(isActive: Boolean) {
+        try {
+            authRepository.currentUser.collect { currentUser ->
+                if (currentUser != null && _locationPermissionGranted.value) {
+                    // Update backend with active status
+                    val location = getCurrentLocation()
+                    if (location != null) {
+                        // Call Firebase Cloud Function to update active status
+                        val activeStatus = mapOf(
+                            "userId" to currentUser.id,
+                            "isActive" to isActive,
+                            "latitude" to location.latitude,
+                            "longitude" to location.longitude,
+                            "timestamp" to System.currentTimeMillis()
+                        )
+                        
+                        // In a real app, you would call the Firebase Cloud Function here
+                        // For now, we'll just update the local state
+                        _isActiveNow.value = isActive
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            // Handle error
+        }
+    }
+    
+    private suspend fun getCurrentLocation(): android.location.Location? {
+        return try {
+            if (_locationPermissionGranted.value) {
+                fusedLocationClient.getCurrentLocation(
+                    Priority.PRIORITY_HIGH_ACCURACY,
+                    object : CancellationToken() {
+                        override fun onCanceledRequested(listener: OnTokenCanceledListener) = CancellationTokenSource().token
+                        override fun isCancellationRequested() = false
+                    }
+                ).await()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
     }
     
     companion object {

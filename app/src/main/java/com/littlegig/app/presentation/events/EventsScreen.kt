@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -31,148 +33,402 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.foundation.clickable
+import com.littlegig.app.presentation.components.HapticButton
+import com.littlegig.app.presentation.components.LoadingPulseAnimation
+import com.littlegig.app.presentation.components.ShimmerLoadingCard
+import com.littlegig.app.presentation.components.FloatingActionButton
+import com.littlegig.app.data.model.ContentCategory
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
+import android.content.Intent
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun EventsScreen(
     navController: NavController,
     viewModel: EventsViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState(initial = EventsUiState())
+    val uiState by viewModel.uiState.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
     val isDark = isSystemInDarkTheme()
     
-    // TikTok-style full screen events feed
+    LaunchedEffect(Unit) {
+        viewModel.loadEvents()
+    }
+    
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                if (isDark) {
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            DarkBackground,
-                            DarkSurface
-                        )
+                Brush.verticalGradient(
+                    colors = if (isDark) listOf(
+                        Color(0xFF0B0E1A),
+                        Color(0xFF141B2E)
+                    ) else listOf(
+                        Color(0xFFF8FAFF),
+                        Color(0xFFFFFFFF)
                     )
-                } else {
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            LightBackground,
-                            LightSurface
+                )
+            )
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // Header with search and account - Beautiful neumorphic design
+            AdvancedGlassmorphicCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Discover amazing events",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.SemiBold
+                            ),
+                            color = if (isDark) Color.White else Color.Black
+                        )
+                        
+                        HapticButton(
+                            onClick = {
+                                navController.navigate("account")
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AccountCircle,
+                                contentDescription = "Account",
+                                tint = if (isDark) Color.White else Color.Black,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { viewModel.updateSearchQuery(it) },
+                        placeholder = { Text("Search events...") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp)),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null,
+                                tint = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.7f),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        },
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = LittleGigPrimary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                            focusedLabelColor = LittleGigPrimary,
+                            unfocusedLabelColor = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.7f),
+                            focusedContainerColor = if (isDark) Color.White.copy(alpha = 0.05f) else Color.Black.copy(alpha = 0.02f),
+                            unfocusedContainerColor = if (isDark) Color.White.copy(alpha = 0.03f) else Color.Black.copy(alpha = 0.01f)
                         )
                     )
                 }
-            )
-    ) {
-        when {
-            uiState.isLoading -> {
-                // Loading state with neumorphic design
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+            }
+            
+            // Category filters - Beautiful neumorphic design
+            AdvancedGlassmorphicCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
                 ) {
-                    AdvancedGlassmorphicCard {
-                        Column(
-                            modifier = Modifier.padding(32.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            CircularProgressIndicator(
-                                color = LittleGigPrimary,
-                                modifier = Modifier.size(48.dp)
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                text = "Loading events...",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface
+                    Text(
+                        text = "Categories",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.SemiBold
+                        ),
+                        color = if (isDark) Color.White else Color.Black
+                    )
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(horizontal = 4.dp)
+                    ) {
+                        items(ContentCategory.values()) { category ->
+                            NeumorphicCategoryChip(
+                                text = category.name.lowercase().replaceFirstChar { it.uppercase() },
+                                selected = uiState.selectedCategory == category,
+                                onClick = { viewModel.selectCategory(category) }
                             )
                         }
                     }
                 }
             }
             
-            uiState.events.isEmpty() -> {
-                // Beautiful empty state with neumorphic design
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // Events content
+            if (uiState.isLoading) {
+                // Loading state with shimmer effects
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(6) {
+                        ShimmerLoadingCard()
+                    }
+                }
+            } else if (uiState.events.isEmpty()) {
+                // Empty state with enhanced animations
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    AdvancedGlassmorphicCard {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(32.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            // Glowing orb effect
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(32.dp)
+                    ) {
+                        LoadingPulseAnimation {
                             Box(
-                                modifier = Modifier.size(80.dp)
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .drawBehind {
+                                        drawCircle(
+                                            brush = Brush.radialGradient(
+                                                colors = listOf(
+                                                    LittleGigPrimary.copy(alpha = 0.3f),
+                                                    LittleGigPrimary.copy(alpha = 0.1f),
+                                                    Color.Transparent
+                                                )
+                                            ),
+                                            radius = size.minDimension / 2
+                                        )
+                                    }
+                                    .clip(CircleShape)
+                                    .background(
+                                        Brush.radialGradient(
+                                            colors = listOf(
+                                                LittleGigPrimary.copy(alpha = 0.2f),
+                                                Color.Transparent
+                                            )
+                                        )
+                                    ),
+                                contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Event,
                                     contentDescription = null,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(16.dp),
-                                    tint = MaterialTheme.colorScheme.onSurface
+                                    tint = LittleGigPrimary,
+                                    modifier = Modifier.size(48.dp)
                                 )
                             }
-                            
-                            Spacer(modifier = Modifier.height(24.dp))
-                            
-                            Text(
-                                text = "No events found",
-                                style = MaterialTheme.typography.headlineSmall.copy(
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            
-                            Spacer(modifier = Modifier.height(8.dp))
-                            
-                            Text(
-                                text = "Be the first to create an amazing event!",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                            )
-                            
-                            Spacer(modifier = Modifier.height(20.dp))
-                            
-                            Button(
-                                onClick = { /* TODO: Navigate to create event */ },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = LittleGigPrimary
-                                )
+                        }
+                        
+                        Spacer(modifier = Modifier.height(24.dp))
+                        
+                        Text(
+                            text = "No events found",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = if (isDark) Color.White else Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                        
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        Text(
+                            text = "Be the first to create an amazing event!",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.7f),
+                            textAlign = TextAlign.Center
+                        )
+                        
+                        Spacer(modifier = Modifier.height(32.dp))
+                        
+                        HapticButton(
+                            onClick = {
+                                // Navigate to upload tab
+                                navController.navigate("upload")
+                            }
+                        ) {
+                            AdvancedNeumorphicCard(
+                                modifier = Modifier.padding(8.dp)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Create Event")
+                                Row(
+                                    modifier = Modifier.padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = null,
+                                        tint = LittleGigPrimary,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Text(
+                                        text = "Create Event",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = LittleGigPrimary
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                // Events list with enhanced interactions
+                val context = LocalContext.current
+                val shareScope = rememberCoroutineScope()
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(uiState.events) { event ->
+                        HapticButton(onClick = { navController.navigate("event_details/${event.id}") }) {
+                            LiquidGlassEventCard(event = event, onClick = { navController.navigate("event_details/${event.id}") })
+                            // Friends-going chip and actions beneath each card
+                            val friends = uiState.eventIdToFriendsGoing[event.id] ?: 0
+                            if (friends > 0) {
+                                Spacer(Modifier.height(8.dp))
+                                AdvancedGlassmorphicCard(
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = "$friends friends going",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                            OutlinedButton(onClick = {
+                                                shareScope.launch {
+                                                    val link = viewModel.createEventShareLink(event)
+                                                    link?.let {
+                                                        val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                                                            type = "text/plain"
+                                                            putExtra(Intent.EXTRA_TEXT, it)
+                                                        }
+                                                        val shareIntent = Intent.createChooser(sendIntent, "Share Event")
+                                                        context.startActivity(shareIntent)
+                                                    }
+                                                }
+                                            }, shape = RoundedCornerShape(12.dp)) {
+                                                Icon(Icons.Default.Share, contentDescription = null)
+                                                Spacer(Modifier.width(6.dp))
+                                                Text("Share")
+                                            }
+                                            OutlinedButton(onClick = { viewModel.joinWaitlist(event.id) }, shape = RoundedCornerShape(12.dp)) {
+                                                Icon(Icons.Default.NotificationsActive, contentDescription = null)
+                                                Spacer(Modifier.width(6.dp))
+                                                Text("Waitlist")
+                                            }
+                                            OutlinedButton(onClick = { viewModel.subscribePriceDrop(event.id) }, shape = RoundedCornerShape(12.dp)) {
+                                                Icon(Icons.Default.PriceChange, contentDescription = null)
+                                                Spacer(Modifier.width(6.dp))
+                                                Text("Price drop")
+                                            }
+                                            OutlinedButton(onClick = { viewModel.rsvp(event.id) }, shape = RoundedCornerShape(12.dp)) {
+                                                Icon(Icons.Default.EventAvailable, contentDescription = null)
+                                                Spacer(Modifier.width(6.dp))
+                                                Text("RSVP")
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
-            
-            else -> {
-                // TikTok-style full screen events feed
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(0.dp),
-                    verticalArrangement = Arrangement.spacedBy(0.dp)
+        }
+        
+        // Floating action button for quick upload
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.BottomEnd
+        ) {
+            FloatingActionButton(
+                onClick = {
+                    // Navigate to upload tab
+                    navController.navigate("upload")
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Create Event",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+        
+        // Error state
+        if (uiState.error != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
+            ) {
+                AdvancedNeumorphicCard(
+                    modifier = Modifier.padding(32.dp)
                 ) {
-                    items(uiState.events) { event ->
-                        TikTokStyleEventCard(
-                            event = event,
-                            onEventClick = { /* Navigate to event details */ },
-                            onLikeClick = { viewModel.toggleEventLike(event.id) },
-                            onRateClick = { rating -> viewModel.rateEvent(event.id, rating) },
-                            onAttendeesClick = { /* Show attendees */ },
-                            onShareClick = { /* Share event */ }
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Error,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(48.dp)
                         )
+                        
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        Text(
+                            text = "Oops!",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        Text(
+                            text = uiState.error ?: "Something went wrong",
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center
+                        )
+                        
+                        Spacer(modifier = Modifier.height(24.dp))
+                        
+                        HapticButton(
+                            onClick = {
+                                viewModel.clearError()
+                                viewModel.loadEvents()
+                            }
+                        ) {
+                            AdvancedNeumorphicCard(
+                                modifier = Modifier.padding(8.dp)
+                            ) {
+                                Text(
+                                    text = "Try Again",
+                                    modifier = Modifier.padding(16.dp),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = LittleGigPrimary
+                                )
+                            }
+                        }
                     }
                 }
             }

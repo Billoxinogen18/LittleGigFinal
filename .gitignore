@@ -1,0 +1,22 @@
+# Android/Gradle
+.gradle/
+/local.properties
+**/build/
+/captures/
+.externalNativeBuild/
+/.cxx/
+
+# IntelliJ/Android Studio
+.idea/
+*.iml
+
+# OS
+.DS_Store
+
+# Firebase/Functions
+functions/node_modules/
+functions/lib/
+
+# Logs
+*.log
+

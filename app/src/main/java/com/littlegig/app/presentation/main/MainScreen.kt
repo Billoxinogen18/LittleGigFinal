@@ -3,6 +3,10 @@ package com.littlegig.app.presentation.main
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -12,9 +16,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.littlegig.app.presentation.account.AccountScreen
+import com.littlegig.app.presentation.account.EditProfileScreen
+import com.littlegig.app.presentation.chat.ChatDetailsScreen
 import com.littlegig.app.presentation.chat.ChatScreen
 import com.littlegig.app.presentation.components.*
 import com.littlegig.app.presentation.events.EventsScreen
+import com.littlegig.app.presentation.events.EventDetailsScreen
 import com.littlegig.app.presentation.map.MapScreen
 import com.littlegig.app.presentation.tickets.TicketsScreen
 import com.littlegig.app.presentation.upload.UploadScreen
@@ -98,6 +105,41 @@ fun MainScreen(
                         AccountScreen(
                             navController = navController,
                             onSignOut = onSignOut
+                        )
+                    }
+                    composable("event_details/{eventId}") { backStackEntry ->
+                        val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
+                        EventDetailsScreen(
+                            eventId = eventId,
+                            navController = navController
+                        )
+                    }
+                    composable("edit_profile") {
+                        EditProfileScreen(navController = navController)
+                    }
+                    composable("settings") {
+                        // Placeholder Settings Screen
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Settings Screen - Coming Soon")
+                        }
+                    }
+                    composable("payments") {
+                        // Placeholder Payments Screen
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Payments Screen - Coming Soon")
+                        }
+                    }
+                    composable("chat_details/{chatId}") { backStackEntry ->
+                        val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+                        ChatDetailsScreen(
+                            chatId = chatId,
+                            navController = navController
                         )
                     }
                 }

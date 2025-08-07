@@ -49,11 +49,15 @@ fun RecapsUploadScreen(
     viewModel: RecapsUploadViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState(initial = RecapsUploadUiState())
+    val userEvents by viewModel.userEvents.collectAsState()
+    val selectedEvent by viewModel.selectedEvent.collectAsState()
+    val isLocationValid by viewModel.isLocationValid.collectAsState()
+    val selectedMedia by viewModel.selectedMedia.collectAsState()
     val isDark = isSystemInDarkTheme()
     
     var selectedImages by remember { mutableStateOf<List<Uri>>(emptyList()) }
     var caption by remember { mutableStateOf("") }
-    var selectedEvent by remember { mutableStateOf<Event?>(null) }
+    var selectedChallenge by remember { mutableStateOf<String?>(null) }
     
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents()
@@ -138,15 +142,19 @@ fun RecapsUploadScreen(
                     Spacer(modifier = Modifier.height(12.dp))
                     
                     // Event dropdown or list
-                    if (uiState.userEvents.isNotEmpty()) {
+                    if (userEvents.isNotEmpty()) {
                         LazyRow(
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            items(uiState.userEvents) { event ->
+                            items(userEvents) { event ->
                                 EventSelectionCard(
                                     event = event,
                                     isSelected = selectedEvent?.id == event.id,
-                                    onClick = { selectedEvent = event }
+                                    onClick = {
+                                        viewModel.selectEvent(event)
+                                        // Check if user is within 3km of event location
+                                        viewModel.verifyLocation(event.id, 0.0, 0.0) // TODO: Get actual user location
+                                    }
                                 )
                             }
                         }
@@ -167,6 +175,23 @@ fun RecapsUploadScreen(
                 Column(
                     modifier = Modifier.padding(20.dp)
                 ) {
+                    // Weekly Challenge Selector
+                    Text(
+                        text = "Weekly Challenges",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    val challenges = listOf("#NightVibes", "#StreetBeats", "#CampusWave", "#FoodieFinds")
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(challenges) { tag ->
+                            AssistChip(
+                                onClick = { selectedChallenge = if (selectedChallenge == tag) null else tag },
+                                label = { Text(tag) }
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "Upload Photos/Videos",
                         style = MaterialTheme.typography.titleMedium.copy(
@@ -261,20 +286,20 @@ fun RecapsUploadScreen(
                             Icon(
                                 imageVector = Icons.Default.LocationOn,
                                 contentDescription = null,
-                                tint = if (uiState.isLocationValid) Color.Green else Color.Red,
+                                tint = if (isLocationValid) Color.Green else Color.Red,
                                 modifier = Modifier.size(20.dp)
                             )
                             
                             Spacer(modifier = Modifier.width(8.dp))
                             
                             Text(
-                                text = if (uiState.isLocationValid) "Location Verified (Within 3km)" else "Location Check Required",
+                                text = if (isLocationValid) "Location Verified (Within 3km)" else "Location Check Required",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = if (uiState.isLocationValid) Color.Green else Color.Red
+                                color = if (isLocationValid) Color.Green else Color.Red
                             )
                         }
                         
-                        if (!uiState.isLocationValid) {
+                        if (!isLocationValid) {
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = "You must be within 3km of the event location to create a recap",
@@ -292,15 +317,16 @@ fun RecapsUploadScreen(
             Button(
                 onClick = {
                     selectedEvent?.let { event ->
+                        // Upload recap to backend
                         viewModel.uploadRecap(
-                            eventId = event.id,
-                            images = selectedImages,
+                            eventId = selectedEvent?.id ?: "",
+                            mediaUrls = selectedImages.map { it.toString() },
                             caption = caption
                         )
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = selectedEvent != null && selectedImages.isNotEmpty() && uiState.isLocationValid,
+                enabled = selectedEvent != null && selectedImages.isNotEmpty() && isLocationValid,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = LittleGigPrimary
                 )
@@ -413,78 +439,6 @@ fun EventSelectionCard(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-        }
-    }
-}
-
-data class RecapsUploadUiState(
-    val userEvents: List<Event> = emptyList(),
-    val isLocationValid: Boolean = false,
-    val isLoading: Boolean = false,
-    val isSuccess: Boolean = false,
-    val error: String? = null
-)
-
-@HiltViewModel
-class RecapsUploadViewModel @Inject constructor() : ViewModel() {
-    
-    private val _uiState = MutableStateFlow(RecapsUploadUiState())
-    val uiState: StateFlow<RecapsUploadUiState> = _uiState.asStateFlow()
-    
-    init {
-        loadUserEvents()
-        checkLocationValidity()
-    }
-    
-    private fun loadUserEvents() {
-        viewModelScope.launch {
-            // TODO: Load user's events from repository
-            // For now, show mock data
-            val mockEvents = listOf(
-                Event(
-                    id = "event1",
-                    title = "Summer Music Festival",
-                    description = "Amazing music festival",
-                    dateTime = System.currentTimeMillis(),
-                    price = 89.99,
-                    capacity = 1000,
-                    category = ContentCategory.EVENT,
-                    imageUrls = emptyList(),
-                    organizerId = "user1",
-                    isActive = true
-                )
-            )
-            
-            _uiState.value = _uiState.value.copy(userEvents = mockEvents)
-        }
-    }
-    
-    private fun checkLocationValidity() {
-        viewModelScope.launch {
-            // TODO: Check if user is within 3km of event location
-            // For now, assume valid
-            _uiState.value = _uiState.value.copy(isLocationValid = true)
-        }
-    }
-    
-    fun uploadRecap(eventId: String, images: List<Uri>, caption: String) {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            
-            try {
-                // TODO: Upload recap to backend
-                // For now, simulate success
-                delay(2000)
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    isSuccess = true
-                )
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = e.message
-                )
-            }
         }
     }
 } 

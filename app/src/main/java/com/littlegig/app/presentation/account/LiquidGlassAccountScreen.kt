@@ -35,20 +35,31 @@ import com.littlegig.app.presentation.theme.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import android.app.Activity
 import androidx.compose.foundation.clickable
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 
 @Composable
 fun LiquidGlassAccountScreen(
     navController: NavController,
     onSignOut: () -> Unit,
-    viewModel: AccountViewModel = hiltViewModel(),
-    locationService: LocationService = androidx.hilt.navigation.compose.hiltViewModel()
+    viewModel: AccountViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState(initial = AccountUiState())
     val currentUser by viewModel.currentUser.collectAsState(initial = null)
-    val isActiveNow by locationService.isActiveNow.collectAsState()
-    val locationPermissionGranted by locationService.locationPermissionGranted.collectAsState()
+    val isActiveNow by viewModel.isActiveNow.collectAsState()
+    val locationPermissionGranted by viewModel.locationPermissionGranted.collectAsState()
     val isDark = isSystemInDarkTheme()
-    
+
+    // Image picker launcher
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { selectedUri ->
+            viewModel.updateProfilePicture(selectedUri)
+        }
+    }
+
     // Proper dark/light mode background
     Box(
         modifier = Modifier
@@ -104,7 +115,9 @@ fun LiquidGlassAccountScreen(
                                         )
                                     }
                                     .clip(CircleShape)
-                                    .clickable { /* TODO: Open image picker */ }
+                                    .clickable { 
+                                        imagePickerLauncher.launch("image/*")
+                                    }
                             ) {
                                 if (user.profileImageUrl.isNotEmpty()) {
                                     AsyncImage(
@@ -253,21 +266,27 @@ fun LiquidGlassAccountScreen(
                             icon = Icons.Default.Person,
                             title = "Edit Profile",
                             subtitle = "Update your personal information",
-                            onClick = { /* TODO: Navigate to edit profile */ }
+                            onClick = { 
+                                navController.navigate("edit_profile")
+                            }
                         )
                         
                         AccountOptionItem(
                             icon = Icons.Default.Business,
                             title = "Business Dashboard",
                             subtitle = "Manage your events and analytics",
-                            onClick = { /* TODO: Navigate to business dashboard */ }
+                            onClick = { 
+                                navController.navigate("business_dashboard")
+                            }
                         )
                         
                         AccountOptionItem(
                             icon = Icons.Default.AttachMoney,
                             title = "Revenue Analytics",
                             subtitle = "View your earnings and commissions",
-                            onClick = { /* TODO: Navigate to revenue analytics */ }
+                            onClick = { 
+                                navController.navigate("revenue_analytics")
+                            }
                         )
                     }
                 }
