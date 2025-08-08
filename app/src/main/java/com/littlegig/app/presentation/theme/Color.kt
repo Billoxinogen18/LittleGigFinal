@@ -10,11 +10,11 @@ val LightOnSurfaceVariant = Color(0xFF666666) // Secondary text
 val LightPrimary = Color(0xFF6366F1) // Indigo primary
 val LightSecondary = Color(0xFF8B5CF6) // Purple secondary
 
-// Dark Mode Colors (Deep Navy Purple Theme)
-val DarkBackground = Color(0xFF0B0E1A) // Deep dark with cool hues
-val DarkSurface = Color(0xFF141B2E) // Navy blue with purple undertones
-val DarkOnSurface = Color(0xFFFFFFFF) // White text for contrast
-val DarkOnSurfaceVariant = Color(0xFFB3B3B3) // Secondary text
+// Dark Mode Colors (Charcoal Grey Theme)
+val DarkBackground = Color(0xFF1A1A1A) // Charcoal grey background
+val DarkSurface = Color(0xFF2D2D2D) // Lighter charcoal grey surface
+val DarkOnSurface = Color(0xFFE0E0E0) // Light grey text for better visibility
+val DarkOnSurfaceVariant = Color(0xFFCCCCCC) // Lighter secondary text
 val DarkPrimary = Color(0xFF8B5CF6) // Purple primary for dark mode
 val DarkSecondary = Color(0xFF6366F1) // Indigo secondary
 
@@ -31,9 +31,9 @@ val NeumorphicShadowDark = Color(0xFF000000)
 
 // Glassmorphic Colors
 val GlassmorphicLight = Color(0xFFFFFFFF)
-val GlassmorphicDark = Color(0xFF141B2E)
+val GlassmorphicDark = Color(0xFF2D2D2D) // Updated to match charcoal theme
 val GlassmorphicBorderLight = Color(0xFFE5E7EB)
-val GlassmorphicBorderDark = Color(0xFF374151)
+val GlassmorphicBorderDark = Color(0xFF4A4A4A) // Lighter border for better visibility
 
 // Status Colors
 val Success = Color(0xFF10B981)

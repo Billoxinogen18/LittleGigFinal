@@ -449,6 +449,8 @@ data class Transaction(
 data class PaymentsUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
+    val isSuccess: Boolean = false,
+    val successMessage: String? = null,
     val totalSpent: Int = 0,
     val monthlySpent: Int = 0,
     val defaultPaymentMethod: String = "mpesa",

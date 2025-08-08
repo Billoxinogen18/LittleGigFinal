@@ -563,7 +563,7 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
           return (T) new MapViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get(), singletonCImpl.provideFirebaseFunctionsProvider.get());
 
           case 9: // com.littlegig.app.presentation.payments.PaymentsViewModel 
-          return (T) new PaymentsViewModel();
+          return (T) new PaymentsViewModel(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.authRepositoryProvider.get());
 
           case 10: // com.littlegig.app.presentation.recaps.RecapsUploadViewModel 
           return (T) new RecapsUploadViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.recapRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get());

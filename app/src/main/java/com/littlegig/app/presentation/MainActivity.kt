@@ -28,11 +28,12 @@ class MainActivity : ComponentActivity() {
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
         try {
             val account = task.getResult(ApiException::class.java)
-            // Handle successful sign-in - will be handled by LittleGigApp
-            println("Google Sign-In successful: ${account.email}")
+            // 🔥 REAL GOOGLE SIGN-IN HANDLING! 🔥
+            handleGoogleSignInSuccess(account)
         } catch (e: ApiException) {
             // Handle sign-in failure
             println("Google Sign-In failed: ${e.message}")
+            handleGoogleSignInFailure(e)
         }
     }
     
@@ -61,5 +62,25 @@ class MainActivity : ComponentActivity() {
     fun startGoogleSignIn() {
         val signInIntent = googleSignInClient.signInIntent
         signInLauncher.launch(signInIntent)
+    }
+    
+    // 🔥 REAL GOOGLE SIGN-IN SUCCESS HANDLING! 🔥
+    private fun handleGoogleSignInSuccess(account: com.google.android.gms.auth.api.signin.GoogleSignInAccount) {
+        // Send the account to LittleGigApp for processing
+        val intent = Intent("GOOGLE_SIGN_IN_SUCCESS")
+        intent.putExtra("account_id", account.id)
+        intent.putExtra("account_email", account.email)
+        intent.putExtra("account_display_name", account.displayName)
+        intent.putExtra("account_photo_url", account.photoUrl?.toString())
+        intent.putExtra("account_id_token", account.idToken)
+        sendBroadcast(intent)
+    }
+    
+    // 🔥 REAL GOOGLE SIGN-IN FAILURE HANDLING! 🔥
+    private fun handleGoogleSignInFailure(exception: ApiException) {
+        val intent = Intent("GOOGLE_SIGN_IN_FAILURE")
+        intent.putExtra("error_code", exception.statusCode)
+        intent.putExtra("error_message", exception.message)
+        sendBroadcast(intent)
     }
 }

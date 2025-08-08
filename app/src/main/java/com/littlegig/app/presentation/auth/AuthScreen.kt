@@ -66,9 +66,9 @@ fun AuthScreen(
             .background(
                 Brush.verticalGradient(
                     colors = if (isDark) listOf(
-                        Color(0xFF0B0E1A),
-                        Color(0xFF141B2E),
-                        Color(0xFF1E293B)
+                        Color(0xFF1A1A1A), // Charcoal grey
+                        Color(0xFF2D2D2D), // Lighter charcoal
+                        Color(0xFF404040)  // Even lighter charcoal
                     ) else listOf(
                         Color(0xFFF8FAFF),
                         Color(0xFFE2E8F0),

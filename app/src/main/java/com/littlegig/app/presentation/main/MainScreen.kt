@@ -125,7 +125,11 @@ fun MainScreen(
                             onNavigateToEditProfile = { navController.navigate("edit_profile") },
                             onNavigateToPayments = { navController.navigate("payments") },
                             onNavigateToTickets = { navController.navigate("tickets") },
-                            onGoogleSignIn = { /* Handle Google Sign-In */ },
+                            onGoogleSignIn = { 
+                                // 🔥 REAL GOOGLE SIGN-IN HANDLING! 🔥
+                                val mainActivity = navController.context as? com.littlegig.app.presentation.MainActivity
+                                mainActivity?.startGoogleSignIn()
+                            },
                             onNavigateBack = { navController.popBackStack() }
                         )
                     }
@@ -141,8 +145,15 @@ fun MainScreen(
                     }
                     composable("auth") {
                         AuthScreen(
-                            onGoogleSignIn = { /* Handle Google Sign-In */ },
-                            onAuthSuccess = { /* Handle auth success */ }
+                            onGoogleSignIn = { 
+                                // 🔥 REAL GOOGLE SIGN-IN HANDLING! 🔥
+                                val mainActivity = navController.context as? com.littlegig.app.presentation.MainActivity
+                                mainActivity?.startGoogleSignIn()
+                            },
+                            onAuthSuccess = { 
+                                // Navigate back to previous screen after successful auth
+                                navController.popBackStack()
+                            }
                         )
                     }
                 }
