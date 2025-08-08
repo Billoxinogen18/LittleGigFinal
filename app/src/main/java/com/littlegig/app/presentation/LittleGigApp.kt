@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.littlegig.app.presentation.auth.AuthScreen
 import com.littlegig.app.presentation.auth.AuthViewModel
 import com.littlegig.app.presentation.navigation.LittleGigNavigation
 import com.littlegig.app.presentation.theme.LittleGigTheme

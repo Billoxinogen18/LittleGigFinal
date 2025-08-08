@@ -155,12 +155,28 @@ class AuthViewModel @Inject constructor(
         }
     }
     
-    fun signInWithGoogle() {
+    fun signInWithGoogle(googleSignInAccount: GoogleSignInAccount) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
-            // For now, we'll use anonymous auth as fallback
-            authRepository.signInAnonymously()
+            authRepository.signInWithGoogle(googleSignInAccount)
+                .onSuccess {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                }
+                .onFailure { error ->
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = error.message
+                    )
+                }
+        }
+    }
+    
+    fun linkAnonymousAccountWithGoogle(googleSignInAccount: GoogleSignInAccount) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            
+            authRepository.linkAnonymousAccountWithGoogle(googleSignInAccount)
                 .onSuccess {
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }

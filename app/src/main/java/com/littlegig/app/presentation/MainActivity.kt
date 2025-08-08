@@ -28,10 +28,11 @@ class MainActivity : ComponentActivity() {
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
         try {
             val account = task.getResult(ApiException::class.java)
-            // Handle successful sign-in
-            // You can navigate to the main screen here
+            // Handle successful sign-in - will be handled by LittleGigApp
+            println("Google Sign-In successful: ${account.email}")
         } catch (e: ApiException) {
             // Handle sign-in failure
+            println("Google Sign-In failed: ${e.message}")
         }
     }
     

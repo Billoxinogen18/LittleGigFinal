@@ -37,6 +37,7 @@ import com.littlegig.app.presentation.theme.*
 @Composable
 fun AuthScreen(
     onAuthSuccess: () -> Unit,
+    onGoogleSignIn: () -> Unit = {},
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState(initial = AuthUiState())
@@ -294,7 +295,7 @@ fun AuthScreen(
                     
                     // Google Sign-In Button
                     NeumorphicButton(
-                        onClick = { viewModel.signInWithGoogle() },
+                        onClick = { onGoogleSignIn() },
                         enabled = !uiState.isLoading,
                         modifier = Modifier.fillMaxWidth()
                     ) {

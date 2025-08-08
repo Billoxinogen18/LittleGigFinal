@@ -55,6 +55,8 @@ import com.littlegig.app.presentation.map.MapViewModel;
 import com.littlegig.app.presentation.map.MapViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.littlegig.app.presentation.recaps.RecapsUploadViewModel;
 import com.littlegig.app.presentation.recaps.RecapsUploadViewModel_HiltModules_KeyModule_ProvideFactory;
+import com.littlegig.app.presentation.settings.SettingsViewModel;
+import com.littlegig.app.presentation.settings.SettingsViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.littlegig.app.presentation.tickets.TicketsViewModel;
 import com.littlegig.app.presentation.tickets.TicketsViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.littlegig.app.presentation.upload.UploadViewModel;
@@ -422,7 +424,7 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     @Override
     public Set<String> getViewModelKeys() {
-      return ImmutableSet.<String>of(AccountViewModel_HiltModules_KeyModule_ProvideFactory.provide(), AuthViewModel_HiltModules_KeyModule_ProvideFactory.provide(), BusinessDashboardViewModel_HiltModules_KeyModule_ProvideFactory.provide(), ChatDetailsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), ChatSearchViewModel_HiltModules_KeyModule_ProvideFactory.provide(), ChatViewModel_HiltModules_KeyModule_ProvideFactory.provide(), EventDetailsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), EventsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), MapViewModel_HiltModules_KeyModule_ProvideFactory.provide(), RecapsUploadViewModel_HiltModules_KeyModule_ProvideFactory.provide(), TicketsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), UploadViewModel_HiltModules_KeyModule_ProvideFactory.provide());
+      return ImmutableSet.<String>of(AccountViewModel_HiltModules_KeyModule_ProvideFactory.provide(), AuthViewModel_HiltModules_KeyModule_ProvideFactory.provide(), BusinessDashboardViewModel_HiltModules_KeyModule_ProvideFactory.provide(), ChatDetailsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), ChatSearchViewModel_HiltModules_KeyModule_ProvideFactory.provide(), ChatViewModel_HiltModules_KeyModule_ProvideFactory.provide(), EventDetailsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), EventsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), MapViewModel_HiltModules_KeyModule_ProvideFactory.provide(), RecapsUploadViewModel_HiltModules_KeyModule_ProvideFactory.provide(), SettingsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), TicketsViewModel_HiltModules_KeyModule_ProvideFactory.provide(), UploadViewModel_HiltModules_KeyModule_ProvideFactory.provide());
     }
 
     @Override
@@ -468,6 +470,8 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     private Provider<RecapsUploadViewModel> recapsUploadViewModelProvider;
 
+    private Provider<SettingsViewModel> settingsViewModelProvider;
+
     private Provider<TicketsViewModel> ticketsViewModelProvider;
 
     private Provider<UploadViewModel> uploadViewModelProvider;
@@ -495,13 +499,14 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       this.eventsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 7);
       this.mapViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 8);
       this.recapsUploadViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 9);
-      this.ticketsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 10);
-      this.uploadViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 11);
+      this.settingsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 10);
+      this.ticketsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 11);
+      this.uploadViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 12);
     }
 
     @Override
     public Map<String, Provider<ViewModel>> getHiltViewModelMap() {
-      return ImmutableMap.<String, Provider<ViewModel>>builderWithExpectedSize(12).put("com.littlegig.app.presentation.account.AccountViewModel", ((Provider) accountViewModelProvider)).put("com.littlegig.app.presentation.auth.AuthViewModel", ((Provider) authViewModelProvider)).put("com.littlegig.app.presentation.business.BusinessDashboardViewModel", ((Provider) businessDashboardViewModelProvider)).put("com.littlegig.app.presentation.chat.ChatDetailsViewModel", ((Provider) chatDetailsViewModelProvider)).put("com.littlegig.app.presentation.chat.ChatSearchViewModel", ((Provider) chatSearchViewModelProvider)).put("com.littlegig.app.presentation.chat.ChatViewModel", ((Provider) chatViewModelProvider)).put("com.littlegig.app.presentation.events.EventDetailsViewModel", ((Provider) eventDetailsViewModelProvider)).put("com.littlegig.app.presentation.events.EventsViewModel", ((Provider) eventsViewModelProvider)).put("com.littlegig.app.presentation.map.MapViewModel", ((Provider) mapViewModelProvider)).put("com.littlegig.app.presentation.recaps.RecapsUploadViewModel", ((Provider) recapsUploadViewModelProvider)).put("com.littlegig.app.presentation.tickets.TicketsViewModel", ((Provider) ticketsViewModelProvider)).put("com.littlegig.app.presentation.upload.UploadViewModel", ((Provider) uploadViewModelProvider)).build();
+      return ImmutableMap.<String, Provider<ViewModel>>builderWithExpectedSize(13).put("com.littlegig.app.presentation.account.AccountViewModel", ((Provider) accountViewModelProvider)).put("com.littlegig.app.presentation.auth.AuthViewModel", ((Provider) authViewModelProvider)).put("com.littlegig.app.presentation.business.BusinessDashboardViewModel", ((Provider) businessDashboardViewModelProvider)).put("com.littlegig.app.presentation.chat.ChatDetailsViewModel", ((Provider) chatDetailsViewModelProvider)).put("com.littlegig.app.presentation.chat.ChatSearchViewModel", ((Provider) chatSearchViewModelProvider)).put("com.littlegig.app.presentation.chat.ChatViewModel", ((Provider) chatViewModelProvider)).put("com.littlegig.app.presentation.events.EventDetailsViewModel", ((Provider) eventDetailsViewModelProvider)).put("com.littlegig.app.presentation.events.EventsViewModel", ((Provider) eventsViewModelProvider)).put("com.littlegig.app.presentation.map.MapViewModel", ((Provider) mapViewModelProvider)).put("com.littlegig.app.presentation.recaps.RecapsUploadViewModel", ((Provider) recapsUploadViewModelProvider)).put("com.littlegig.app.presentation.settings.SettingsViewModel", ((Provider) settingsViewModelProvider)).put("com.littlegig.app.presentation.tickets.TicketsViewModel", ((Provider) ticketsViewModelProvider)).put("com.littlegig.app.presentation.upload.UploadViewModel", ((Provider) uploadViewModelProvider)).build();
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -555,10 +560,13 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
           case 9: // com.littlegig.app.presentation.recaps.RecapsUploadViewModel 
           return (T) new RecapsUploadViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.recapRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get());
 
-          case 10: // com.littlegig.app.presentation.tickets.TicketsViewModel 
+          case 10: // com.littlegig.app.presentation.settings.SettingsViewModel 
+          return (T) new SettingsViewModel(singletonCImpl.authRepositoryProvider.get());
+
+          case 11: // com.littlegig.app.presentation.tickets.TicketsViewModel 
           return (T) new TicketsViewModel(singletonCImpl.ticketRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get());
 
-          case 11: // com.littlegig.app.presentation.upload.UploadViewModel 
+          case 12: // com.littlegig.app.presentation.upload.UploadViewModel 
           return (T) new UploadViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get(), singletonCImpl.placesServiceProvider.get());
 
           default: throw new AssertionError(id);
@@ -717,8 +725,8 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
     }
 
     @Override
-    public void injectLittleGigApplication(LittleGigApplication littleGigApplication) {
-      injectLittleGigApplication2(littleGigApplication);
+    public void injectLittleGigApplication(LittleGigApplication arg0) {
+      injectLittleGigApplication2(arg0);
     }
 
     @Override

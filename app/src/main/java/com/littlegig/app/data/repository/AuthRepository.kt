@@ -242,6 +242,127 @@ class AuthRepository @Inject constructor(
         }
     }
     
+    // 🔥 GOOGLE SIGN-IN - FIREBASE SUPPORT! 🔥
+    suspend fun signInWithGoogle(googleSignInAccount: GoogleSignInAccount): Result<User> {
+        if (!isNetworkAvailable()) {
+            return Result.failure(Exception("No network connection"))
+        }
+        
+        return try {
+            val credential = GoogleAuthProvider.getCredential(googleSignInAccount.idToken, null)
+            val result = auth.signInWithCredential(credential).await()
+            val firebaseUser = result.user ?: throw Exception("Failed to sign in with Google")
+            
+            // Check if user exists in Firestore
+            val userDoc = firestore.collection("users")
+                .document(firebaseUser.uid)
+                .get()
+                .await()
+            
+            if (userDoc.exists()) {
+                // User exists - return existing user
+                val user = userDoc.toObject(User::class.java)?.copy(id = userDoc.id)
+                    ?: throw Exception("Failed to parse user data")
+                cacheUser(user)
+                Result.success(user)
+            } else {
+                // Create new user from Google account
+                val username = generateUsername(googleSignInAccount.displayName ?: "", googleSignInAccount.email ?: "")
+                val newUser = User(
+                    id = firebaseUser.uid,
+                    email = googleSignInAccount.email ?: "",
+                    displayName = googleSignInAccount.displayName ?: "Google User",
+                    username = username,
+                    phoneNumber = "",
+                    userType = UserType.REGULAR,
+                    rank = UserRank.NOVICE,
+                    followers = emptyList(),
+                    following = emptyList(),
+                    bio = "",
+                    profilePictureUrl = googleSignInAccount.photoUrl?.toString() ?: "",
+                    profileImageUrl = googleSignInAccount.photoUrl?.toString() ?: "",
+                    isInfluencer = false,
+                    businessId = null,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
+                )
+                
+                firestore.collection("users")
+                    .document(firebaseUser.uid)
+                    .set(newUser)
+                    .await()
+                
+                cacheUser(newUser)
+                Result.success(newUser)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    // 🔥 LINK ANONYMOUS ACCOUNT WITH GOOGLE! 🔥
+    suspend fun linkAnonymousAccountWithGoogle(googleSignInAccount: GoogleSignInAccount): Result<User> {
+        if (!isNetworkAvailable()) {
+            return Result.failure(Exception("No network connection"))
+        }
+        
+        return try {
+            val currentUser = auth.currentUser ?: throw Exception("No anonymous user to link")
+            
+            // Create credential for linking
+            val credential = GoogleAuthProvider.getCredential(googleSignInAccount.idToken, null)
+            
+            // Link anonymous account with Google
+            val linkResult = currentUser.linkWithCredential(credential).await()
+            val linkedUser = linkResult.user ?: throw Exception("Failed to link account")
+            
+            // Get existing anonymous user data to preserve algorithm
+            val existingUserDoc = firestore.collection("users")
+                .document(currentUser.uid)
+                .get()
+                .await()
+            
+            val existingUser = if (existingUserDoc.exists()) {
+                existingUserDoc.toObject(User::class.java)?.copy(id = existingUserDoc.id)
+            } else {
+                createAnonymousUser(currentUser.uid)
+            } ?: throw Exception("Failed to get existing user data")
+            
+            // 🧠 PRESERVE ALGORITHM DATA - SMART MERGE! 🧠
+            val username = generateUsername(googleSignInAccount.displayName ?: "", googleSignInAccount.email ?: "")
+            val linkedUserData = User(
+                id = linkedUser.uid,
+                email = googleSignInAccount.email ?: "",
+                displayName = googleSignInAccount.displayName ?: "Google User",
+                username = username,
+                phoneNumber = "",
+                userType = UserType.REGULAR,
+                rank = UserRank.NOVICE,
+                followers = existingUser.followers, // Preserve existing followers
+                following = existingUser.following, // Preserve existing following
+                bio = "",
+                // 🧠 PRESERVE ALGORITHM DATA! 🧠
+                profilePictureUrl = googleSignInAccount.photoUrl?.toString() ?: existingUser.profilePictureUrl,
+                profileImageUrl = googleSignInAccount.photoUrl?.toString() ?: existingUser.profileImageUrl,
+                isInfluencer = existingUser.isInfluencer,
+                businessId = existingUser.businessId,
+                createdAt = existingUser.createdAt, // Keep original creation date
+                updatedAt = System.currentTimeMillis()
+            )
+            
+            // Update user document with linked data
+            firestore.collection("users")
+                .document(linkedUser.uid)
+                .set(linkedUserData)
+                .await()
+            
+            cacheUser(linkedUserData)
+            Result.success(linkedUserData)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
     // 🧠 SMART PHONE ACCOUNT LINKING! 🧠
     suspend fun linkAnonymousAccountWithPhone(
         phoneNumber: String,
