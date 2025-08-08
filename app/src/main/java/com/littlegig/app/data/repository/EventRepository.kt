@@ -8,6 +8,10 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.littlegig.app.data.model.ContentCategory
 import com.littlegig.app.data.model.Event
+import com.littlegig.app.data.model.Location
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -88,12 +92,25 @@ class EventRepository @Inject constructor(
                 }
                 
                 val events = snapshot?.documents?.mapNotNull { doc ->
-                    doc.toObject(Event::class.java)?.copy(id = doc.id)
+                    try {
+                        doc.toObject(Event::class.java)?.copy(id = doc.id)
+                    } catch (e: Exception) {
+                        println("🔥 DEBUG: Error parsing event document ${doc.id}: ${e.message}")
+                        null
+                    }
                 } ?: emptyList()
                 
                 println("🔥 DEBUG: Firestore returned ${events.size} events")
                 events.forEach { event ->
                     println("🔥 DEBUG: Event: ${event.title} - ${event.id}")
+                }
+                
+                // If no events found, create some test events
+                if (events.isEmpty()) {
+                    println("🔥 DEBUG: No events found, creating test events")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        createTestEvents()
+                    }
                 }
                 
                 // Cache the events
@@ -112,6 +129,104 @@ class EventRepository @Inject constructor(
         val cachedData = getCachedEvents("all_events") ?: emptyList()
         println("🔥 DEBUG: Returning cached data on catch: ${cachedData.size}")
         emit(cachedData)
+    }
+    
+    // 🔥 CREATE TEST EVENTS IF NONE EXIST! 🔥
+    private suspend fun createTestEvents() {
+        try {
+            val testEvents = listOf(
+                Event(
+                    id = "test_event_1",
+                    title = "Summer Music Festival",
+                    description = "Amazing summer music festival with top artists",
+                    category = ContentCategory.CONCERT,
+                    location = Location(
+                        name = "Central Park",
+                        address = "Central Park, Nairobi",
+                        latitude = -1.2921,
+                        longitude = 36.8219,
+                        city = "Nairobi",
+                        country = "Kenya"
+                    ),
+                    dateTime = System.currentTimeMillis() + (7 * 24 * 60 * 60 * 1000), // 7 days from now
+                    endDateTime = System.currentTimeMillis() + (7 * 24 * 60 * 60 * 1000) + (4 * 60 * 60 * 1000), // 4 hours later
+                    price = 2500.0,
+                    capacity = 1000,
+                    ticketsSold = 150,
+                    isActive = true,
+                    isFeatured = true,
+                    organizerId = "test_organizer",
+                    organizerName = "Test Organizer",
+                    imageUrls = listOf("https://picsum.photos/400/300"),
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
+                ),
+                Event(
+                    id = "test_event_2",
+                    title = "Tech Startup Meetup",
+                    description = "Network with tech entrepreneurs and investors",
+                    category = ContentCategory.CONFERENCE,
+                    location = Location(
+                        name = "iHub",
+                        address = "iHub, Nairobi",
+                        latitude = -1.2921,
+                        longitude = 36.8219,
+                        city = "Nairobi",
+                        country = "Kenya"
+                    ),
+                    dateTime = System.currentTimeMillis() + (3 * 24 * 60 * 60 * 1000), // 3 days from now
+                    endDateTime = System.currentTimeMillis() + (3 * 24 * 60 * 60 * 1000) + (3 * 60 * 60 * 1000), // 3 hours later
+                    price = 1500.0,
+                    capacity = 200,
+                    ticketsSold = 75,
+                    isActive = true,
+                    isFeatured = false,
+                    organizerId = "test_organizer",
+                    organizerName = "Test Organizer",
+                    imageUrls = listOf("https://picsum.photos/400/300"),
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
+                ),
+                Event(
+                    id = "test_event_3",
+                    title = "Food & Wine Festival",
+                    description = "Taste the best local and international cuisine",
+                    category = ContentCategory.EVENT,
+                    location = Location(
+                        name = "Westlands",
+                        address = "Westlands, Nairobi",
+                        latitude = -1.2921,
+                        longitude = 36.8219,
+                        city = "Nairobi",
+                        country = "Kenya"
+                    ),
+                    dateTime = System.currentTimeMillis() + (14 * 24 * 60 * 60 * 1000), // 14 days from now
+                    endDateTime = System.currentTimeMillis() + (14 * 24 * 60 * 60 * 1000) + (6 * 60 * 60 * 1000), // 6 hours later
+                    price = 3000.0,
+                    capacity = 500,
+                    ticketsSold = 200,
+                    isActive = true,
+                    isFeatured = true,
+                    organizerId = "test_organizer",
+                    organizerName = "Test Organizer",
+                    imageUrls = listOf("https://picsum.photos/400/300"),
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
+                )
+            )
+            
+            // Save test events to Firestore
+            testEvents.forEach { event ->
+                firestore.collection("events")
+                    .document(event.id)
+                    .set(event)
+                    .await()
+                println("🔥 DEBUG: Created test event: ${event.title}")
+            }
+            
+        } catch (e: Exception) {
+            println("🔥 DEBUG: Failed to create test events: ${e.message}")
+        }
     }
     
     fun getEventsByCategory(category: ContentCategory): Flow<List<Event>> = callbackFlow {

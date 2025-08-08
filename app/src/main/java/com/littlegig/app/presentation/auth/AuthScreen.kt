@@ -293,23 +293,50 @@ fun AuthScreen(
                         )
                     }
                     
-                    // Google Sign-In Button
-                    NeumorphicButton(
-                        onClick = { onGoogleSignIn() },
-                        enabled = !uiState.isLoading,
+                    // Google Sign-In Button (temporarily disabled)
+                    /*
+                    HapticButton(
+                        onClick = onGoogleSignIn,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Continue with Google",
-                            fontWeight = FontWeight.Bold
-                        )
+                        AdvancedNeumorphicCard(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Google,
+                                    contentDescription = null,
+                                    tint = Color(0xFF4285F4),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                
+                                Spacer(modifier = Modifier.width(12.dp))
+                                
+                                Text(
+                                    text = if (isSignUp) "Create Account with Google" else "Continue with Google",
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        fontWeight = FontWeight.Medium
+                                    ),
+                                    color = Color(0xFF4285F4)
+                                )
+                            }
+                        }
                     }
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+                    */
+                    
+                    Text(
+                        text = "Google Sign-In temporarily disabled for debugging",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
                     
                     TextButton(
                         onClick = { isSignUp = !isSignUp },
