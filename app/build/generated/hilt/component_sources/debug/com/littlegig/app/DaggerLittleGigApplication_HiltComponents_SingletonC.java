@@ -725,8 +725,8 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
     }
 
     @Override
-    public void injectLittleGigApplication(LittleGigApplication arg0) {
-      injectLittleGigApplication2(arg0);
+    public void injectLittleGigApplication(LittleGigApplication littleGigApplication) {
+      injectLittleGigApplication2(littleGigApplication);
     }
 
     @Override

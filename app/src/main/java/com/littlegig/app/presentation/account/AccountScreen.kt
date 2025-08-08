@@ -27,6 +27,16 @@ fun AccountScreen(
     onSignOut: () -> Unit,
     viewModel: AccountViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val currentUser by viewModel.currentUser.collectAsState()
+    
+    // Handle account linking for anonymous users
+    LaunchedEffect(uiState.showAccountLinking) {
+        if (uiState.showAccountLinking) {
+            navController.navigate("auth")
+        }
+    }
+    
     // Use the new account dashboard
     AccountDashboard(
         viewModel = viewModel,
@@ -34,7 +44,8 @@ fun AccountScreen(
         onNavigateToSettings = { navController.navigate("settings") },
         onNavigateToPayments = { navController.navigate("payments") },
         onNavigateToTickets = { navController.navigate("tickets") },
-        onSignOut = onSignOut
+        onSignOut = onSignOut,
+        onLinkAccount = { viewModel.linkAnonymousAccount() }
     )
 }
 

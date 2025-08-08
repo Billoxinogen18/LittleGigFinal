@@ -161,6 +161,7 @@ class AuthRepository @Inject constructor(
             // Create anonymous user with smart algorithm data
             val anonymousUser = createAnonymousUser(firebaseUser.uid)
             
+            // Save anonymous user data to Firestore
             firestore.collection("users")
                 .document(firebaseUser.uid)
                 .set(anonymousUser)
@@ -443,6 +444,25 @@ class AuthRepository @Inject constructor(
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )
+    }
+    
+    // 🔥 SAVE ANONYMOUS USER DATA TO FIRESTORE! 🔥
+    suspend fun saveAnonymousUserData(user: User): Result<Unit> {
+        if (!isNetworkAvailable()) {
+            return Result.failure(Exception("No network connection"))
+        }
+        
+        return try {
+            firestore.collection("users")
+                .document(user.id)
+                .set(user)
+                .await()
+            
+            cacheUser(user)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
     
     suspend fun signUp(email: String, password: String, userType: UserType, phoneNumber: String? = null): Result<User> {

@@ -31,6 +31,7 @@ fun SettingsScreen(
     onNavigateToPayments: () -> Unit,
     onNavigateToTickets: () -> Unit,
     onGoogleSignIn: () -> Unit,
+    onNavigateBack: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState(initial = SettingsUiState())
@@ -64,35 +65,32 @@ fun SettingsScreen(
         ) {
             Spacer(modifier = Modifier.height(60.dp))
             
-            // Header
-            LiquidGlassCard(
+            // Header with back button
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                glowEffect = true
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                NeumorphicButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier.size(48.dp)
                 ) {
-                    Text(
-                        text = "Settings",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                    
-                    Spacer(modifier = Modifier.height(16.dp))
-                    
-                    Text(
-                        text = "Manage your account and preferences",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.White.copy(alpha = 0.7f),
-                        textAlign = TextAlign.Center
+                    Icon(
+                        Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier.size(24.dp)
                     )
                 }
+                
+                Text(
+                    text = "Settings",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = Color.White
+                )
+                
+                Spacer(modifier = Modifier.width(48.dp))
             }
             
             Spacer(modifier = Modifier.height(24.dp))

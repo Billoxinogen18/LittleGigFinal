@@ -76,7 +76,8 @@ class AccountViewModel @Inject constructor(
             try {
                 val user = authRepository.currentUser.first()
                 if (user != null) {
-                    authRepository.updateProfile(mapOf(
+                    // Update user type to business
+                    userRepository.updateUserProfile(user.id, mapOf(
                         "userType" to UserType.BUSINESS,
                         "updatedAt" to System.currentTimeMillis()
                     ))
@@ -157,6 +158,34 @@ class AccountViewModel @Inject constructor(
     
     fun clearSuccess() {
         _uiState.value = _uiState.value.copy(isSuccess = false)
+    }
+    
+    // 🔥 LINK ANONYMOUS ACCOUNT - PRESERVE ALGORITHM DATA! 🔥
+    fun linkAnonymousAccount() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null, isSuccess = false)
+            
+            try {
+                val user = authRepository.currentUser.first()
+                if (user != null && user.email.isEmpty()) {
+                    // User is anonymous - show account linking screen
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        showAccountLinking = true
+                    )
+                } else {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = "Account already linked"
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = e.message
+                )
+            }
+        }
     }
     
     fun updateProfile(
@@ -281,6 +310,7 @@ data class AccountUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val isSuccess: Boolean = false,
+    val showAccountLinking: Boolean = false,
     val eventsCreated: Int = 0,
     val ticketsBought: Int = 0,
     val recapsShared: Int = 0,

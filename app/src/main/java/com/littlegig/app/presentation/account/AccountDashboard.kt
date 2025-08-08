@@ -38,7 +38,8 @@ fun AccountDashboard(
     onNavigateToSettings: () -> Unit,
     onNavigateToPayments: () -> Unit,
     onNavigateToTickets: () -> Unit,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    onLinkAccount: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
