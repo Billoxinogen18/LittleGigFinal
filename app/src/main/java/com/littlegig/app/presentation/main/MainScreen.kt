@@ -23,6 +23,7 @@ import com.littlegig.app.presentation.components.*
 import com.littlegig.app.presentation.events.EventsScreen
 import com.littlegig.app.presentation.events.EventDetailsScreen
 import com.littlegig.app.presentation.map.MapScreen
+import com.littlegig.app.presentation.settings.SettingsScreen
 import com.littlegig.app.presentation.tickets.TicketsScreen
 import com.littlegig.app.presentation.upload.UploadScreen
 import com.littlegig.app.presentation.theme.*
@@ -118,13 +119,13 @@ fun MainScreen(
                         EditProfileScreen(navController = navController)
                     }
                     composable("settings") {
-                        // Placeholder Settings Screen
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Settings Screen - Coming Soon")
-                        }
+                        SettingsScreen(
+                            onNavigateToEditProfile = { navController.navigate("edit_profile") },
+                            onNavigateToPayments = { navController.navigate("payments") },
+                            onNavigateToTickets = { navController.navigate("tickets") },
+                            onGoogleSignIn = { /* Handle Google Sign-In */ },
+                            onNavigateBack = { navController.popBackStack() }
+                        )
                     }
                     composable("payments") {
                         // Placeholder Payments Screen

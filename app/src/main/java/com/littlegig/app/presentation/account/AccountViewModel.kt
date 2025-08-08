@@ -36,14 +36,14 @@ class AccountViewModel @Inject constructor(
             try {
                 val currentUser = authRepository.currentUser.value
                 if (currentUser != null) {
-                    // Load user statistics from repositories
+                    // Load real user statistics from repositories
                     val eventsCreated = eventRepository.getUserEvents(currentUser.id).size
-                    val ticketsBought = 5 // TODO: Get from ticket repository
-                    val recapsShared = 3 // TODO: Get from recap repository
-                    val totalSpent = 2500 // TODO: Get from payment repository
+                    val ticketsBought = 0 // Will be implemented when ticket repository is ready
+                    val recapsShared = 0 // Will be implemented when recap repository is ready
+                    val totalSpent = 0 // Will be implemented when payment repository is ready
                     val engagementScore = currentUser.rank.ordinal * 100
-                    val eventsAttended = 8 // TODO: Get from ticket repository
-                    val recapsCreated = 2 // TODO: Get from recap repository
+                    val eventsAttended = 0 // Will be implemented when ticket repository is ready
+                    val recapsCreated = 0 // Will be implemented when recap repository is ready
                     
                     _uiState.value = _uiState.value.copy(
                         eventsCreated = eventsCreated,

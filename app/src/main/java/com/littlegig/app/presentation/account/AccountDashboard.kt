@@ -261,6 +261,54 @@ fun AccountDashboard(
         }
         
         item {
+            // Link Account Button for Anonymous Users
+            currentUser?.let { user ->
+                if (user.email.isEmpty()) {
+                    HapticButton(
+                        onClick = onLinkAccount,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        AdvancedNeumorphicCard(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AccountCircle,
+                                    contentDescription = null,
+                                    tint = LittleGigPrimary,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                
+                                Spacer(modifier = Modifier.width(12.dp))
+                                
+                                Text(
+                                    text = "Link Account",
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        fontWeight = FontWeight.Medium
+                                    ),
+                                    color = LittleGigPrimary
+                                )
+                                
+                                Spacer(modifier = Modifier.weight(1f))
+                                
+                                Text(
+                                    text = "Anonymous User",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        item {
             // Sign Out Button
             HapticButton(
                 onClick = onSignOut,

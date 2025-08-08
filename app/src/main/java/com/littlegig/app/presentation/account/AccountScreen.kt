@@ -45,7 +45,9 @@ fun AccountScreen(
         onNavigateToPayments = { navController.navigate("payments") },
         onNavigateToTickets = { navController.navigate("tickets") },
         onSignOut = onSignOut,
-        onLinkAccount = { viewModel.linkAnonymousAccount() }
+        onLinkAccount = { 
+            viewModel.linkAnonymousAccount()
+        }
     )
 }
 
