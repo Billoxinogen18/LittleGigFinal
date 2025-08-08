@@ -23,6 +23,121 @@ class AuthViewModel @Inject constructor(
     
     val currentUser = authRepository.currentUser
     
+    // 🔥 ANONYMOUS AUTHENTICATION - TIKTOK STYLE! 🔥
+    fun signInAnonymously() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            
+            authRepository.signInAnonymously()
+                .onSuccess {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                }
+                .onFailure { error ->
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = error.message
+                    )
+                }
+        }
+    }
+    
+    // 🧠 SMART ACCOUNT LINKING - PRESERVE ALGORITHM DATA! 🧠
+    fun linkAnonymousAccount(
+        email: String, 
+        password: String, 
+        displayName: String,
+        phoneNumber: String? = null,
+        userType: UserType = UserType.REGULAR
+    ) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            
+            authRepository.linkAnonymousAccount(email, password, displayName, phoneNumber, userType)
+                .onSuccess {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                }
+                .onFailure { error ->
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = error.message
+                    )
+                }
+        }
+    }
+    
+    // 🧠 SMART PHONE ACCOUNT LINKING! 🧠
+    fun linkAnonymousAccountWithPhone(
+        phoneNumber: String,
+        displayName: String,
+        userType: UserType = UserType.REGULAR
+    ) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            
+            authRepository.linkAnonymousAccountWithPhone(phoneNumber, displayName, userType)
+                .onSuccess {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                }
+                .onFailure { error ->
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = error.message
+                    )
+                }
+        }
+    }
+    
+    fun signUp(email: String, password: String, userType: UserType, phoneNumber: String? = null) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            
+            authRepository.signUp(email, password, userType, phoneNumber)
+                .onSuccess {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                }
+                .onFailure { error ->
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = error.message
+                    )
+                }
+        }
+    }
+    
+    fun signUpWithPhone(phoneNumber: String, displayName: String, userType: UserType) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            
+            authRepository.signUpWithPhone(phoneNumber, displayName, userType)
+                .onSuccess {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                }
+                .onFailure { error ->
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = error.message
+                    )
+                }
+        }
+    }
+    
+    fun signInWithPhone(phoneNumber: String) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            
+            authRepository.signInWithPhone(phoneNumber)
+                .onSuccess {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                }
+                .onFailure { error ->
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = error.message
+                    )
+                }
+        }
+    }
+    
     fun signIn(email: String, password: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -40,11 +155,12 @@ class AuthViewModel @Inject constructor(
         }
     }
     
-    fun signUp(email: String, password: String, userType: UserType) {
+    fun signInWithGoogle() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
-            authRepository.signUp(email, password, userType)
+            // For now, we'll use anonymous auth as fallback
+            authRepository.signInAnonymously()
                 .onSuccess {
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
@@ -57,31 +173,20 @@ class AuthViewModel @Inject constructor(
         }
     }
     
-    fun signInWithGoogle() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            
-            // This will be handled by the activity's onActivityResult
-            // The actual Google Sign-In will be initiated from the activity
-            _uiState.value = _uiState.value.copy(isLoading = false)
-        }
-    }
-    
-    fun signInWithGoogle(account: GoogleSignInAccount) {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            
-            // TODO: Implement Google Sign-In when needed
-            _uiState.value = _uiState.value.copy(
-                isLoading = false,
-                error = "Google Sign-In not implemented yet"
-            )
-        }
-    }
-    
     fun signOut() {
         viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            
             authRepository.signOut()
+                .onSuccess {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                }
+                .onFailure { error ->
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = error.message
+                    )
+                }
         }
     }
     

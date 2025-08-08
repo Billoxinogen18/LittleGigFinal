@@ -7,6 +7,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.littlegig.app.data.model.User
 import com.littlegig.app.data.model.UserType
+import com.littlegig.app.data.model.UserRank
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -87,12 +88,22 @@ class AuthRepository @Inject constructor(
                                     ?: return@launch
                                 cacheUser(user)
                                 trySend(user)
+                            } else {
+                                // Create anonymous user if doesn't exist
+                                val anonymousUser = createAnonymousUser(firebaseUser.uid)
+                                cacheUser(anonymousUser)
+                                trySend(anonymousUser)
                             }
                         } catch (e: Exception) {
                             // Return cached user on error
                             val cachedUser = getCachedUser(firebaseUser.uid)
                             if (cachedUser != null) {
                                 trySend(cachedUser)
+                            } else {
+                                // Create anonymous user as fallback
+                                val anonymousUser = createAnonymousUser(firebaseUser.uid)
+                                cacheUser(anonymousUser)
+                                trySend(anonymousUser)
                             }
                         }
                     }
@@ -101,6 +112,11 @@ class AuthRepository @Inject constructor(
                     val cachedUser = getCachedUser(firebaseUser.uid)
                     if (cachedUser != null) {
                         trySend(cachedUser)
+                    } else {
+                        // Create anonymous user as fallback
+                        val anonymousUser = createAnonymousUser(firebaseUser.uid)
+                        cacheUser(anonymousUser)
+                        trySend(anonymousUser)
                     }
                 }
             } else {
@@ -119,6 +135,11 @@ class AuthRepository @Inject constructor(
             val cachedUser = getCachedUser(currentFirebaseUser.uid)
             if (cachedUser != null) {
                 emit(cachedUser)
+            } else {
+                // Create anonymous user as fallback
+                val anonymousUser = createAnonymousUser(currentFirebaseUser.uid)
+                cacheUser(anonymousUser)
+                emit(anonymousUser)
             }
         }
     }.stateIn(
@@ -126,6 +147,182 @@ class AuthRepository @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
     )
+    
+    // 🔥 ANONYMOUS AUTHENTICATION - TIKTOK STYLE! 🔥
+    suspend fun signInAnonymously(): Result<User> {
+        if (!isNetworkAvailable()) {
+            return Result.failure(Exception("No network connection"))
+        }
+        
+        return try {
+            val result = auth.signInAnonymously().await()
+            val firebaseUser = result.user ?: throw Exception("Failed to create anonymous user")
+            
+            // Create anonymous user with smart algorithm data
+            val anonymousUser = createAnonymousUser(firebaseUser.uid)
+            
+            firestore.collection("users")
+                .document(firebaseUser.uid)
+                .set(anonymousUser)
+                .await()
+            
+            cacheUser(anonymousUser)
+            Result.success(anonymousUser)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    // 🧠 SMART ACCOUNT LINKING - PRESERVE ALGORITHM DATA! 🧠
+    suspend fun linkAnonymousAccount(
+        email: String, 
+        password: String, 
+        displayName: String,
+        phoneNumber: String? = null,
+        userType: UserType = UserType.REGULAR
+    ): Result<User> {
+        if (!isNetworkAvailable()) {
+            return Result.failure(Exception("No network connection"))
+        }
+        
+        return try {
+            val currentUser = auth.currentUser ?: throw Exception("No anonymous user to link")
+            
+            // Create credential for linking
+            val credential = com.google.firebase.auth.EmailAuthProvider.getCredential(email, password)
+            
+            // Link anonymous account with email/password
+            val linkResult = currentUser.linkWithCredential(credential).await()
+            val linkedUser = linkResult.user ?: throw Exception("Failed to link account")
+            
+            // Get existing anonymous user data to preserve algorithm
+            val existingUserDoc = firestore.collection("users")
+                .document(currentUser.uid)
+                .get()
+                .await()
+            
+            val existingUser = if (existingUserDoc.exists()) {
+                existingUserDoc.toObject(User::class.java)?.copy(id = existingUserDoc.id)
+            } else {
+                createAnonymousUser(currentUser.uid)
+            } ?: throw Exception("Failed to get existing user data")
+            
+            // 🧠 PRESERVE ALGORITHM DATA - SMART MERGE! 🧠
+            val username = generateUsername(displayName, phoneNumber ?: "")
+            val linkedUserData = User(
+                id = linkedUser.uid,
+                email = email,
+                displayName = displayName,
+                username = username,
+                phoneNumber = phoneNumber ?: "",
+                userType = userType,
+                rank = UserRank.NOVICE,
+                followers = existingUser.followers, // Preserve existing followers
+                following = existingUser.following, // Preserve existing following
+                bio = "",
+                // 🧠 PRESERVE ALGORITHM DATA! 🧠
+                profilePictureUrl = existingUser.profilePictureUrl,
+                profileImageUrl = existingUser.profileImageUrl,
+                isInfluencer = existingUser.isInfluencer,
+                businessId = existingUser.businessId,
+                createdAt = existingUser.createdAt, // Keep original creation date
+                updatedAt = System.currentTimeMillis()
+            )
+            
+            // Update user document with linked data
+            firestore.collection("users")
+                .document(linkedUser.uid)
+                .set(linkedUserData)
+                .await()
+            
+            cacheUser(linkedUserData)
+            Result.success(linkedUserData)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    // 🧠 SMART PHONE ACCOUNT LINKING! 🧠
+    suspend fun linkAnonymousAccountWithPhone(
+        phoneNumber: String,
+        displayName: String,
+        userType: UserType = UserType.REGULAR
+    ): Result<User> {
+        if (!isNetworkAvailable()) {
+            return Result.failure(Exception("No network connection"))
+        }
+        
+        return try {
+            val currentUser = auth.currentUser ?: throw Exception("No anonymous user to link")
+            
+            // Get existing anonymous user data to preserve algorithm
+            val existingUserDoc = firestore.collection("users")
+                .document(currentUser.uid)
+                .get()
+                .await()
+            
+            val existingUser = if (existingUserDoc.exists()) {
+                existingUserDoc.toObject(User::class.java)?.copy(id = existingUserDoc.id)
+            } else {
+                createAnonymousUser(currentUser.uid)
+            } ?: throw Exception("Failed to get existing user data")
+            
+            // 🧠 PRESERVE ALGORITHM DATA - SMART MERGE! 🧠
+            val username = generateUsername(displayName, phoneNumber)
+            val linkedUserData = User(
+                id = currentUser.uid,
+                email = "",
+                displayName = displayName,
+                username = username,
+                phoneNumber = phoneNumber,
+                userType = userType,
+                rank = UserRank.NOVICE,
+                followers = existingUser.followers, // Preserve existing followers
+                following = existingUser.following, // Preserve existing following
+                bio = "",
+                // 🧠 PRESERVE ALGORITHM DATA! 🧠
+                profilePictureUrl = existingUser.profilePictureUrl,
+                profileImageUrl = existingUser.profileImageUrl,
+                isInfluencer = existingUser.isInfluencer,
+                businessId = existingUser.businessId,
+                createdAt = existingUser.createdAt, // Keep original creation date
+                updatedAt = System.currentTimeMillis()
+            )
+            
+            // Update user document with linked data
+            firestore.collection("users")
+                .document(currentUser.uid)
+                .set(linkedUserData)
+                .await()
+            
+            cacheUser(linkedUserData)
+            Result.success(linkedUserData)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    // 🧠 CREATE ANONYMOUS USER WITH SMART ALGORITHM DATA! 🧠
+    private fun createAnonymousUser(uid: String): User {
+        return User(
+            id = uid,
+            email = "",
+            displayName = "Anonymous User",
+            username = "anon_${uid.takeLast(8)}",
+            phoneNumber = "",
+            userType = UserType.REGULAR,
+            rank = UserRank.NOVICE,
+            followers = emptyList(),
+            following = emptyList(),
+            bio = "",
+            profilePictureUrl = "",
+            profileImageUrl = "",
+            isInfluencer = false,
+            businessId = null,
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
+        )
+    }
     
     suspend fun signUp(email: String, password: String, userType: UserType, phoneNumber: String? = null): Result<User> {
         if (!isNetworkAvailable()) {
@@ -142,7 +339,6 @@ class AuthRepository @Inject constructor(
             val user = User(
                 id = firebaseUser.uid,
                 email = email,
-
                 displayName = username,
                 phoneNumber = phoneNumber ?: "",
                 userType = userType,
@@ -254,22 +450,25 @@ class AuthRepository @Inject constructor(
         prefs.edit().clear().apply()
     }
     
-    suspend fun signInWithPhone(phoneNumber: String, verificationCode: String): Result<User> {
+    suspend fun signUpWithPhone(phoneNumber: String, displayName: String, userType: UserType): Result<User> {
         if (!isNetworkAvailable()) {
             return Result.failure(Exception("No network connection"))
         }
         
         return try {
-            // This would require Firebase Phone Auth setup
-            // For now, we'll create a user with phone number
-            val username = generateUsername(phoneNumber)
+            val username = generateUsername(displayName, phoneNumber)
             
             val newUser = User(
                 id = "phone_${System.currentTimeMillis()}",
                 email = "",
-                displayName = username,
+                displayName = displayName,
+                username = username,
                 phoneNumber = phoneNumber,
-                userType = UserType.REGULAR,
+                userType = userType,
+                rank = UserRank.NOVICE,
+                followers = emptyList(),
+                following = emptyList(),
+                bio = "",
                 createdAt = System.currentTimeMillis(),
                 updatedAt = System.currentTimeMillis()
             )
@@ -282,9 +481,43 @@ class AuthRepository @Inject constructor(
         }
     }
     
-    private fun generateUsername(emailOrPhone: String): String {
-        val base = emailOrPhone.split("@")[0].replace(Regex("[^a-zA-Z0-9]"), "")
-        val randomSuffix = (1000..9999).random()
-        return "${base}${randomSuffix}"
+    suspend fun signInWithPhone(phoneNumber: String): Result<User> {
+        if (!isNetworkAvailable()) {
+            return Result.failure(Exception("No network connection"))
+        }
+        
+        return try {
+            // Check if user exists with this phone number
+            val userQuery = firestore.collection("users")
+                .whereEqualTo("phoneNumber", phoneNumber)
+                .limit(1)
+                .get()
+                .await()
+            
+            if (userQuery.documents.isNotEmpty()) {
+                val userDoc = userQuery.documents[0]
+                val user = userDoc.toObject(User::class.java)?.copy(id = userDoc.id)
+                    ?: throw Exception("User data corrupted")
+                cacheUser(user)
+                Result.success(user)
+            } else {
+                Result.failure(Exception("No account found with this phone number"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    private fun generateUsername(email: String): String {
+        val base = email.split("@")[0].replace(Regex("[^a-zA-Z0-9]"), "").take(8)
+        val randomSuffix = (100..999).random()
+        return "${base}${randomSuffix}".lowercase()
+    }
+    
+    private fun generateUsername(displayName: String, phoneNumber: String): String {
+        val base = displayName.replace(Regex("[^a-zA-Z0-9]"), "").take(8)
+        val phoneSuffix = phoneNumber.takeLast(4)
+        val randomSuffix = (100..999).random()
+        return "${base}${phoneSuffix}${randomSuffix}".lowercase()
     }
 }

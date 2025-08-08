@@ -16,7 +16,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.littlegig.app.presentation.LittleGigApp
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -49,6 +48,9 @@ class MainActivity : ComponentActivity() {
             .build()
         
         googleSignInClient = GoogleSignIn.getClient(this, gso)
+        
+        // 🔥 AUTOMATIC ANONYMOUS AUTHENTICATION - TIKTOK STYLE! 🔥
+        // Anonymous auth will be handled in LittleGigApp
         
         setContent {
             LittleGigApp()

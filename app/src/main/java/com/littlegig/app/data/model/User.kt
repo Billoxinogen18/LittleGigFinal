@@ -10,6 +10,7 @@ data class User(
     val email: String = "",
     val name: String = "",
     val displayName: String = "",
+    val username: String = "",
     val phoneNumber: String = "",
     val profilePictureUrl: String = "",
     val profileImageUrl: String = "",

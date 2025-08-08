@@ -98,6 +98,124 @@ class UserRepository @Inject constructor(
         }
     }
     
+    suspend fun searchUsers(query: String): List<User> {
+        return try {
+            val queryLower = query.lowercase()
+            
+            // Search by username, email, displayName, and phoneNumber
+            val results = mutableListOf<User>()
+            
+            // Search by username
+            val usernameQuery = firestore.collection("users")
+                .whereGreaterThanOrEqualTo("username", queryLower)
+                .whereLessThanOrEqualTo("username", queryLower + '\uf8ff')
+                .limit(10)
+                .get()
+                .await()
+            
+            usernameQuery.documents.forEach { doc ->
+                val user = doc.toObject(User::class.java)?.copy(id = doc.id)
+                if (user != null && user !in results) {
+                    results.add(user)
+                }
+            }
+            
+            // Search by email
+            val emailQuery = firestore.collection("users")
+                .whereGreaterThanOrEqualTo("email", queryLower)
+                .whereLessThanOrEqualTo("email", queryLower + '\uf8ff')
+                .limit(10)
+                .get()
+                .await()
+            
+            emailQuery.documents.forEach { doc ->
+                val user = doc.toObject(User::class.java)?.copy(id = doc.id)
+                if (user != null && user !in results) {
+                    results.add(user)
+                }
+            }
+            
+            // Search by displayName
+            val nameQuery = firestore.collection("users")
+                .whereGreaterThanOrEqualTo("displayName", queryLower)
+                .whereLessThanOrEqualTo("displayName", queryLower + '\uf8ff')
+                .limit(10)
+                .get()
+                .await()
+            
+            nameQuery.documents.forEach { doc ->
+                val user = doc.toObject(User::class.java)?.copy(id = doc.id)
+                if (user != null && user !in results) {
+                    results.add(user)
+                }
+            }
+            
+            // Search by phoneNumber
+            val phoneQuery = firestore.collection("users")
+                .whereGreaterThanOrEqualTo("phoneNumber", query)
+                .whereLessThanOrEqualTo("phoneNumber", query + '\uf8ff')
+                .limit(10)
+                .get()
+                .await()
+            
+            phoneQuery.documents.forEach { doc ->
+                val user = doc.toObject(User::class.java)?.copy(id = doc.id)
+                if (user != null && user !in results) {
+                    results.add(user)
+                }
+            }
+            
+            // Remove duplicates and limit results
+            results.distinctBy { it.id }.take(20)
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+    
+    suspend fun followUser(followerId: String, followingId: String): Result<Unit> {
+        return try {
+            val followerRef = firestore.collection("users").document(followerId)
+            val followingRef = firestore.collection("users").document(followingId)
+            
+            firestore.runTransaction { transaction ->
+                val followerDoc = transaction.get(followerRef)
+                val followingDoc = transaction.get(followingRef)
+                
+                val followerFollowing = followerDoc.get("following") as? List<String> ?: emptyList()
+                val followingFollowers = followingDoc.get("followers") as? List<String> ?: emptyList()
+                
+                transaction.update(followerRef, "following", followerFollowing + followingId)
+                transaction.update(followingRef, "followers", followingFollowers + followerId)
+            }.await()
+            
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun unfollowUser(followerId: String, followingId: String): Result<Unit> {
+        return try {
+            val followerRef = firestore.collection("users").document(followerId)
+            val followingRef = firestore.collection("users").document(followingId)
+            
+            firestore.runTransaction { transaction ->
+                val followerDoc = transaction.get(followerRef)
+                val followingDoc = transaction.get(followingRef)
+                
+                val followerFollowing = followerDoc.get("following") as? List<String> ?: emptyList()
+                val followingFollowers = followingDoc.get("followers") as? List<String> ?: emptyList()
+                
+                transaction.update(followerRef, "following", followerFollowing - followingId)
+                transaction.update(followingRef, "followers", followingFollowers - followerId)
+            }.await()
+            
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
     suspend fun getFollowers(userId: String): Result<List<User>> {
         return try {
             val userDoc = firestore.collection("users").document(userId).get().await()
@@ -142,24 +260,7 @@ class UserRepository @Inject constructor(
         }
     }
     
-    suspend fun searchUsers(query: String): Result<List<User>> {
-        return try {
-            val snapshot = firestore.collection("users")
-                .whereGreaterThanOrEqualTo("name", query)
-                .whereLessThanOrEqualTo("name", query + '\uf8ff')
-                .limit(20)
-                .get()
-                .await()
-            
-            val users = snapshot.documents.mapNotNull { doc ->
-                doc.toObject(User::class.java)?.copy(id = doc.id)
-            }
-            
-            Result.success(users)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
+
     
     suspend fun updateUserRank(userId: String, newRank: UserRank): Result<Unit> {
         return try {
