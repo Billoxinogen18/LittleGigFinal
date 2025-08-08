@@ -205,6 +205,15 @@ class AccountViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true, error = null, isSuccess = false)
             
             try {
+                val currentUser = authRepository.currentUser.first()
+                if (currentUser == null) {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = "User not found"
+                    )
+                    return@launch
+                }
+                
                 val updates = mutableMapOf<String, Any>()
                 
                 if (displayName.isNotBlank()) {
@@ -222,27 +231,44 @@ class AccountViewModel @Inject constructor(
                 
                 // Upload profile image if selected
                 if (profileImageUri != null) {
-                    val currentUser = authRepository.currentUser.value
-                    if (currentUser != null) {
+                    try {
                         val imageUrl = userRepository.uploadProfilePicture(currentUser.id, profileImageUri)
                         updates["profilePictureUrl"] = imageUrl
+                    } catch (e: Exception) {
+                        println("🔥 DEBUG: Failed to upload profile picture: ${e.message}")
+                        // Continue without image upload
                     }
                 }
                 
-                authRepository.updateProfile(updates)
-                    .onSuccess {
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            isSuccess = true
-                        )
-                    }
-                    .onFailure { error ->
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            error = error.message
-                        )
-                    }
+                // Update the profile in Firestore
+                val result = userRepository.updateUserProfile(currentUser.id, updates)
+                
+                if (result.isSuccess) {
+                    // Update the cached user with new data
+                    val updatedUser = currentUser.copy(
+                        displayName = displayName.ifBlank { currentUser.displayName },
+                        email = email.ifBlank { currentUser.email },
+                        phoneNumber = phoneNumber.ifBlank { currentUser.phoneNumber },
+                        bio = bio.ifBlank { currentUser.bio },
+                        profilePictureUrl = updates["profilePictureUrl"] as? String ?: currentUser.profilePictureUrl,
+                        updatedAt = System.currentTimeMillis()
+                    )
+                    
+                    // Update the cached user
+                    authRepository.cacheUser(updatedUser)
+                    
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        isSuccess = true
+                    )
+                } else {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = result.exceptionOrNull()?.message ?: "Failed to update profile"
+                    )
+                }
             } catch (e: Exception) {
+                println("🔥 DEBUG: Profile update error: ${e.message}")
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = e.message

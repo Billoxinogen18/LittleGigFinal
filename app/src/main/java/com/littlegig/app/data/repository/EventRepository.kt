@@ -61,22 +61,28 @@ class EventRepository @Inject constructor(
         
         // Try cache first
         getCachedEvents(cacheKey)?.let { cachedEvents ->
+            println("🔥 DEBUG: Returning cached events: ${cachedEvents.size}")
             trySend(cachedEvents)
         }
         
         if (!isNetworkAvailable()) {
             // Return cached data if available, otherwise empty list
-            trySend(getCachedEvents(cacheKey) ?: emptyList())
+            val cachedData = getCachedEvents(cacheKey) ?: emptyList()
+            println("🔥 DEBUG: No network, returning cached data: ${cachedData.size}")
+            trySend(cachedData)
             return@callbackFlow
         }
         
+        println("🔥 DEBUG: Starting Firestore query for events")
         val listener = firestore.collection("events")
             .whereEqualTo("isActive", true)
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
+                    println("🔥 DEBUG: Firestore error: ${error.message}")
                     // Try to return cached data on error
                     val cachedData = getCachedEvents(cacheKey) ?: emptyList()
+                    println("🔥 DEBUG: Returning cached data on error: ${cachedData.size}")
                     trySend(cachedData)
                     return@addSnapshotListener
                 }
@@ -84,6 +90,11 @@ class EventRepository @Inject constructor(
                 val events = snapshot?.documents?.mapNotNull { doc ->
                     doc.toObject(Event::class.java)?.copy(id = doc.id)
                 } ?: emptyList()
+                
+                println("🔥 DEBUG: Firestore returned ${events.size} events")
+                events.forEach { event ->
+                    println("🔥 DEBUG: Event: ${event.title} - ${event.id}")
+                }
                 
                 // Cache the events
                 cacheEvents(cacheKey, events)
@@ -93,10 +104,13 @@ class EventRepository @Inject constructor(
         awaitClose { listener.remove() }
     }.retry(3) { cause ->
         // Retry up to 3 times with exponential backoff
+        println("🔥 DEBUG: Retrying event query due to: ${cause.message}")
         cause is Exception && isNetworkAvailable()
     }.catch { error ->
         // Return cached data on error
+        println("🔥 DEBUG: Caught error in event query: ${error.message}")
         val cachedData = getCachedEvents("all_events") ?: emptyList()
+        println("🔥 DEBUG: Returning cached data on catch: ${cachedData.size}")
         emit(cachedData)
     }
     

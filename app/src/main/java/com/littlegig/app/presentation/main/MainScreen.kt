@@ -104,6 +104,19 @@ fun MainScreen(
                     composable("chat") {
                         ChatScreen(navController = navController)
                     }
+                    composable("auth") {
+                        AuthScreen(
+                            onGoogleSignIn = { 
+                                // 🔥 REAL GOOGLE SIGN-IN HANDLING! 🔥
+                                val mainActivity = navController.context as? com.littlegig.app.presentation.MainActivity
+                                mainActivity?.startGoogleSignIn()
+                            },
+                            onAuthSuccess = { 
+                                // Navigate back to previous screen after successful auth
+                                navController.popBackStack()
+                            }
+                        )
+                    }
                     composable("account") {
                         AccountScreen(
                             navController = navController,
@@ -141,19 +154,6 @@ fun MainScreen(
                         ChatDetailsScreen(
                             chatId = chatId,
                             navController = navController
-                        )
-                    }
-                    composable("auth") {
-                        AuthScreen(
-                            onGoogleSignIn = { 
-                                // 🔥 REAL GOOGLE SIGN-IN HANDLING! 🔥
-                                val mainActivity = navController.context as? com.littlegig.app.presentation.MainActivity
-                                mainActivity?.startGoogleSignIn()
-                            },
-                            onAuthSuccess = { 
-                                // Navigate back to previous screen after successful auth
-                                navController.popBackStack()
-                            }
                         )
                     }
                 }
