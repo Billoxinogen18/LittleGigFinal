@@ -67,6 +67,14 @@ class TicketsViewModel @Inject constructor(
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
     }
+    
+    fun showQrScanner() {
+        _uiState.value = _uiState.value.copy(showQrScanner = true)
+    }
+    
+    fun hideQrScanner() {
+        _uiState.value = _uiState.value.copy(showQrScanner = false)
+    }
 
     fun handleQrCodeScan(qrData: String) {
         viewModelScope.launch {
@@ -98,5 +106,6 @@ data class TicketsUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val isSuccess: Boolean = false,
-    val successMessage: String? = null
+    val successMessage: String? = null,
+    val showQrScanner: Boolean = false
 )

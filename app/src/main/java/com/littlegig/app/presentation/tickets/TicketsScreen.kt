@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -62,6 +63,60 @@ fun TicketsScreen(
         }
     }
 
+    // QR Scanner Dialog
+    if (uiState.showQrScanner) {
+        AlertDialog(
+            onDismissRequest = { viewModel.hideQrScanner() },
+            title = {
+                Text(
+                    text = "QR Code Scanner",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White
+                )
+            },
+            text = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.QrCodeScanner,
+                        contentDescription = null,
+                        modifier = Modifier.size(64.dp),
+                        tint = LittleGigPrimary
+                    )
+                    Text(
+                        text = "QR Scanner functionality will be implemented soon. For now, you can manually enter ticket codes.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White.copy(alpha = 0.8f),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            },
+            confirmButton = {
+                NeumorphicButton(
+                    onClick = { 
+                        viewModel.hideQrScanner()
+                        // Simulate QR scan for demo
+                        viewModel.handleQrCodeScan("DEMO_TICKET_123")
+                    }
+                ) {
+                    Text("Demo Scan")
+                }
+            },
+            dismissButton = {
+                NeumorphicButton(
+                    onClick = { viewModel.hideQrScanner() }
+                ) {
+                    Text("Cancel")
+                }
+            },
+            containerColor = Color(0xFF1E293B),
+            titleContentColor = Color.White,
+            textContentColor = Color.White
+        )
+    }
+    
     // Proper dark/light mode background
     Box(
         modifier = Modifier
@@ -109,10 +164,8 @@ fun TicketsScreen(
                         
                         IconButton(
                             onClick = { 
-                                // Launch QR scanner
-                                val intent = Intent("com.google.zxing.client.android.SCAN")
-                                intent.putExtra("SCAN_MODE", "QR_CODE_MODE")
-                                qrScannerLauncher.launch(intent)
+                                // Show QR scanner dialog instead of launching external app
+                                viewModel.showQrScanner()
                             }
                         ) {
                             Icon(

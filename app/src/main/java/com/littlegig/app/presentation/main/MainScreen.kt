@@ -26,6 +26,8 @@ import com.littlegig.app.presentation.map.MapScreen
 import com.littlegig.app.presentation.settings.SettingsScreen
 import com.littlegig.app.presentation.tickets.TicketsScreen
 import com.littlegig.app.presentation.upload.UploadScreen
+import com.littlegig.app.presentation.payments.PaymentsScreen
+import com.littlegig.app.presentation.auth.AuthScreen
 import com.littlegig.app.presentation.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -128,19 +130,19 @@ fun MainScreen(
                         )
                     }
                     composable("payments") {
-                        // Placeholder Payments Screen
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Payments Screen - Coming Soon")
-                        }
+                        PaymentsScreen(navController = navController)
                     }
                     composable("chat_details/{chatId}") { backStackEntry ->
                         val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
                         ChatDetailsScreen(
                             chatId = chatId,
                             navController = navController
+                        )
+                    }
+                    composable("auth") {
+                        AuthScreen(
+                            onGoogleSignIn = { /* Handle Google Sign-In */ },
+                            onAuthSuccess = { /* Handle auth success */ }
                         )
                     }
                 }

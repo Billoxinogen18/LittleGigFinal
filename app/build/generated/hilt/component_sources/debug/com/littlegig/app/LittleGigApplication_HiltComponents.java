@@ -11,6 +11,7 @@ import com.littlegig.app.presentation.chat.ChatViewModel_HiltModules;
 import com.littlegig.app.presentation.events.EventDetailsViewModel_HiltModules;
 import com.littlegig.app.presentation.events.EventsViewModel_HiltModules;
 import com.littlegig.app.presentation.map.MapViewModel_HiltModules;
+import com.littlegig.app.presentation.payments.PaymentsViewModel_HiltModules;
 import com.littlegig.app.presentation.recaps.RecapsUploadViewModel_HiltModules;
 import com.littlegig.app.presentation.settings.SettingsViewModel_HiltModules;
 import com.littlegig.app.presentation.tickets.TicketsViewModel_HiltModules;
@@ -170,6 +171,7 @@ public final class LittleGigApplication_HiltComponents {
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class,
           MapViewModel_HiltModules.KeyModule.class,
+          PaymentsViewModel_HiltModules.KeyModule.class,
           RecapsUploadViewModel_HiltModules.KeyModule.class,
           SettingsViewModel_HiltModules.KeyModule.class,
           TicketsViewModel_HiltModules.KeyModule.class,
@@ -219,6 +221,7 @@ public final class LittleGigApplication_HiltComponents {
           EventsViewModel_HiltModules.BindsModule.class,
           HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
           MapViewModel_HiltModules.BindsModule.class,
+          PaymentsViewModel_HiltModules.BindsModule.class,
           RecapsUploadViewModel_HiltModules.BindsModule.class,
           SettingsViewModel_HiltModules.BindsModule.class,
           TicketsViewModel_HiltModules.BindsModule.class,
