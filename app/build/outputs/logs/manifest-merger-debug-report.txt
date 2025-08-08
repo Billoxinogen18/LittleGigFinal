@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-62:12
-INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-62:12
-INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-62:12
-INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-62:12
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-70:12
+INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-70:12
+INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-70:12
+INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:2:1-70:12
 MERGED from [androidx.databinding:viewbinding:8.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/d8f5426492a19acda13d161f039f462e/transformed/jetified-viewbinding-8.1.0/AndroidManifest.xml:2:1-7:12
 MERGED from [io.coil-kt:coil-compose:2.4.0] /Users/israelbill/.gradle/caches/8.14/transforms/c7f9e30bea7c29cf7adaadb8c0f9e792/transformed/jetified-coil-compose-2.4.0/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.accompanist:accompanist-permissions:0.30.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6b6cb66480e8c398e75f954f528beed/transformed/jetified-accompanist-permissions-0.30.1/AndroidManifest.xml:17:1-25:12
@@ -276,8 +276,8 @@ ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.
 	android:name
 		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:12:22-78
 application
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:15:5-60:19
-INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:15:5-60:19
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:15:5-68:19
+INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:15:5-68:19
 MERGED from [com.google.firebase:firebase-crashlytics-ktx:18.4.1] /Users/israelbill/.gradle/caches/8.14/transforms/3a788d65820b0648a7b8d3301eccfc09/transformed/jetified-firebase-crashlytics-ktx-18.4.1/AndroidManifest.xml:20:5-28:19
 MERGED from [com.google.firebase:firebase-crashlytics-ktx:18.4.1] /Users/israelbill/.gradle/caches/8.14/transforms/3a788d65820b0648a7b8d3301eccfc09/transformed/jetified-firebase-crashlytics-ktx-18.4.1/AndroidManifest.xml:20:5-28:19
 MERGED from [androidx.compose.ui:ui-test-manifest:1.5.0] /Users/israelbill/.gradle/caches/8.14/transforms/4ee0cb49d53e13640a40b8b58f2946bb/transformed/jetified-ui-test-manifest-1.5.0/AndroidManifest.xml:22:5-26:19
@@ -417,7 +417,7 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/israelbill/.gradle/c
 	android:name
 		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:16:9-45
 activity#com.littlegig.app.presentation.MainActivity
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:27:9-36:20
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:27:9-44:20
 	android:label
 		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:30:13-45
 	android:exported
@@ -436,30 +436,48 @@ category#android.intent.category.LAUNCHER
 ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:34:17-77
 	android:name
 		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:34:27-74
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:scheme:com.littlegig.app
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:38:13-43:29
+action#android.intent.action.VIEW
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:39:17-69
+	android:name
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:39:25-66
+category#android.intent.category.DEFAULT
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:40:17-76
+	android:name
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:40:27-73
+category#android.intent.category.BROWSABLE
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:41:17-78
+	android:name
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:41:27-75
+data
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:42:17-60
+	android:scheme
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:42:23-57
 service#com.littlegig.app.service.LittleGigFirebaseMessagingService
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:38:9-44:19
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:46:9-52:19
 	android:exported
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:40:13-37
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:48:13-37
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:39:13-70
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:47:13-70
 intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:41:13-43:29
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:49:13-51:29
 action#com.google.firebase.MESSAGING_EVENT
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:42:17-78
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:50:17-78
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:42:25-75
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:50:25-75
 meta-data#com.google.android.geo.API_KEY
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:47:9-49:55
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:55:9-57:55
 	android:value
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:49:13-52
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:57:13-52
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:48:13-58
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:56:13-58
 service#com.littlegig.app.services.LittleGigMessagingService
-ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:52:9-58:19
+ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:60:9-66:19
 	android:exported
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:54:13-37
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:62:13-37
 	android:name
-		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:53:13-63
+		ADDED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml:61:13-63
 uses-sdk
 INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/israelbill/Development/LittleGig/app/src/main/AndroidManifest.xml
@@ -936,26 +954,6 @@ ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/
 		ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:30:13-80
 intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:firebase.auth+data:path:/+data:scheme:genericidp
 ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:35:13-45:29
-action#android.intent.action.VIEW
-ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:36:17-69
-	android:name
-		ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:36:25-66
-category#android.intent.category.DEFAULT
-ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:38:17-76
-	android:name
-		ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:38:27-73
-category#android.intent.category.BROWSABLE
-ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:39:17-78
-	android:name
-		ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:39:27-75
-data
-ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:41:17-44:51
-	android:path
-		ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:43:21-37
-	android:host
-		ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:42:21-49
-	android:scheme
-		ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:44:21-48
 activity#com.google.firebase.auth.internal.RecaptchaActivity
 ADDED from [com.google.firebase:firebase-auth:22.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/e6ddf395aa7c2f69622b005959e86e34/transformed/jetified-firebase-auth-22.1.1/AndroidManifest.xml:47:9-64:20
 	android:excludeFromRecents

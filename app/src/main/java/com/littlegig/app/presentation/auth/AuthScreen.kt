@@ -519,12 +519,18 @@ fun NeumorphicTextField(
     modifier: Modifier = Modifier
 ) {
     var isFocused by remember { mutableStateOf(false) }
+    val isDark = isSystemInDarkTheme()
     
     val animatedBorderColor by animateColorAsState(
         targetValue = if (isFocused) LittleGigPrimary else Color.Transparent,
         animationSpec = tween(300),
         label = "border_color"
     )
+    
+    // Use proper theme colors for text visibility
+    val textColor = if (isDark) Color(0xFFE0E0E0) else Color(0xFF1A1A1A)
+    val labelColor = if (isDark) Color(0xFFCCCCCC) else Color(0xFF666666)
+    val iconColor = if (isFocused) LittleGigPrimary else (if (isDark) Color(0xFFCCCCCC) else Color(0xFF666666))
     
     LiquidGlassCard(
         modifier = modifier,
@@ -536,14 +542,14 @@ fun NeumorphicTextField(
             label = { 
                 Text(
                     label,
-                    color = Color.White.copy(alpha = 0.7f)
+                    color = labelColor
                 )
             },
             leadingIcon = { 
                 Icon(
                     leadingIcon, 
                     contentDescription = null,
-                    tint = if (isFocused) LittleGigPrimary else Color.White.copy(alpha = 0.7f)
+                    tint = iconColor
                 ) 
             },
             trailingIcon = trailingIcon?.let { icon ->
@@ -552,7 +558,7 @@ fun NeumorphicTextField(
                         Icon(
                             icon,
                             contentDescription = null,
-                            tint = Color.White.copy(alpha = 0.7f)
+                            tint = iconColor
                         )
                     }
                 }
@@ -568,8 +574,8 @@ fun NeumorphicTextField(
                 unfocusedBorderColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
+                focusedTextColor = textColor,
+                unfocusedTextColor = textColor,
                 cursorColor = LittleGigPrimary
             ),
             shape = RoundedCornerShape(16.dp)

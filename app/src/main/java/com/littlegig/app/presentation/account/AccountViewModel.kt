@@ -72,27 +72,33 @@ class AccountViewModel @Inject constructor(
     fun upgradeToBusinessAccount() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null, isSuccess = false)
-            
             try {
                 val user = authRepository.currentUser.first()
                 if (user != null) {
                     // Update user type to business
-                    userRepository.updateUserProfile(user.id, mapOf(
+                    val result = userRepository.updateUserProfile(user.id, mapOf(
                         "userType" to UserType.BUSINESS,
                         "updatedAt" to System.currentTimeMillis()
                     ))
-                        .onSuccess {
-                            _uiState.value = _uiState.value.copy(
-                                isLoading = false,
-                                isSuccess = true
-                            )
-                        }
-                        .onFailure { error ->
-                            _uiState.value = _uiState.value.copy(
-                                isLoading = false,
-                                error = error.message
-                            )
-                        }
+                    
+                    if (result.isSuccess) {
+                        // Also update the cached user in AuthRepository
+                        val updatedUser = user.copy(
+                            userType = UserType.BUSINESS,
+                            updatedAt = System.currentTimeMillis()
+                        )
+                        authRepository.cacheUser(updatedUser)
+                        
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            isSuccess = true
+                        )
+                    } else {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            error = result.exceptionOrNull()?.message ?: "Failed to upgrade account"
+                        )
+                    }
                 } else {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,

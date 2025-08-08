@@ -38,6 +38,11 @@ class AuthRepository @Inject constructor(
     private val userCache = mutableMapOf<String, User>()
     private val CACHE_DURATION = 10 * 60 * 1000L // 10 minutes
     
+    fun cacheUser(user: User) {
+        userCache[user.id] = user
+        prefs.edit().putLong("user_cache_time_${user.id}", System.currentTimeMillis()).apply()
+    }
+    
     private fun isNetworkAvailable(): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork ?: return false
@@ -57,11 +62,6 @@ class AuthRepository @Inject constructor(
             return null
         }
         return userCache[userId]
-    }
-    
-    private fun cacheUser(user: User) {
-        userCache[user.id] = user
-        prefs.edit().putLong("user_cache_time_${user.id}", System.currentTimeMillis()).apply()
     }
     
     val currentUser: StateFlow<User?> = callbackFlow {
