@@ -162,10 +162,7 @@ class AuthRepository @Inject constructor(
             val anonymousUser = createAnonymousUser(firebaseUser.uid)
             
             // Save anonymous user data to Firestore
-            firestore.collection("users")
-                .document(firebaseUser.uid)
-                .set(anonymousUser)
-                .await()
+            saveAnonymousUserData(anonymousUser)
             
             cacheUser(anonymousUser)
             Result.success(anonymousUser)
@@ -447,21 +444,16 @@ class AuthRepository @Inject constructor(
     }
     
     // 🔥 SAVE ANONYMOUS USER DATA TO FIRESTORE! 🔥
-    suspend fun saveAnonymousUserData(user: User): Result<Unit> {
-        if (!isNetworkAvailable()) {
-            return Result.failure(Exception("No network connection"))
-        }
-        
-        return try {
+    private suspend fun saveAnonymousUserData(user: User) {
+        try {
             firestore.collection("users")
                 .document(user.id)
                 .set(user)
                 .await()
-            
-            cacheUser(user)
-            Result.success(Unit)
+            println("🔥 DEBUG: Anonymous user data saved to Firestore: ${user.id}")
         } catch (e: Exception) {
-            Result.failure(e)
+            println("🔥 DEBUG: Failed to save anonymous user data: ${e.message}")
+            // Continue without saving to Firestore for now
         }
     }
     

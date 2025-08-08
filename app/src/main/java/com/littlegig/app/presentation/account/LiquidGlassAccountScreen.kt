@@ -343,7 +343,7 @@ fun LiquidGlassAccountScreen(
                                     )
                                 },
                             shape = RoundedCornerShape(16.dp),
-                            color = Error.copy(alpha = 0.1f)
+                            color = ErrorRed.copy(alpha = 0.1f)
                         ) {
                             Row(
                                 modifier = Modifier
@@ -354,7 +354,7 @@ fun LiquidGlassAccountScreen(
                                 Icon(
                                     imageVector = Icons.Default.Logout,
                                     contentDescription = null,
-                                    tint = Error,
+                                    tint = ErrorRed,
                                     modifier = Modifier.size(20.dp)
                                 )
                                 
@@ -363,7 +363,7 @@ fun LiquidGlassAccountScreen(
                                 Text(
                                     text = "Sign Out",
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = Error
+                                    color = ErrorRed
                                 )
                             }
                         }

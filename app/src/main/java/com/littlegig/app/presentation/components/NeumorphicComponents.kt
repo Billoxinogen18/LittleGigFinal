@@ -90,7 +90,7 @@ fun NeumorphicButton(
                 width = 1.dp,
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        if (isDark) FrostedGlassDark else FrostedGlass,
+                        if (isDark) GlassmorphicDark else GlassmorphicLight,
                         Color.Transparent
                     )
                 )
@@ -189,9 +189,9 @@ fun LiquidGlassCard(
                 width = 1.dp,
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        if (isDark) FrostedGlassDark else FrostedGlass,
+                        if (isDark) GlassmorphicDark else GlassmorphicLight,
                         Color.Transparent,
-                        if (isDark) FrostedGlassDark else FrostedGlass
+                        if (isDark) GlassmorphicDark else GlassmorphicLight
                     )
                 )
             )
@@ -202,9 +202,9 @@ fun LiquidGlassCard(
                     .background(
                         Brush.linearGradient(
                             colors = listOf(
-                                if (isDark) GlassDark else GlassWhite,
+                                if (isDark) GlassmorphicDark else GlassmorphicLight,
                                 Color.Transparent,
-                                if (isDark) GlassDark else GlassWhite
+                                if (isDark) GlassmorphicDark else GlassmorphicLight
                             ),
                             start = Offset(shimmerOffset * 100f, 0f),
                             end = Offset((shimmerOffset + 0.3f) * 100f, 100f)
@@ -275,7 +275,7 @@ fun NeumorphicCircleButton(
                 width = 1.dp,
                 brush = Brush.radialGradient(
                     colors = listOf(
-                        if (isDark) FrostedGlassDark else FrostedGlass,
+                        if (isDark) GlassmorphicDark else GlassmorphicLight,
                         Color.Transparent
                     )
                 )
@@ -329,7 +329,7 @@ fun FrostedGlassBottomBar(
             brush = Brush.horizontalGradient(
                 colors = listOf(
                     Color.Transparent,
-                    if (isDark) FrostedGlassDark else FrostedGlass,
+                    if (isDark) GlassmorphicDark else GlassmorphicLight,
                     Color.Transparent
                 )
             )
@@ -356,8 +356,8 @@ private fun DrawScope.drawNeumorphicShadow(
     val shadowOffset = if (pressed) 2.dp.toPx() else 8.dp.toPx()
     val shadowBlur = if (pressed) 4.dp.toPx() else 16.dp.toPx()
     
-    val lightShadow = if (isDark) DarkShadowLight else LightShadowLight
-    val darkShadow = if (isDark) DarkShadowDark else LightShadowDark
+    val lightShadow = if (isDark) NeumorphicShadowDark else NeumorphicShadowLight
+    val darkShadow = if (isDark) NeumorphicShadowDark else NeumorphicShadowLight
     
     // Draw dark shadow (bottom-right)
     drawRoundRect(

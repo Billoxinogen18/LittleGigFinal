@@ -5,51 +5,26 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.littlegig.app.presentation.auth.AuthScreen
 import com.littlegig.app.presentation.auth.AuthViewModel
 import com.littlegig.app.presentation.main.MainScreen
 
 @Composable
 fun LittleGigNavigation() {
-    val navController = rememberNavController()
     val authViewModel: AuthViewModel = hiltViewModel()
     val currentUser by authViewModel.currentUser.collectAsState(initial = null)
     
-    // Use LaunchedEffect to handle navigation based on auth state
-    LaunchedEffect(currentUser) {
-        if (currentUser != null) {
-            navController.navigate("main") {
-                popUpTo("auth") { inclusive = true }
-            }
-        } else {
-            navController.navigate("auth") {
-                popUpTo("main") { inclusive = true }
-            }
+    // 🔥 ANONYMOUS AUTHENTICATION - TIKTOK STYLE! 🔥
+    // Automatically sign in anonymously if no user
+    LaunchedEffect(Unit) {
+        if (currentUser == null) {
+            authViewModel.signInAnonymously()
         }
     }
     
-    NavHost(
-        navController = navController,
-        startDestination = "auth"
-    ) {
-        composable("auth") {
-            AuthScreen(
-                onAuthSuccess = {
-                    // Navigation will be handled by LaunchedEffect
-                }
-            )
+    // Show main app directly since we're using anonymous auth
+    MainScreen(
+        onSignOut = {
+            authViewModel.signOut()
         }
-        
-        composable("main") {
-            MainScreen(
-                onSignOut = {
-                    authViewModel.signOut()
-                    // Navigation will be handled by LaunchedEffect
-                }
-            )
-        }
-    }
+    )
 }

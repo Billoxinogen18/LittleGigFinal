@@ -45,30 +45,7 @@ fun LittleGigApp() {
             color = Color.Transparent
         ) {
             // 🔥 ANONYMOUS AUTHENTICATION FLOW - TIKTOK STYLE! 🔥
-            val authViewModel: AuthViewModel = hiltViewModel()
-            val currentUser by authViewModel.currentUser.collectAsState()
-            
-            // Automatically sign in anonymously if no user
-            LaunchedEffect(Unit) {
-                if (currentUser == null) {
-                    authViewModel.signInAnonymously()
-                }
-            }
-            
-            if (currentUser != null) {
-                // User is authenticated (anonymous or registered) - show main app
-                LittleGigNavigation()
-            } else {
-                // Show loading while anonymous auth is happening
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = LittleGigPrimary
-                    )
-                }
-            }
+            LittleGigNavigation()
         }
     }
 }

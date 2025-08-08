@@ -245,7 +245,7 @@ fun LiquidGlassEventCard(
                                 .height(4.dp)
                                 .clip(RoundedCornerShape(2.dp)),
                             color = LittleGigSecondary,
-                            trackColor = if (isDark) DarkSurfaceVariant else LightSurfaceVariant
+                            trackColor = if (isDark) DarkSurface else LightSurface
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -469,7 +469,6 @@ fun NeumorphicCategoryChip(
     )
     
     Surface(
-        onClick = onClick,
         modifier = modifier
             .graphicsLayer {
                 alpha = animatedAlpha
@@ -480,7 +479,7 @@ fun NeumorphicCategoryChip(
         color = if (selected) {
             if (isDark) DarkSurface else LightSurface
         } else {
-            if (isDark) DarkSurfaceVariant else LightSurfaceVariant
+                                    if (isDark) DarkSurface else LightSurface
         },
         border = if (selected) {
             androidx.compose.foundation.BorderStroke(
