@@ -43,6 +43,8 @@ import androidx.compose.ui.platform.LocalContext
 import android.content.Intent
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun EventsScreen(
@@ -52,6 +54,9 @@ fun EventsScreen(
     val uiState by viewModel.uiState.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val isDark = isSystemInDarkTheme()
+    
+    // SwipeRefresh state  
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = uiState.isLoading)
     
     LaunchedEffect(Unit) {
         viewModel.loadEvents()
@@ -72,9 +77,16 @@ fun EventsScreen(
                 )
             )
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
+        SwipeRefresh(
+            state = swipeRefreshState,
+            onRefresh = {
+                println("🔥 DEBUG: Pull-to-refresh triggered")
+                viewModel.loadEvents()
+            }
         ) {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
             // Header with search and account - Beautiful neumorphic design
             AdvancedGlassmorphicCard(
                 modifier = Modifier
@@ -348,6 +360,7 @@ fun EventsScreen(
                     }
                 }
             }
+            } // End of SwipeRefresh Column
         }
         
         // Floating action button for quick upload

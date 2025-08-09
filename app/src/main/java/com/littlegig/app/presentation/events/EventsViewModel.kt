@@ -83,6 +83,7 @@ class EventsViewModel @Inject constructor(
     
     fun loadEvents() {
         viewModelScope.launch {
+            println("🔥 DEBUG: EventsViewModel.loadEvents() called")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             try {
@@ -97,7 +98,12 @@ class EventsViewModel @Inject constructor(
                         )
                     }
                     .collect { events ->
+                        println("🔥 DEBUG: EventsViewModel received ${events.size} events")
+                        events.forEach { event ->
+                            println("🔥 DEBUG: Event: ${event.title} - ${event.id}")
+                        }
                         val filteredEvents = personalizeAndFilterEvents(events)
+                        println("🔥 DEBUG: After filtering: ${filteredEvents.size} events")
                         val currentUser = authRepository.currentUser.value
                         var friendsGoingMap: Map<String, Int> = emptyMap()
                         if (currentUser != null) {
@@ -115,6 +121,7 @@ class EventsViewModel @Inject constructor(
                             error = null,
                             eventIdToFriendsGoing = friendsGoingMap
                         )
+                        println("🔥 DEBUG: UI state updated with ${filteredEvents.size} events")
                     }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(

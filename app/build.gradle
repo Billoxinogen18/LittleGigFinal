@@ -118,6 +118,9 @@ dependencies {
     // System UI Controller for immersive design
     implementation 'com.google.accompanist:accompanist-systemuicontroller:0.30.1'
     
+    // SwipeRefresh (deprecated but working)
+    implementation 'com.google.accompanist:accompanist-swiperefresh:0.30.1'
+    
     // Payment Processing (Firebase Functions for Flutterwave)
     // Using Firebase Functions to handle Flutterwave payments
     

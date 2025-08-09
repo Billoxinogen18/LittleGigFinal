@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.delay
 
 @Singleton
 class EventRepository @Inject constructor(
@@ -110,6 +111,38 @@ class EventRepository @Inject constructor(
                     println("🔥 DEBUG: No events found, creating test events")
                     CoroutineScope(Dispatchers.IO).launch {
                         createTestEvents()
+                        // Add a small delay to ensure events are saved
+                        delay(1000)
+                        println("🔥 DEBUG: Test events created, should trigger refresh")
+                        
+                        // Force a refresh by re-querying Firestore
+                        try {
+                            val refreshedEvents = firestore.collection("events")
+                                .whereEqualTo("isActive", true)
+                                .orderBy("createdAt", Query.Direction.DESCENDING)
+                                .get()
+                                .await()
+                                .documents
+                                .mapNotNull { doc ->
+                                    try {
+                                        doc.toObject(Event::class.java)?.copy(id = doc.id)
+                                    } catch (e: Exception) {
+                                        println("🔥 DEBUG: Error parsing refreshed event document ${doc.id}: ${e.message}")
+                                        null
+                                    }
+                                }
+                            
+                            println("🔥 DEBUG: Refreshed query returned ${refreshedEvents.size} events")
+                            refreshedEvents.forEach { event ->
+                                println("🔥 DEBUG: Refreshed Event: ${event.title} - ${event.id}")
+                            }
+                            
+                            // Update the cache with refreshed events
+                            cacheEvents(cacheKey, refreshedEvents)
+                            trySend(refreshedEvents)
+                        } catch (e: Exception) {
+                            println("🔥 DEBUG: Failed to refresh events: ${e.message}")
+                        }
                     }
                 }
                 
