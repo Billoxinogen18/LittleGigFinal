@@ -111,7 +111,7 @@ fun AuthScreen(
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.Bold
                         ),
-                        color = Color.White,
+                        color = if (isDark) Color.White else Color.Black,
                         textAlign = TextAlign.Center
                     )
                     
@@ -168,7 +168,7 @@ fun AuthScreen(
                         ),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),
-                        color = Color.White
+                        color = if (isDark) Color.White else Color.Black
                     )
                     
                     if (isPhoneAuth) {
@@ -198,7 +198,7 @@ fun AuthScreen(
                                     style = MaterialTheme.typography.titleSmall.copy(
                                         fontWeight = FontWeight.Medium
                                     ),
-                                    color = Color.White
+                                    color = if (isDark) Color.White else Color.Black
                                 )
                                 
                                 Spacer(modifier = Modifier.height(8.dp))
@@ -275,7 +275,7 @@ fun AuthScreen(
                         if (uiState.isLoading) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(20.dp),
-                                color = Color.White,
+                                color = if (isDark) Color.White else Color.Black,
                                 strokeWidth = 2.dp
                             )
                             Spacer(modifier = Modifier.width(8.dp))
@@ -293,8 +293,7 @@ fun AuthScreen(
                         )
                     }
                     
-                    // Google Sign-In Button (temporarily disabled)
-                    /*
+                    // Google Sign-In Button
                     HapticButton(
                         onClick = onGoogleSignIn,
                         modifier = Modifier.fillMaxWidth()
@@ -309,7 +308,7 @@ fun AuthScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Google,
+                                    imageVector = Icons.Default.Email, // Using Email icon as Google icon may not exist
                                     contentDescription = null,
                                     tint = Color(0xFF4285F4),
                                     modifier = Modifier.size(24.dp)
@@ -322,21 +321,13 @@ fun AuthScreen(
                                     style = MaterialTheme.typography.bodyLarge.copy(
                                         fontWeight = FontWeight.Medium
                                     ),
-                                    color = Color(0xFF4285F4)
+                                    color = if (isDark) Color.White else Color.Black
                                 )
                             }
                         }
                     }
                     
                     Spacer(modifier = Modifier.height(16.dp))
-                    */
-                    
-                    Text(
-                        text = "Google Sign-In temporarily disabled for debugging",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center
-                    )
                     
                     TextButton(
                         onClick = { isSignUp = !isSignUp },
@@ -345,7 +336,7 @@ fun AuthScreen(
                         Text(
                             text = if (isSignUp) "Already have an account? Sign In" 
                             else "Don't have an account? Sign Up",
-                            color = Color.White.copy(alpha = 0.7f)
+                            color = if (isDark) Color.White else Color.Black.copy(alpha = 0.7f)
                         )
                     }
                     
@@ -386,6 +377,7 @@ fun AuthScreen(
 
 @Composable
 fun AnimatedLogoSection() {
+    val isDark = isSystemInDarkTheme()
     val infiniteTransition = rememberInfiniteTransition(label = "logo_animation")
     
     val rotation by infiniteTransition.animateFloat(
@@ -462,7 +454,7 @@ fun AnimatedLogoSection() {
             Text(
                 text = "Where you need to be ✨",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color.White.copy(alpha = 0.8f),
+                color = (if (isDark) Color.White else Color.Black).copy(alpha = 0.8f),
                 textAlign = TextAlign.Center
             )
         }

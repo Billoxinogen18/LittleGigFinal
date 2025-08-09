@@ -534,16 +534,26 @@ class AuthRepository @Inject constructor(
         }
         
         return try {
-            val currentUser = auth.currentUser ?: throw Exception("No user signed in")
+            val firebaseUser = auth.currentUser ?: throw Exception("No user signed in")
             
             firestore.collection("users")
-                .document(currentUser.uid)
+                .document(firebaseUser.uid)
                 .update(updates)
                 .await()
             
-            // Clear cache to force refresh
-            userCache.clear()
-            prefs.edit().clear().apply()
+            // Update cached user with new data instead of clearing cache
+            val cachedUser = currentUser.value
+            if (cachedUser != null) {
+                val updatedUser = cachedUser.copy(
+                    displayName = updates["displayName"] as? String ?: cachedUser.displayName,
+                    email = updates["email"] as? String ?: cachedUser.email,
+                    phoneNumber = updates["phoneNumber"] as? String ?: cachedUser.phoneNumber,
+                    bio = updates["bio"] as? String ?: cachedUser.bio,
+                    profilePictureUrl = updates["profilePictureUrl"] as? String ?: cachedUser.profilePictureUrl,
+                    updatedAt = System.currentTimeMillis()
+                )
+                cacheUser(updatedUser)
+            }
             
             Result.success(Unit)
         } catch (e: Exception) {

@@ -392,7 +392,7 @@ fun NeumorphicPriceButton(
     currency: String,
     modifier: Modifier = Modifier
 ) {
-    val isDark = isSystemInDarkTheme()
+    // val isDark = isSystemInDarkTheme() // Unused variable removed
     
     if (price > 0) {
         NeumorphicButton(

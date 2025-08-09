@@ -34,6 +34,8 @@ fun AccountScreen(
     LaunchedEffect(uiState.showAccountLinking) {
         if (uiState.showAccountLinking) {
             navController.navigate("auth")
+            // Reset the flag to prevent navigation loops
+            viewModel.clearAccountLinking()
         }
     }
     

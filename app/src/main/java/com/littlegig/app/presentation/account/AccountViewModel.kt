@@ -77,7 +77,7 @@ class AccountViewModel @Inject constructor(
                 if (user != null) {
                     // Update user type to business
                     val result = userRepository.updateUserProfile(user.id, mapOf(
-                        "userType" to UserType.BUSINESS,
+                        "userType" to "BUSINESS", // Use string instead of enum for Firestore compatibility
                         "updatedAt" to System.currentTimeMillis()
                     ))
                     
@@ -164,6 +164,10 @@ class AccountViewModel @Inject constructor(
     
     fun clearSuccess() {
         _uiState.value = _uiState.value.copy(isSuccess = false)
+    }
+    
+    fun clearAccountLinking() {
+        _uiState.value = _uiState.value.copy(showAccountLinking = false)
     }
     
     // 🔥 LINK ANONYMOUS ACCOUNT - PRESERVE ALGORITHM DATA! 🔥

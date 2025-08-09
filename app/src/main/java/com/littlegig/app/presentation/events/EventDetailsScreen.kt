@@ -35,7 +35,7 @@ fun EventDetailsScreen(
     navController: NavController,
     viewModel: EventDetailsViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
+    // val context = LocalContext.current // Unused variable removed
     val isDark = isSystemInDarkTheme()
     
     LaunchedEffect(eventId) {
