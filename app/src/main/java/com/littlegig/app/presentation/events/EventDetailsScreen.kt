@@ -25,6 +25,7 @@ import com.littlegig.app.data.model.Event
 import com.littlegig.app.data.model.User
 import com.littlegig.app.presentation.components.*
 import com.littlegig.app.presentation.theme.*
+import androidx.hilt.navigation.compose.hiltViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,7 +33,7 @@ import java.util.*
 fun EventDetailsScreen(
     eventId: String,
     navController: NavController,
-    viewModel: EventDetailsViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: EventDetailsViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val isDark = isSystemInDarkTheme()

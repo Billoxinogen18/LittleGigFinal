@@ -23,6 +23,7 @@ data class Event(
     val tags: List<String> = emptyList(),
     val active: Boolean = true,
     val isFeatured: Boolean = false,
+    val featured: Boolean = false, // Alias for isFeatured (for Firestore compatibility)
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
 ) : Parcelable
