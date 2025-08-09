@@ -21,7 +21,7 @@ data class Event(
     val organizerName: String = "",
     val organizerImageUrl: String = "",
     val tags: List<String> = emptyList(),
-    val isActive: Boolean = true,
+    val active: Boolean = true,
     val isFeatured: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()

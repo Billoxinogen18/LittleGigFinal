@@ -48,7 +48,7 @@ class BusinessDashboardViewModel @Inject constructor(
                 // Calculate analytics
                 val totalRevenue = calculateTotalRevenue(userEvents)
                 val totalCommission = totalRevenue * 0.04 // 4% commission
-                val activeEvents = userEvents.count { it.isActive }
+                val activeEvents = userEvents.count { it.active }
                 val totalTicketsSold = userEvents.sumOf { it.ticketsSold }
                 
                 _analytics.value = BusinessAnalytics(

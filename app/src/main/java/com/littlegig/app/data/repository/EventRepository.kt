@@ -80,7 +80,7 @@ class EventRepository @Inject constructor(
         
         println("🔥 DEBUG: Starting Firestore query for events")
         val listener = firestore.collection("events")
-            .whereEqualTo("isActive", true)
+            .whereEqualTo("active", true)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     println("🔥 DEBUG: Firestore error: ${error.message}")
@@ -129,14 +129,14 @@ class EventRepository @Inject constructor(
                             
                             // Now try with filter
                             val refreshedEvents = firestore.collection("events")
-                                .whereEqualTo("isActive", true)
+                                .whereEqualTo("active", true)
                                 .get()
                                 .await()
                                 .documents
                                 .mapNotNull { doc ->
                                     try {
                                         val event = doc.toObject(Event::class.java)?.copy(id = doc.id)
-                                        println("🔥 DEBUG: Mapped event: ${event?.title} - isActive: ${event?.isActive}")
+                                        println("🔥 DEBUG: Mapped event: ${event?.title} - active: ${event?.active}")
                                         event
                                     } catch (e: Exception) {
                                         println("🔥 DEBUG: Error parsing refreshed event document ${doc.id}: ${e.message}")
@@ -198,7 +198,7 @@ class EventRepository @Inject constructor(
                     price = 2500.0,
                     capacity = 1000,
                     ticketsSold = 150,
-                    isActive = true,
+                    active = true,
                     isFeatured = true,
                     organizerId = "test_organizer",
                     organizerName = "Test Organizer",
@@ -224,7 +224,7 @@ class EventRepository @Inject constructor(
                     price = 1500.0,
                     capacity = 200,
                     ticketsSold = 75,
-                    isActive = true,
+                    active = true,
                     isFeatured = false,
                     organizerId = "test_organizer",
                     organizerName = "Test Organizer",
@@ -250,7 +250,7 @@ class EventRepository @Inject constructor(
                     price = 3000.0,
                     capacity = 500,
                     ticketsSold = 200,
-                    isActive = true,
+                    active = true,
                     isFeatured = true,
                     organizerId = "test_organizer",
                     organizerName = "Test Organizer",
@@ -289,7 +289,7 @@ class EventRepository @Inject constructor(
         
         val listener = firestore.collection("events")
             .whereEqualTo("category", category.name)
-            .whereEqualTo("isActive", true)
+            .whereEqualTo("active", true)
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -328,7 +328,7 @@ class EventRepository @Inject constructor(
         
         val listener = firestore.collection("events")
             .whereEqualTo("isFeatured", true)
-            .whereEqualTo("isActive", true)
+            .whereEqualTo("active", true)
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .limit(10)
             .addSnapshotListener { snapshot, error ->
