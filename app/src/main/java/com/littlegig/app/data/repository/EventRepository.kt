@@ -81,7 +81,6 @@ class EventRepository @Inject constructor(
         println("🔥 DEBUG: Starting Firestore query for events")
         val listener = firestore.collection("events")
             .whereEqualTo("isActive", true)
-            .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     println("🔥 DEBUG: Firestore error: ${error.message}")
@@ -115,17 +114,30 @@ class EventRepository @Inject constructor(
                         delay(1000)
                         println("🔥 DEBUG: Test events created, should trigger refresh")
                         
-                        // Force a refresh by re-querying Firestore
+                        // Force a refresh by re-querying Firestore - try without filters first
                         try {
+                            // First try getting ALL events (no filters)
+                            val allEvents = firestore.collection("events")
+                                .get()
+                                .await()
+                                .documents
+                            
+                            println("🔥 DEBUG: Raw Firestore collection has ${allEvents.size} documents")
+                            allEvents.forEach { doc ->
+                                println("🔥 DEBUG: Raw document: ${doc.id} - data: ${doc.data}")
+                            }
+                            
+                            // Now try with filter
                             val refreshedEvents = firestore.collection("events")
                                 .whereEqualTo("isActive", true)
-                                .orderBy("createdAt", Query.Direction.DESCENDING)
                                 .get()
                                 .await()
                                 .documents
                                 .mapNotNull { doc ->
                                     try {
-                                        doc.toObject(Event::class.java)?.copy(id = doc.id)
+                                        val event = doc.toObject(Event::class.java)?.copy(id = doc.id)
+                                        println("🔥 DEBUG: Mapped event: ${event?.title} - isActive: ${event?.isActive}")
+                                        event
                                     } catch (e: Exception) {
                                         println("🔥 DEBUG: Error parsing refreshed event document ${doc.id}: ${e.message}")
                                         null
