@@ -342,6 +342,7 @@ fun EventsScreen(
                 }
             }
         }
+        }
         
         // Floating action button for quick upload
         Box(
