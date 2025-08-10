@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /workspace/app/src/main/AndroidManifest.xml:2:1-79:12
-INJECTED from /workspace/app/src/main/AndroidManifest.xml:2:1-79:12
-INJECTED from /workspace/app/src/main/AndroidManifest.xml:2:1-79:12
-INJECTED from /workspace/app/src/main/AndroidManifest.xml:2:1-79:12
+ADDED from /workspace/app/src/main/AndroidManifest.xml:2:1-71:12
+INJECTED from /workspace/app/src/main/AndroidManifest.xml:2:1-71:12
+INJECTED from /workspace/app/src/main/AndroidManifest.xml:2:1-71:12
+INJECTED from /workspace/app/src/main/AndroidManifest.xml:2:1-71:12
 MERGED from [androidx.databinding:viewbinding:8.4.2] /home/ubuntu/.gradle/caches/8.14/transforms/de4ea53c64b0adca2da706bbf37d6b57/transformed/viewbinding-8.4.2/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.firebase:firebase-perf-ktx:21.0.1] /home/ubuntu/.gradle/caches/8.14/transforms/a69ecef5926416f89301ff3f050d4ff2/transformed/firebase-perf-ktx-21.0.1/AndroidManifest.xml:2:1-18:12
 MERGED from [com.google.firebase:firebase-perf:21.0.1] /home/ubuntu/.gradle/caches/8.14/transforms/014b4d537577495e94117eb0ea237a1f/transformed/firebase-perf-21.0.1/AndroidManifest.xml:3:1-23:12
@@ -303,8 +303,8 @@ ADDED from /workspace/app/src/main/AndroidManifest.xml:13:5-14:38
 	android:name
 		ADDED from /workspace/app/src/main/AndroidManifest.xml:13:22-78
 application
-ADDED from /workspace/app/src/main/AndroidManifest.xml:16:5-77:19
-INJECTED from /workspace/app/src/main/AndroidManifest.xml:16:5-77:19
+ADDED from /workspace/app/src/main/AndroidManifest.xml:16:5-69:19
+INJECTED from /workspace/app/src/main/AndroidManifest.xml:16:5-69:19
 MERGED from [com.google.firebase:firebase-perf-ktx:21.0.1] /home/ubuntu/.gradle/caches/8.14/transforms/a69ecef5926416f89301ff3f050d4ff2/transformed/firebase-perf-ktx-21.0.1/AndroidManifest.xml:8:5-16:19
 MERGED from [com.google.firebase:firebase-perf-ktx:21.0.1] /home/ubuntu/.gradle/caches/8.14/transforms/a69ecef5926416f89301ff3f050d4ff2/transformed/firebase-perf-ktx-21.0.1/AndroidManifest.xml:8:5-16:19
 MERGED from [com.google.firebase:firebase-perf:21.0.1] /home/ubuntu/.gradle/caches/8.14/transforms/014b4d537577495e94117eb0ea237a1f/transformed/firebase-perf-21.0.1/AndroidManifest.xml:10:5-21:19
@@ -517,12 +517,6 @@ ADDED from /workspace/app/src/main/AndroidManifest.xml:64:9-66:55
 		ADDED from /workspace/app/src/main/AndroidManifest.xml:66:13-52
 	android:name
 		ADDED from /workspace/app/src/main/AndroidManifest.xml:65:13-58
-service#com.littlegig.app.services.LittleGigMessagingService
-ADDED from /workspace/app/src/main/AndroidManifest.xml:69:9-75:19
-	android:exported
-		ADDED from /workspace/app/src/main/AndroidManifest.xml:71:13-37
-	android:name
-		ADDED from /workspace/app/src/main/AndroidManifest.xml:70:13-63
 uses-sdk
 INJECTED from /workspace/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /workspace/app/src/main/AndroidManifest.xml

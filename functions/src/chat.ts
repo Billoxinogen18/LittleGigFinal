@@ -236,14 +236,22 @@ export const redeemTicket = functions.https.onCall(async (data, context) => {
             }
             if (sharedTicket.isRedeemed) throw new functions.https.HttpsError('permission-denied', 'Ticket already redeemed');
             
-            // Update ticket
+            // Update ticket: transfer ownership to redeemer and mark as used
             const ticketRef = admin.firestore().collection('tickets').doc(ticketId);
+            const ticketSnap = await transaction.get(ticketRef);
+            if (!ticketSnap.exists) throw new functions.https.HttpsError('not-found', 'Ticket not found');
+            const previousOwnerId = (ticketSnap.data() as any)?.userId || null;
             transaction.update(ticketRef, {
                 isRedeemed: true,
                 redeemedBy: userId,
-                redeemedAt: admin.firestore.FieldValue.serverTimestamp()
+                redeemedAt: admin.firestore.FieldValue.serverTimestamp(),
+                status: 'USED',
+                usedDate: admin.firestore.FieldValue.serverTimestamp(),
+                userId: userId,
+                transferredFrom: previousOwnerId,
+                transferredAt: admin.firestore.FieldValue.serverTimestamp()
             });
-            // Update message
+            // Update message shared payload to reflect redemption
             transaction.update(messageRef, {
                 'sharedTicket.isRedeemed': true,
                 'sharedTicket.redeemedBy': userId,
