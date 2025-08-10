@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /workspace/app/src/main/AndroidManifest.xml:2:1-72:12
-INJECTED from /workspace/app/src/main/AndroidManifest.xml:2:1-72:12
-INJECTED from /workspace/app/src/main/AndroidManifest.xml:2:1-72:12
-INJECTED from /workspace/app/src/main/AndroidManifest.xml:2:1-72:12
+ADDED from /workspace/app/src/main/AndroidManifest.xml:2:1-79:12
+INJECTED from /workspace/app/src/main/AndroidManifest.xml:2:1-79:12
+INJECTED from /workspace/app/src/main/AndroidManifest.xml:2:1-79:12
+INJECTED from /workspace/app/src/main/AndroidManifest.xml:2:1-79:12
 MERGED from [androidx.databinding:viewbinding:8.4.2] /home/ubuntu/.gradle/caches/8.14/transforms/de4ea53c64b0adca2da706bbf37d6b57/transformed/viewbinding-8.4.2/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.firebase:firebase-perf-ktx:21.0.1] /home/ubuntu/.gradle/caches/8.14/transforms/a69ecef5926416f89301ff3f050d4ff2/transformed/firebase-perf-ktx-21.0.1/AndroidManifest.xml:2:1-18:12
 MERGED from [com.google.firebase:firebase-perf:21.0.1] /home/ubuntu/.gradle/caches/8.14/transforms/014b4d537577495e94117eb0ea237a1f/transformed/firebase-perf-21.0.1/AndroidManifest.xml:3:1-23:12
@@ -303,8 +303,8 @@ ADDED from /workspace/app/src/main/AndroidManifest.xml:13:5-14:38
 	android:name
 		ADDED from /workspace/app/src/main/AndroidManifest.xml:13:22-78
 application
-ADDED from /workspace/app/src/main/AndroidManifest.xml:16:5-70:19
-INJECTED from /workspace/app/src/main/AndroidManifest.xml:16:5-70:19
+ADDED from /workspace/app/src/main/AndroidManifest.xml:16:5-77:19
+INJECTED from /workspace/app/src/main/AndroidManifest.xml:16:5-77:19
 MERGED from [com.google.firebase:firebase-perf-ktx:21.0.1] /home/ubuntu/.gradle/caches/8.14/transforms/a69ecef5926416f89301ff3f050d4ff2/transformed/firebase-perf-ktx-21.0.1/AndroidManifest.xml:8:5-16:19
 MERGED from [com.google.firebase:firebase-perf-ktx:21.0.1] /home/ubuntu/.gradle/caches/8.14/transforms/a69ecef5926416f89301ff3f050d4ff2/transformed/firebase-perf-ktx-21.0.1/AndroidManifest.xml:8:5-16:19
 MERGED from [com.google.firebase:firebase-perf:21.0.1] /home/ubuntu/.gradle/caches/8.14/transforms/014b4d537577495e94117eb0ea237a1f/transformed/firebase-perf-21.0.1/AndroidManifest.xml:10:5-21:19
@@ -456,7 +456,7 @@ MERGED from [com.google.android.datatransport:transport-runtime:3.3.0] /home/ubu
 	android:name
 		ADDED from /workspace/app/src/main/AndroidManifest.xml:17:9-45
 activity#com.littlegig.app.presentation.MainActivity
-ADDED from /workspace/app/src/main/AndroidManifest.xml:29:9-46:20
+ADDED from /workspace/app/src/main/AndroidManifest.xml:29:9-53:20
 	android:label
 		ADDED from /workspace/app/src/main/AndroidManifest.xml:32:13-45
 	android:exported
@@ -491,32 +491,38 @@ ADDED from /workspace/app/src/main/AndroidManifest.xml:43:17-78
 		ADDED from /workspace/app/src/main/AndroidManifest.xml:43:27-75
 data
 ADDED from /workspace/app/src/main/AndroidManifest.xml:44:17-60
+	android:path
+		ADDED from /workspace/app/src/main/AndroidManifest.xml:51:73-95
+	android:host
+		ADDED from /workspace/app/src/main/AndroidManifest.xml:51:50-72
 	android:scheme
 		ADDED from /workspace/app/src/main/AndroidManifest.xml:44:23-57
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:payment+data:path:/verify+data:scheme:littlegig
+ADDED from /workspace/app/src/main/AndroidManifest.xml:47:13-52:29
 service#com.littlegig.app.service.LittleGigFirebaseMessagingService
-ADDED from /workspace/app/src/main/AndroidManifest.xml:48:9-54:19
+ADDED from /workspace/app/src/main/AndroidManifest.xml:55:9-61:19
 	android:exported
-		ADDED from /workspace/app/src/main/AndroidManifest.xml:50:13-37
+		ADDED from /workspace/app/src/main/AndroidManifest.xml:57:13-37
 	android:name
-		ADDED from /workspace/app/src/main/AndroidManifest.xml:49:13-70
+		ADDED from /workspace/app/src/main/AndroidManifest.xml:56:13-70
 intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
-ADDED from /workspace/app/src/main/AndroidManifest.xml:51:13-53:29
+ADDED from /workspace/app/src/main/AndroidManifest.xml:58:13-60:29
 action#com.google.firebase.MESSAGING_EVENT
-ADDED from /workspace/app/src/main/AndroidManifest.xml:52:17-78
+ADDED from /workspace/app/src/main/AndroidManifest.xml:59:17-78
 	android:name
-		ADDED from /workspace/app/src/main/AndroidManifest.xml:52:25-75
+		ADDED from /workspace/app/src/main/AndroidManifest.xml:59:25-75
 meta-data#com.google.android.geo.API_KEY
-ADDED from /workspace/app/src/main/AndroidManifest.xml:57:9-59:55
+ADDED from /workspace/app/src/main/AndroidManifest.xml:64:9-66:55
 	android:value
-		ADDED from /workspace/app/src/main/AndroidManifest.xml:59:13-52
+		ADDED from /workspace/app/src/main/AndroidManifest.xml:66:13-52
 	android:name
-		ADDED from /workspace/app/src/main/AndroidManifest.xml:58:13-58
+		ADDED from /workspace/app/src/main/AndroidManifest.xml:65:13-58
 service#com.littlegig.app.services.LittleGigMessagingService
-ADDED from /workspace/app/src/main/AndroidManifest.xml:62:9-68:19
+ADDED from /workspace/app/src/main/AndroidManifest.xml:69:9-75:19
 	android:exported
-		ADDED from /workspace/app/src/main/AndroidManifest.xml:64:13-37
+		ADDED from /workspace/app/src/main/AndroidManifest.xml:71:13-37
 	android:name
-		ADDED from /workspace/app/src/main/AndroidManifest.xml:63:13-63
+		ADDED from /workspace/app/src/main/AndroidManifest.xml:70:13-63
 uses-sdk
 INJECTED from /workspace/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /workspace/app/src/main/AndroidManifest.xml

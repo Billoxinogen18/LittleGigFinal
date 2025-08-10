@@ -43,6 +43,13 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="com.littlegig.app" />
             </intent-filter>
+            <!-- Payment verification deep link -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="littlegig" android:host="payment" android:path="/verify" />
+            </intent-filter>
         </activity>
         
         <service

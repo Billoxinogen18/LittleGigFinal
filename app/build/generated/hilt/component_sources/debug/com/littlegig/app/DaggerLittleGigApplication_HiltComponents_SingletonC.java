@@ -36,6 +36,7 @@ import com.littlegig.app.di.AppModule_ProvideNotificationRepositoryFactory;
 import com.littlegig.app.di.AppModule_ProvidePhoneAuthServiceFactory;
 import com.littlegig.app.di.AppModule_ProvidePhoneNumberServiceFactory;
 import com.littlegig.app.presentation.MainActivity;
+import com.littlegig.app.presentation.MainActivity_MembersInjector;
 import com.littlegig.app.presentation.account.AccountViewModel;
 import com.littlegig.app.presentation.account.AccountViewModel_HiltModules;
 import com.littlegig.app.presentation.auth.AuthViewModel;
@@ -425,6 +426,7 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     @Override
     public void injectMainActivity(MainActivity arg0) {
+      injectMainActivity2(arg0);
     }
 
     @Override
@@ -452,25 +454,15 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       return new ViewCBuilder(singletonCImpl, activityRetainedCImpl, activityCImpl);
     }
 
+    @CanIgnoreReturnValue
+    private MainActivity injectMainActivity2(MainActivity instance) {
+      MainActivity_MembersInjector.injectPaymentRepository(instance, singletonCImpl.paymentRepositoryProvider.get());
+      return instance;
+    }
+
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_littlegig_app_presentation_business_BusinessDashboardViewModel = "com.littlegig.app.presentation.business.BusinessDashboardViewModel";
-
       static String com_littlegig_app_presentation_auth_AuthViewModel = "com.littlegig.app.presentation.auth.AuthViewModel";
-
-      static String com_littlegig_app_presentation_payments_PaymentsViewModel = "com.littlegig.app.presentation.payments.PaymentsViewModel";
-
-      static String com_littlegig_app_presentation_map_MapViewModel = "com.littlegig.app.presentation.map.MapViewModel";
-
-      static String com_littlegig_app_presentation_account_AccountViewModel = "com.littlegig.app.presentation.account.AccountViewModel";
-
-      static String com_littlegig_app_presentation_tickets_TicketsViewModel = "com.littlegig.app.presentation.tickets.TicketsViewModel";
-
-      static String com_littlegig_app_presentation_upload_UploadViewModel = "com.littlegig.app.presentation.upload.UploadViewModel";
-
-      static String com_littlegig_app_presentation_settings_SettingsViewModel = "com.littlegig.app.presentation.settings.SettingsViewModel";
-
-      static String com_littlegig_app_presentation_events_EventsViewModel = "com.littlegig.app.presentation.events.EventsViewModel";
 
       static String com_littlegig_app_presentation_chat_ChatViewModel = "com.littlegig.app.presentation.chat.ChatViewModel";
 
@@ -478,40 +470,32 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
       static String com_littlegig_app_presentation_chat_ChatSearchViewModel = "com.littlegig.app.presentation.chat.ChatSearchViewModel";
 
-      static String com_littlegig_app_presentation_recaps_RecapsViewerViewModel = "com.littlegig.app.presentation.recaps.RecapsViewerViewModel";
+      static String com_littlegig_app_presentation_settings_SettingsViewModel = "com.littlegig.app.presentation.settings.SettingsViewModel";
 
-      static String com_littlegig_app_presentation_inbox_InboxViewModel = "com.littlegig.app.presentation.inbox.InboxViewModel";
-
-      static String com_littlegig_app_presentation_chat_ChatDetailsViewModel = "com.littlegig.app.presentation.chat.ChatDetailsViewModel";
+      static String com_littlegig_app_presentation_business_BusinessDashboardViewModel = "com.littlegig.app.presentation.business.BusinessDashboardViewModel";
 
       static String com_littlegig_app_presentation_events_EventDetailsViewModel = "com.littlegig.app.presentation.events.EventDetailsViewModel";
 
-      @KeepFieldType
-      BusinessDashboardViewModel com_littlegig_app_presentation_business_BusinessDashboardViewModel2;
+      static String com_littlegig_app_presentation_payments_PaymentsViewModel = "com.littlegig.app.presentation.payments.PaymentsViewModel";
+
+      static String com_littlegig_app_presentation_tickets_TicketsViewModel = "com.littlegig.app.presentation.tickets.TicketsViewModel";
+
+      static String com_littlegig_app_presentation_inbox_InboxViewModel = "com.littlegig.app.presentation.inbox.InboxViewModel";
+
+      static String com_littlegig_app_presentation_recaps_RecapsViewerViewModel = "com.littlegig.app.presentation.recaps.RecapsViewerViewModel";
+
+      static String com_littlegig_app_presentation_chat_ChatDetailsViewModel = "com.littlegig.app.presentation.chat.ChatDetailsViewModel";
+
+      static String com_littlegig_app_presentation_events_EventsViewModel = "com.littlegig.app.presentation.events.EventsViewModel";
+
+      static String com_littlegig_app_presentation_upload_UploadViewModel = "com.littlegig.app.presentation.upload.UploadViewModel";
+
+      static String com_littlegig_app_presentation_account_AccountViewModel = "com.littlegig.app.presentation.account.AccountViewModel";
+
+      static String com_littlegig_app_presentation_map_MapViewModel = "com.littlegig.app.presentation.map.MapViewModel";
 
       @KeepFieldType
       AuthViewModel com_littlegig_app_presentation_auth_AuthViewModel2;
-
-      @KeepFieldType
-      PaymentsViewModel com_littlegig_app_presentation_payments_PaymentsViewModel2;
-
-      @KeepFieldType
-      MapViewModel com_littlegig_app_presentation_map_MapViewModel2;
-
-      @KeepFieldType
-      AccountViewModel com_littlegig_app_presentation_account_AccountViewModel2;
-
-      @KeepFieldType
-      TicketsViewModel com_littlegig_app_presentation_tickets_TicketsViewModel2;
-
-      @KeepFieldType
-      UploadViewModel com_littlegig_app_presentation_upload_UploadViewModel2;
-
-      @KeepFieldType
-      SettingsViewModel com_littlegig_app_presentation_settings_SettingsViewModel2;
-
-      @KeepFieldType
-      EventsViewModel com_littlegig_app_presentation_events_EventsViewModel2;
 
       @KeepFieldType
       ChatViewModel com_littlegig_app_presentation_chat_ChatViewModel2;
@@ -523,16 +507,40 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       ChatSearchViewModel com_littlegig_app_presentation_chat_ChatSearchViewModel2;
 
       @KeepFieldType
-      RecapsViewerViewModel com_littlegig_app_presentation_recaps_RecapsViewerViewModel2;
+      SettingsViewModel com_littlegig_app_presentation_settings_SettingsViewModel2;
+
+      @KeepFieldType
+      BusinessDashboardViewModel com_littlegig_app_presentation_business_BusinessDashboardViewModel2;
+
+      @KeepFieldType
+      EventDetailsViewModel com_littlegig_app_presentation_events_EventDetailsViewModel2;
+
+      @KeepFieldType
+      PaymentsViewModel com_littlegig_app_presentation_payments_PaymentsViewModel2;
+
+      @KeepFieldType
+      TicketsViewModel com_littlegig_app_presentation_tickets_TicketsViewModel2;
 
       @KeepFieldType
       InboxViewModel com_littlegig_app_presentation_inbox_InboxViewModel2;
 
       @KeepFieldType
+      RecapsViewerViewModel com_littlegig_app_presentation_recaps_RecapsViewerViewModel2;
+
+      @KeepFieldType
       ChatDetailsViewModel com_littlegig_app_presentation_chat_ChatDetailsViewModel2;
 
       @KeepFieldType
-      EventDetailsViewModel com_littlegig_app_presentation_events_EventDetailsViewModel2;
+      EventsViewModel com_littlegig_app_presentation_events_EventsViewModel2;
+
+      @KeepFieldType
+      UploadViewModel com_littlegig_app_presentation_upload_UploadViewModel2;
+
+      @KeepFieldType
+      AccountViewModel com_littlegig_app_presentation_account_AccountViewModel2;
+
+      @KeepFieldType
+      MapViewModel com_littlegig_app_presentation_map_MapViewModel2;
     }
   }
 
@@ -618,58 +626,37 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_littlegig_app_presentation_recaps_RecapsUploadViewModel = "com.littlegig.app.presentation.recaps.RecapsUploadViewModel";
-
-      static String com_littlegig_app_presentation_map_MapViewModel = "com.littlegig.app.presentation.map.MapViewModel";
-
-      static String com_littlegig_app_presentation_upload_UploadViewModel = "com.littlegig.app.presentation.upload.UploadViewModel";
-
-      static String com_littlegig_app_presentation_auth_AuthViewModel = "com.littlegig.app.presentation.auth.AuthViewModel";
-
-      static String com_littlegig_app_presentation_payments_PaymentsViewModel = "com.littlegig.app.presentation.payments.PaymentsViewModel";
-
-      static String com_littlegig_app_presentation_events_EventsViewModel = "com.littlegig.app.presentation.events.EventsViewModel";
-
-      static String com_littlegig_app_presentation_business_BusinessDashboardViewModel = "com.littlegig.app.presentation.business.BusinessDashboardViewModel";
-
       static String com_littlegig_app_presentation_chat_ChatDetailsViewModel = "com.littlegig.app.presentation.chat.ChatDetailsViewModel";
 
       static String com_littlegig_app_presentation_settings_SettingsViewModel = "com.littlegig.app.presentation.settings.SettingsViewModel";
 
+      static String com_littlegig_app_presentation_business_BusinessDashboardViewModel = "com.littlegig.app.presentation.business.BusinessDashboardViewModel";
+
+      static String com_littlegig_app_presentation_recaps_RecapsUploadViewModel = "com.littlegig.app.presentation.recaps.RecapsUploadViewModel";
+
       static String com_littlegig_app_presentation_tickets_TicketsViewModel = "com.littlegig.app.presentation.tickets.TicketsViewModel";
 
-      static String com_littlegig_app_presentation_account_AccountViewModel = "com.littlegig.app.presentation.account.AccountViewModel";
-
-      static String com_littlegig_app_presentation_events_EventDetailsViewModel = "com.littlegig.app.presentation.events.EventDetailsViewModel";
-
-      static String com_littlegig_app_presentation_chat_ChatViewModel = "com.littlegig.app.presentation.chat.ChatViewModel";
+      static String com_littlegig_app_presentation_auth_AuthViewModel = "com.littlegig.app.presentation.auth.AuthViewModel";
 
       static String com_littlegig_app_presentation_recaps_RecapsViewerViewModel = "com.littlegig.app.presentation.recaps.RecapsViewerViewModel";
 
-      static String com_littlegig_app_presentation_inbox_InboxViewModel = "com.littlegig.app.presentation.inbox.InboxViewModel";
+      static String com_littlegig_app_presentation_events_EventDetailsViewModel = "com.littlegig.app.presentation.events.EventDetailsViewModel";
+
+      static String com_littlegig_app_presentation_payments_PaymentsViewModel = "com.littlegig.app.presentation.payments.PaymentsViewModel";
+
+      static String com_littlegig_app_presentation_upload_UploadViewModel = "com.littlegig.app.presentation.upload.UploadViewModel";
 
       static String com_littlegig_app_presentation_chat_ChatSearchViewModel = "com.littlegig.app.presentation.chat.ChatSearchViewModel";
 
-      @KeepFieldType
-      RecapsUploadViewModel com_littlegig_app_presentation_recaps_RecapsUploadViewModel2;
+      static String com_littlegig_app_presentation_chat_ChatViewModel = "com.littlegig.app.presentation.chat.ChatViewModel";
 
-      @KeepFieldType
-      MapViewModel com_littlegig_app_presentation_map_MapViewModel2;
+      static String com_littlegig_app_presentation_map_MapViewModel = "com.littlegig.app.presentation.map.MapViewModel";
 
-      @KeepFieldType
-      UploadViewModel com_littlegig_app_presentation_upload_UploadViewModel2;
+      static String com_littlegig_app_presentation_events_EventsViewModel = "com.littlegig.app.presentation.events.EventsViewModel";
 
-      @KeepFieldType
-      AuthViewModel com_littlegig_app_presentation_auth_AuthViewModel2;
+      static String com_littlegig_app_presentation_inbox_InboxViewModel = "com.littlegig.app.presentation.inbox.InboxViewModel";
 
-      @KeepFieldType
-      PaymentsViewModel com_littlegig_app_presentation_payments_PaymentsViewModel2;
-
-      @KeepFieldType
-      EventsViewModel com_littlegig_app_presentation_events_EventsViewModel2;
-
-      @KeepFieldType
-      BusinessDashboardViewModel com_littlegig_app_presentation_business_BusinessDashboardViewModel2;
+      static String com_littlegig_app_presentation_account_AccountViewModel = "com.littlegig.app.presentation.account.AccountViewModel";
 
       @KeepFieldType
       ChatDetailsViewModel com_littlegig_app_presentation_chat_ChatDetailsViewModel2;
@@ -678,25 +665,46 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       SettingsViewModel com_littlegig_app_presentation_settings_SettingsViewModel2;
 
       @KeepFieldType
+      BusinessDashboardViewModel com_littlegig_app_presentation_business_BusinessDashboardViewModel2;
+
+      @KeepFieldType
+      RecapsUploadViewModel com_littlegig_app_presentation_recaps_RecapsUploadViewModel2;
+
+      @KeepFieldType
       TicketsViewModel com_littlegig_app_presentation_tickets_TicketsViewModel2;
 
       @KeepFieldType
-      AccountViewModel com_littlegig_app_presentation_account_AccountViewModel2;
-
-      @KeepFieldType
-      EventDetailsViewModel com_littlegig_app_presentation_events_EventDetailsViewModel2;
-
-      @KeepFieldType
-      ChatViewModel com_littlegig_app_presentation_chat_ChatViewModel2;
+      AuthViewModel com_littlegig_app_presentation_auth_AuthViewModel2;
 
       @KeepFieldType
       RecapsViewerViewModel com_littlegig_app_presentation_recaps_RecapsViewerViewModel2;
 
       @KeepFieldType
-      InboxViewModel com_littlegig_app_presentation_inbox_InboxViewModel2;
+      EventDetailsViewModel com_littlegig_app_presentation_events_EventDetailsViewModel2;
+
+      @KeepFieldType
+      PaymentsViewModel com_littlegig_app_presentation_payments_PaymentsViewModel2;
+
+      @KeepFieldType
+      UploadViewModel com_littlegig_app_presentation_upload_UploadViewModel2;
 
       @KeepFieldType
       ChatSearchViewModel com_littlegig_app_presentation_chat_ChatSearchViewModel2;
+
+      @KeepFieldType
+      ChatViewModel com_littlegig_app_presentation_chat_ChatViewModel2;
+
+      @KeepFieldType
+      MapViewModel com_littlegig_app_presentation_map_MapViewModel2;
+
+      @KeepFieldType
+      EventsViewModel com_littlegig_app_presentation_events_EventsViewModel2;
+
+      @KeepFieldType
+      InboxViewModel com_littlegig_app_presentation_inbox_InboxViewModel2;
+
+      @KeepFieldType
+      AccountViewModel com_littlegig_app_presentation_account_AccountViewModel2;
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -866,11 +874,13 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     private Provider<FirebaseFirestore> provideFirebaseFirestoreProvider;
 
+    private Provider<FirebaseFunctions> provideFirebaseFunctionsProvider;
+
+    private Provider<PaymentRepository> paymentRepositoryProvider;
+
     private Provider<Context> provideContextProvider;
 
     private Provider<AuthRepository> authRepositoryProvider;
-
-    private Provider<FirebaseFunctions> provideFirebaseFunctionsProvider;
 
     private Provider<LocationService> locationServiceProvider;
 
@@ -881,8 +891,6 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
     private Provider<PhoneNumberService> providePhoneNumberServiceProvider;
 
     private Provider<UserRepository> userRepositoryProvider;
-
-    private Provider<PaymentRepository> paymentRepositoryProvider;
 
     private Provider<PhoneAuthService> providePhoneAuthServiceProvider;
 
@@ -913,15 +921,15 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       this.provideNetworkMonitorProvider = DoubleCheck.provider(new SwitchingProvider<NetworkMonitor>(singletonCImpl, 0));
       this.provideFirebaseAuthProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseAuth>(singletonCImpl, 1));
       this.provideFirebaseFirestoreProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseFirestore>(singletonCImpl, 2));
-      this.provideContextProvider = DoubleCheck.provider(new SwitchingProvider<Context>(singletonCImpl, 4));
-      this.authRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<AuthRepository>(singletonCImpl, 3));
-      this.provideFirebaseFunctionsProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseFunctions>(singletonCImpl, 6));
-      this.locationServiceProvider = DoubleCheck.provider(new SwitchingProvider<LocationService>(singletonCImpl, 5));
-      this.provideFirebaseStorageProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseStorage>(singletonCImpl, 8));
-      this.eventRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<EventRepository>(singletonCImpl, 7));
-      this.providePhoneNumberServiceProvider = DoubleCheck.provider(new SwitchingProvider<PhoneNumberService>(singletonCImpl, 10));
-      this.userRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<UserRepository>(singletonCImpl, 9));
-      this.paymentRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<PaymentRepository>(singletonCImpl, 11));
+      this.provideFirebaseFunctionsProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseFunctions>(singletonCImpl, 4));
+      this.paymentRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<PaymentRepository>(singletonCImpl, 3));
+      this.provideContextProvider = DoubleCheck.provider(new SwitchingProvider<Context>(singletonCImpl, 6));
+      this.authRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<AuthRepository>(singletonCImpl, 5));
+      this.locationServiceProvider = DoubleCheck.provider(new SwitchingProvider<LocationService>(singletonCImpl, 7));
+      this.provideFirebaseStorageProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseStorage>(singletonCImpl, 9));
+      this.eventRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<EventRepository>(singletonCImpl, 8));
+      this.providePhoneNumberServiceProvider = DoubleCheck.provider(new SwitchingProvider<PhoneNumberService>(singletonCImpl, 11));
+      this.userRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<UserRepository>(singletonCImpl, 10));
       this.providePhoneAuthServiceProvider = DoubleCheck.provider(new SwitchingProvider<PhoneAuthService>(singletonCImpl, 12));
       this.ticketRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<TicketRepository>(singletonCImpl, 13));
       this.chatRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ChatRepository>(singletonCImpl, 14));
@@ -984,32 +992,32 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
           case 2: // com.google.firebase.firestore.FirebaseFirestore 
           return (T) AppModule_ProvideFirebaseFirestoreFactory.provideFirebaseFirestore();
 
-          case 3: // com.littlegig.app.data.repository.AuthRepository 
-          return (T) new AuthRepository(singletonCImpl.provideFirebaseAuthProvider.get(), singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideContextProvider.get());
+          case 3: // com.littlegig.app.data.repository.PaymentRepository 
+          return (T) new PaymentRepository(singletonCImpl.provideFirebaseFunctionsProvider.get());
 
-          case 4: // android.content.Context 
-          return (T) AppModule_ProvideContextFactory.provideContext(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
-
-          case 5: // com.littlegig.app.services.LocationService 
-          return (T) new LocationService(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.authRepositoryProvider.get(), singletonCImpl.provideFirebaseFunctionsProvider.get());
-
-          case 6: // com.google.firebase.functions.FirebaseFunctions 
+          case 4: // com.google.firebase.functions.FirebaseFunctions 
           return (T) AppModule_ProvideFirebaseFunctionsFactory.provideFirebaseFunctions();
 
-          case 7: // com.littlegig.app.data.repository.EventRepository 
+          case 5: // com.littlegig.app.data.repository.AuthRepository 
+          return (T) new AuthRepository(singletonCImpl.provideFirebaseAuthProvider.get(), singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideContextProvider.get());
+
+          case 6: // android.content.Context 
+          return (T) AppModule_ProvideContextFactory.provideContext(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 7: // com.littlegig.app.services.LocationService 
+          return (T) new LocationService(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.authRepositoryProvider.get(), singletonCImpl.provideFirebaseFunctionsProvider.get());
+
+          case 8: // com.littlegig.app.data.repository.EventRepository 
           return (T) new EventRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideFirebaseStorageProvider.get(), singletonCImpl.provideContextProvider.get());
 
-          case 8: // com.google.firebase.storage.FirebaseStorage 
+          case 9: // com.google.firebase.storage.FirebaseStorage 
           return (T) AppModule_ProvideFirebaseStorageFactory.provideFirebaseStorage();
 
-          case 9: // com.littlegig.app.data.repository.UserRepository 
+          case 10: // com.littlegig.app.data.repository.UserRepository 
           return (T) new UserRepository(singletonCImpl.provideFirebaseFirestoreProvider.get(), singletonCImpl.provideFirebaseStorageProvider.get(), singletonCImpl.provideContextProvider.get(), singletonCImpl.providePhoneNumberServiceProvider.get());
 
-          case 10: // com.littlegig.app.services.PhoneNumberService 
+          case 11: // com.littlegig.app.services.PhoneNumberService 
           return (T) AppModule_ProvidePhoneNumberServiceFactory.providePhoneNumberService();
-
-          case 11: // com.littlegig.app.data.repository.PaymentRepository 
-          return (T) new PaymentRepository(singletonCImpl.provideFirebaseFunctionsProvider.get());
 
           case 12: // com.littlegig.app.services.PhoneAuthService 
           return (T) AppModule_ProvidePhoneAuthServiceFactory.providePhoneAuthService(singletonCImpl.provideFirebaseAuthProvider.get());

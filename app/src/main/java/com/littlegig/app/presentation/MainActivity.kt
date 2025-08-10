@@ -18,12 +18,16 @@ import com.littlegig.app.presentation.LittleGigApp
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.activity.viewModels
 import com.littlegig.app.presentation.auth.AuthViewModel
+import com.littlegig.app.data.repository.PaymentRepository
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     
     private lateinit var googleSignInClient: GoogleSignInClient
     private val authViewModel: AuthViewModel by viewModels()
+    @javax.inject.Inject lateinit var paymentRepository: PaymentRepository
     
     private val signInLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -59,6 +63,19 @@ class MainActivity : ComponentActivity() {
         
         setContent {
             LittleGigApp()
+        }
+        handleDeepLink(intent)
+    }
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleDeepLink(intent)
+    }
+
+    private fun handleDeepLink(intent: Intent) {
+        val data = intent.data ?: return
+        if (data.scheme == "littlegig" && data.host == "payment" && data.path == "/verify") {
+            val ref = data.getQueryParameter("ref") ?: return
+            lifecycleScope.launch { paymentRepository.verifyPayment(ref) }
         }
     }
     
