@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -45,6 +46,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.snapshotFlow
 
 @Composable
 fun EventsScreen(
@@ -299,8 +302,18 @@ fun EventsScreen(
                 // Events list with enhanced interactions
                 val context = LocalContext.current
                 val shareScope = rememberCoroutineScope()
+                val eventsListState = rememberLazyListState()
+                LaunchedEffect(eventsListState) {
+                    snapshotFlow { eventsListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index to eventsListState.layoutInfo.totalItemsCount }
+                        .collect { (last, total) ->
+                            if (last != null && total > 0 && last >= total - 3) {
+                                viewModel.loadMoreEvents()
+                            }
+                        }
+                }
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
+                    state = eventsListState,
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
@@ -371,14 +384,6 @@ fun EventsScreen(
                                     }
                                 }
                             }
-                        }
-                    }
-                    item {
-                        Spacer(Modifier.height(8.dp))
-                        OutlinedButton(onClick = { viewModel.loadMoreEvents() }, modifier = Modifier.fillMaxWidth()) {
-                            Icon(Icons.Default.ExpandMore, contentDescription = null)
-                            Spacer(Modifier.width(8.dp))
-                            Text("Load more events")
                         }
                     }
                 }

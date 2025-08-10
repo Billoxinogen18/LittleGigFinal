@@ -20,6 +20,11 @@ fun InboxScreen(viewModel: InboxViewModel = hiltViewModel()) {
     val loading by viewModel.loading.collectAsState()
 
     LaunchedEffect(Unit) { viewModel.load() }
+    // Auto-mark unread as read when opening inbox
+    LaunchedEffect(records) {
+        val unread = records.filter { !it.isRead }.map { it.id }
+        unread.forEach { viewModel.markAsRead(it) }
+    }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(text = "Inbox", style = MaterialTheme.typography.headlineMedium)

@@ -5,6 +5,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -42,6 +43,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import android.provider.ContactsContract
 import timber.log.Timber
+import androidx.compose.runtime.snapshotFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -247,7 +249,17 @@ fun ChatScreen(
                         
                         Spacer(modifier = Modifier.height(12.dp))
                         
+                        val userListState = rememberLazyListState()
+                        LaunchedEffect(userListState) {
+                            snapshotFlow { userListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index to userListState.layoutInfo.totalItemsCount }
+                                .collect { (last, total) ->
+                                    if (last != null && total > 0 && last >= total - 3 && !showContactsOnly) {
+                                        viewModel.loadMoreAllUsers()
+                                    }
+                                }
+                        }
                         LazyColumn(
+                            state = userListState,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(displayedUsers) { user ->
@@ -322,17 +334,6 @@ fun ChatScreen(
                                     }
                                 }
                             }
-                            // Load more users footer when browsing All users
-                            item {
-                                if (!showContactsOnly) {
-                                    Spacer(Modifier.height(8.dp))
-                                    OutlinedButton(onClick = { viewModel.loadMoreAllUsers() }, modifier = Modifier.fillMaxWidth()) {
-                                        Icon(Icons.Default.ExpandMore, contentDescription = null)
-                                        Spacer(Modifier.width(8.dp))
-                                        Text("Load more users")
-                                    }
-                                }
-                            }
                         }
                     }
                 }
@@ -373,7 +374,17 @@ fun ChatScreen(
             
             // Chats List
             if (chats.isNotEmpty()) {
+                val chatsListState = rememberLazyListState()
+                LaunchedEffect(chatsListState) {
+                    snapshotFlow { chatsListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index to chatsListState.layoutInfo.totalItemsCount }
+                        .collect { (last, total) ->
+                            if (last != null && total > 0 && last >= total - 3) {
+                                viewModel.loadMoreChats()
+                            }
+                        }
+                }
                 LazyColumn(
+                    state = chatsListState,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(chats) { chat ->
@@ -482,14 +493,6 @@ fun ChatScreen(
                                     }
                                 }
                             }
-                        }
-                    }
-                    item {
-                        Spacer(Modifier.height(4.dp))
-                        OutlinedButton(onClick = { viewModel.loadMoreChats() }, modifier = Modifier.fillMaxWidth()) {
-                            Icon(Icons.Default.ExpandMore, contentDescription = null)
-                            Spacer(Modifier.width(8.dp))
-                            Text("Load more chats")
                         }
                     }
                 }
