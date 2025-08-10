@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.littlegig.app.data.model.*
 import com.littlegig.app.presentation.theme.*
+import androidx.compose.foundation.clickable
 
 // Unique LittleGig Chat Bubble with Neumorphic Design
 @Composable
@@ -33,6 +34,7 @@ fun NeumorphicChatBubble(
     message: Message,
     isFromCurrentUser: Boolean,
     onLikeMessage: (String) -> Unit,
+    onMentionClick: (String) -> Unit = {},
     onShareTicket: (SharedTicket) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -75,11 +77,24 @@ fun NeumorphicChatBubble(
                         }
                         Row {
                             parts.forEach { (seg, isMention) ->
-                                Text(
-                                    text = seg,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = if (isMention) LittleGigPrimary else MaterialTheme.colorScheme.onSurface
-                                )
+                                if (isMention) {
+                                    Text(
+                                        text = seg,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = LittleGigPrimary,
+                                        modifier = Modifier
+                                            .padding(end = 2.dp)
+                                            .let { it }
+                                            .then(Modifier)
+                                            .clickable { onMentionClick(seg.removePrefix("@")) }
+                                    )
+                                } else {
+                                    Text(
+                                        text = seg,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
                             }
                         }
                     }

@@ -156,6 +156,14 @@ fun MainScreen(
                     composable("payments") {
                         PaymentsScreen(navController = navController)
                     }
+                    composable("receipts") {
+                        com.littlegig.app.presentation.payments.ReceiptsScreen(navController = navController)
+                    }
+                    composable("ticket_details/{ticketId}/{ticketCode}") { backStackEntry ->
+                        val ticketId = backStackEntry.arguments?.getString("ticketId") ?: ""
+                        val ticketCode = backStackEntry.arguments?.getString("ticketCode") ?: ""
+                        com.littlegig.app.presentation.tickets.TicketDetailsScreen(ticketId = ticketId, ticketCode = ticketCode)
+                    }
                     composable("chat_details/{chatId}") { backStackEntry ->
                         val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
                         ChatDetailsScreen(

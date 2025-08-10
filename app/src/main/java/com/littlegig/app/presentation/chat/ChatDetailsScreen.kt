@@ -170,6 +170,7 @@ fun ChatDetailsScreen(
                             message = message,
                             isFromCurrentUser = message.senderId == viewModel.currentUserId,
                             onLikeMessage = { msgId -> viewModel.toggleReaction(chatId, msgId, "♥") },
+                            onMentionClick = { username -> navController.navigate("profile/$username") },
                             onShareTicket = { /* no-op */ },
                             modifier = Modifier
                                 .fillMaxWidth()

@@ -142,6 +142,9 @@ dependencies {
     
     // Material Design Icons
     implementation 'androidx.compose.material:material-icons-extended'
+
+    // QR code generation
+    implementation 'com.google.zxing:core:3.5.2'
     
     // Testing
     testImplementation 'junit:junit:4.13.2'

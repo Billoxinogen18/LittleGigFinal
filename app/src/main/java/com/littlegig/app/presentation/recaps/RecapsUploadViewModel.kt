@@ -84,6 +84,10 @@ class RecapsUploadViewModel @Inject constructor(
         }
     }
 
+    fun setUserLocationAndVerify(eventId: String, lat: Double, lon: Double) {
+        verifyLocation(eventId, lat, lon)
+    }
+
     fun uploadRecap(
         eventId: String,
         mediaUrls: List<String>,

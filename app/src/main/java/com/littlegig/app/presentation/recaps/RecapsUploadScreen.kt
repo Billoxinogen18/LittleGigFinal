@@ -49,6 +49,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import com.google.android.gms.location.LocationServices
 
 @Composable
 fun RecapsUploadScreen(
@@ -74,8 +75,10 @@ fun RecapsUploadScreen(
     val context = LocalContext.current
     val coarsePermissionLauncher = rememberLauncherForActivityResult(RequestPermission()) { granted ->
         if (granted) {
-            // In real app, fetch location from FusedLocationProvider; placeholder 0.0 here
-            selectedEvent?.let { viewModel.verifyLocation(it.id, 0.0, 0.0) }
+            val fused = LocationServices.getFusedLocationProviderClient(context)
+            fused.lastLocation.addOnSuccessListener { loc ->
+                selectedEvent?.let { if (loc != null) viewModel.setUserLocationAndVerify(it.id, loc.latitude, loc.longitude) }
+            }
         }
     }
  
