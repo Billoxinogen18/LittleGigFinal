@@ -369,6 +369,7 @@ fun UploadScreen(
                         NeumorphicPlacesAutocomplete(
                             query = locationName,
                             onQueryChange = { newValue -> 
+                                viewModel.updateLocationName(newValue)
                                 viewModel.searchPlaces(newValue)
                             },
                             suggestions = placeSuggestions.map { suggestion ->
@@ -390,7 +391,8 @@ fun UploadScreen(
                         
                         OutlinedTextField(
                             value = locationAddress,
-                            onValueChange = { /* Read-only for now */ },
+                            onValueChange = { },
+                            enabled = false,
                             label = { Text("Address") },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp),

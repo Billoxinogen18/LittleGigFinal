@@ -84,40 +84,26 @@ class EventDetailsViewModel @Inject constructor(
     }
     
     fun toggleEventLike() {
-        val currentUser = authRepository.currentUser.value
-        val event = _uiState.value.event
-        
-        if (currentUser != null && event != null) {
-            // Optimistic update for immediate UI feedback
-            val newLikeState = !_uiState.value.isLiked
-            _uiState.value = _uiState.value.copy(
-                isLiked = newLikeState,
-                isLikeProcessing = true
-            )
-            
-            viewModelScope.launch {
-                try {
+        viewModelScope.launch {
+            try {
+                val currentUser = authRepository.currentUser.value
+                val event = _uiState.value.event
+                if (currentUser != null && event != null) {
+                    val newLikeState = !_uiState.value.isLiked
+                    // Optimistic UI
+                    _uiState.value = _uiState.value.copy(isLiked = newLikeState)
                     val result = eventRepository.toggleEventLike(event.id, currentUser.id)
                     result.onSuccess {
-                        _uiState.value = _uiState.value.copy(
-                            isLikeProcessing = false
-                        )
-                    }.onFailure { error ->
-                        // Revert optimistic update on failure
+                        // no-op; already reflected optimistically
+                    }.onFailure { e ->
                         _uiState.value = _uiState.value.copy(
                             isLiked = !newLikeState,
-                            isLikeProcessing = false,
-                            error = error.message
+                            error = e.message
                         )
                     }
-                } catch (e: Exception) {
-                    // Revert optimistic update on exception
-                    _uiState.value = _uiState.value.copy(
-                        isLiked = !newLikeState,
-                        isLikeProcessing = false,
-                        error = e.message
-                    )
                 }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = e.message)
             }
         }
     }

@@ -1169,40 +1169,6 @@ fun NeumorphicPlacesAutocomplete(
     onPlaceSelected: (PlaceSuggestion) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-    val apiKey = context.getString(R.string.google_places_key)
-    
-    LaunchedEffect(query) {
-        if (query.length > 2) {
-            // Fetch suggestions using HTTP request
-            try {
-                val url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=$apiKey&types=establishment"
-                val response = URL(url).readText()
-                val json = JSONObject(response)
-                val predictions = json.getJSONArray("predictions")
-                
-                val newSuggestions = mutableListOf<PlaceSuggestion>()
-                for (i in 0 until predictions.length()) {
-                    val prediction = predictions.getJSONObject(i)
-                    val placeId = prediction.getString("place_id")
-                    val description = prediction.getString("description")
-                    
-                    newSuggestions.add(PlaceSuggestion(
-                        placeId = placeId,
-                        name = description,
-                        address = description,
-                        latitude = 0.0,
-                        longitude = 0.0
-                    ))
-                }
-                
-                // Update suggestions
-                onPlaceSelected(PlaceSuggestion("", "", "", 0.0, 0.0))
-            } catch (e: Exception) {
-                // Handle error silently
-            }
-        }
-    }
     val isDark = isSystemInDarkTheme()
     var showSuggestions by remember { mutableStateOf(false) }
     
