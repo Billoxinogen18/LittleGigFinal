@@ -64,9 +64,7 @@
 - Perf Monitoring for slow traces (chat load, event fetch)
 
 ## Testing
-- Unit tests for repositories and viewmodels
-- UI tests for auth, chat start, event create, purchase
-- E2E smoke using a seeded Firebase project
+- Deprioritized per product request; keep only critical smoke checks for builds
 
 ## Release Checklist
 - Shrink/Proguard tuned; remove debug logs
@@ -79,5 +77,114 @@
 - Empty All Users: ensure Firestore `users` has data; seed if needed
 - Empty Contacts: emulator has no contacts; add contacts or test on device
 - Places shows nothing: verify `google_places_key` and billing enabled
+
+---
+
+# Feature Backlog (User-Facing End-to-End)
+
+## Onboarding & Auth
+- Phone number auth as default: instant country code detect, OTP autofill, smart retry
+- Anonymous-first (TikTok-style): explore immediately; “Link account” CTA in Settings and guarded areas
+- Google Sign-In as secondary; smooth one-tap when available
+- Account linking merge: preserve chats, likes, follows, rank, and purchases
+- Session restore: silent re-auth; graceful offline mode
+
+## Contacts & Social Graph
+- Contacts sync: E.164 normalization, opt-in consent, periodic refresh, delta sync
+- People you may know: contacts + mutual follows + location proximity (opt-in)
+- Block/report users; shadow-ban for abusers; spam detection heuristics
+
+## Chat & Messaging
+- Real-time typing indicators; presence/“Active now” with timeout
+- Delivery/read receipts, last seen, per-chat mute/archive
+- Group chats: roles (owner/mod/admin), bans, invite links, join requests
+- Media in chat: images/video/documents with upload progress and previews
+- Replies, mentions, message reactions; message edit/delete (windowed)
+- Search in chats (by user, keyword); pinned conversations
+
+## Events (Create, Discover, Participate)
+- Creation wizard: steps (Basics → Media → Location → Pricing → Publish)
+- Draft autosave; preview; scheduled publish; recurring events (rules)
+- Capacity tiers (Early Bird, VIP); promo codes; bundles
+- Rich location: Google Places autocomplete (live), map picker, indoor notes
+- Waitlist with auto-promo when capacity frees up
+
+## Discovery & Map
+- Smart home feed: time-aware + location-aware ranking; “For You” vs “Nearby” tabs
+- Map clustering, live heat overlay (Active users/events), route preview
+- Category and time filters (Tonight, Weekend, Free, Family)
+- Deep links and share links for events and chats
+
+## Tickets & Payments
+- Add/Save payment methods; quick buy; Apple/Google Pay where available
+- Ticket wallet; QR/Barcode; transfer to contacts; resale with organizer fees
+- Refund policies flows (organizer-configurable); partial refunds
+- Receipts and invoices; email delivery
+
+## Business/Organizer Tools
+- Organizer profiles; verification; team members and roles
+- Event dashboard: sales funnel, revenue, check-in stats, demographics (privacy-safe)
+- Marketing: featured placements, boosts, referral codes, UTM tracking
+- Payouts: settlement accounts, multi-currency support, fees breakdown
+
+## Recaps & Content
+- Stories-like recaps per event; hashtagging; mentions; location tags
+- Moderation queue: AI-assisted NSFW/abuse detection with human override
+- Sharing to external platforms (IG/TikTok/Twitter) with attribution
+
+## Notifications & Inbox
+- Push categories: chat, tickets, event changes, recommendations
+- Smart delivery (quiet hours, batching); rich actions (Reply, View Ticket)
+- In-app inbox with read states and bulk actions
+
+## Profiles & Social
+- Public profiles with badges, rank, attended events, media
+- Follow system improvements: suggestions, friend-of-friend
+- Achievements: event streaks, host supporter, community builder
+
+## Settings & Privacy
+- Privacy dashboard: visibility (active now, profile), block list, data export/delete
+- Notification preferences per category; email/push toggles
+- Data consent for contacts/location; easy revoke
+
+## Internationalization & Accessibility
+- Multi-language strings framework; RTL support
+- Large text modes; screen reader labels; high-contrast themes
+
+## Performance & Offline
+- Full list virtualization and paging across events/users/chats
+- Aggressive image optimization: downsampling, modern formats, CDNs
+- Offline drafts (events/messages); background sync and conflict handling
+
+## Growth & Marketing
+- Referrals with deep links; invite flows; bonus rewards
+- App Indexing; app links; QR posters for events
+- ASO: keywords, screenshots, localized store listings
+
+## Analytics (Product-Focused)
+- Funnel tracking for onboarding, purchase, chat start
+- Recommendation feedback loops (like, follow, share, dwell)
+- Crash-free users metric as a guardrail
+
+---
+
+# How We Test Quickly (Manual E2E)
+- Build & install: `./gradlew assembleDebug` then `adb -s 127.0.0.1:6555 install -r app/build/outputs/apk/debug/app-debug.apk`
+- Seed data (recommended): create 5–10 users & 5 events in Firestore for UI validation
+- Verify flows:
+  - Auth: anonymous start → link email/phone → refresh profile
+  - Chat: tap “+” → All users populated → start 1-1 → exchange messages
+  - Contacts: grant permission → see contacts that match Firestore phone numbers
+  - Events: create with Places autocomplete → appears in feed and map
+  - Tickets: purchase (sandbox) → ticket shows in wallet → QR validate
+  - Notifications: send test FCM (functions) → device receives
+
+---
+
+Source control and CI
+- Main branch: protected; PRs required for risky features
+- Fast dev loop: keep `assembleDebug` green; ship small, test often
+
+Repository: [LittleGigFinal](https://github.com/Billoxinogen18/LittleGigFinal.git)
 
 
