@@ -1204,6 +1204,16 @@ fun NeumorphicPlacesAutocomplete(
                     },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
+                    trailingIcon = {
+                        if (query.isNotBlank()) {
+                            IconButton(onClick = {
+                                onQueryChange("")
+                                showSuggestions = false
+                            }) {
+                                Icon(imageVector = Icons.Default.Close, contentDescription = "Clear")
+                            }
+                        }
+                    },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
@@ -1215,7 +1225,7 @@ fun NeumorphicPlacesAutocomplete(
         }
         
         // Suggestions Dropdown
-        if (showSuggestions && suggestions.isNotEmpty()) {
+        if (showSuggestions && query.isNotBlank() && suggestions.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
             
             AdvancedGlassmorphicCard {
@@ -1271,6 +1281,18 @@ fun NeumorphicPlacesAutocomplete(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun MiniMapPreview(latitude: Double, longitude: Double, modifier: Modifier = Modifier) {
+    // Placeholder composable area for mini map preview; the actual MapView can be integrated later
+    AdvancedGlassmorphicCard(modifier = modifier) {
+        Column(Modifier.padding(12.dp), horizontalAlignment = Alignment.Start) {
+            Text(text = "Selected location", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(Modifier.height(6.dp))
+            Text(text = "lat: %.5f, lon: %.5f".format(latitude, longitude), style = MaterialTheme.typography.bodySmall)
         }
     }
 }

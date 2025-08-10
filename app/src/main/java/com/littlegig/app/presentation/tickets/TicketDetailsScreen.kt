@@ -13,9 +13,23 @@ import androidx.compose.ui.unit.dp
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.common.BitMatrix
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.ui.graphics.graphicsLayer
 
 @Composable
 fun TicketDetailsScreen(ticketId: String, ticketCode: String) {
+    val infinite = rememberInfiniteTransition(label = "qr_pulse")
+    val scaleState = infinite.animateFloat(
+        initialValue = 0.95f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(animation = tween(1200), repeatMode = RepeatMode.Reverse),
+        label = "qr_scale"
+    )
+    val scale = scaleState.value
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -24,7 +38,7 @@ fun TicketDetailsScreen(ticketId: String, ticketCode: String) {
         Text(text = "Ticket #$ticketId", style = MaterialTheme.typography.titleLarge)
         val qr = generateQrBitmap(ticketCode)
         if (qr != null) {
-            Image(bitmap = qr.asImageBitmap(), contentDescription = null, modifier = Modifier.size(240.dp))
+            Image(bitmap = qr.asImageBitmap(), contentDescription = null, modifier = Modifier.size(240.dp).graphicsLayer(scaleX = scale, scaleY = scale))
         }
         Text(text = ticketCode, style = MaterialTheme.typography.bodyMedium)
     }

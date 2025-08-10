@@ -78,6 +78,14 @@ fun EventsScreen(
                 )
             )
     ) {
+        val snackbarHostState = remember { SnackbarHostState() }
+        LaunchedEffect(uiState.snackbarMessage) {
+            uiState.snackbarMessage?.let {
+                snackbarHostState.showSnackbar(it)
+                viewModel.clearSnackbar()
+            }
+        }
+        SnackbarHost(hostState = snackbarHostState)
         SwipeRefresh(state = swipeRefreshState, onRefresh = { viewModel.loadEvents() }) {
             Column(
                 modifier = Modifier.fillMaxSize()

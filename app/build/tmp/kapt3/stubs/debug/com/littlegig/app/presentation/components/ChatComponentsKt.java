@@ -4,6 +4,7 @@ package com.littlegig.app.presentation.components;
 public final class ChatComponentsKt {
     
     @androidx.compose.runtime.Composable()
+    @kotlin.OptIn(markerClass = {androidx.compose.material3.ExperimentalMaterial3Api.class})
     public static final void NeumorphicChatBubble(@org.jetbrains.annotations.NotNull()
     com.littlegig.app.data.model.Message message, boolean isFromCurrentUser, @org.jetbrains.annotations.NotNull()
     kotlin.jvm.functions.Function1<? super java.lang.String, kotlin.Unit> onLikeMessage, @org.jetbrains.annotations.NotNull()

@@ -201,14 +201,11 @@ class EventsViewModel @Inject constructor(
     fun joinWaitlist(eventId: String) {
         viewModelScope.launch {
             try {
-                val currentUser = authRepository.currentUser.value
-                if (currentUser != null) {
-                    eventRepository.joinWaitlist(eventId, currentUser.id)
-                }
+                val currentUser = authRepository.currentUser.first() ?: return@launch
+                _uiState.value = _uiState.value.copy(snackbarMessage = "Added to waitlist")
+                eventRepository.joinWaitlist(eventId, currentUser.id)
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    error = "Failed to join waitlist: ${e.message}"
-                )
+                _uiState.value = _uiState.value.copy(error = "Failed to join waitlist: ${e.message}")
             }
         }
     }
@@ -216,14 +213,11 @@ class EventsViewModel @Inject constructor(
     fun subscribePriceDrop(eventId: String) {
         viewModelScope.launch {
             try {
-                val currentUser = authRepository.currentUser.value
-                if (currentUser != null) {
-                    eventRepository.subscribePriceDrop(eventId, currentUser.id)
-                }
+                val currentUser = authRepository.currentUser.first() ?: return@launch
+                _uiState.value = _uiState.value.copy(snackbarMessage = "Price alerts enabled")
+                eventRepository.subscribePriceDrop(eventId, currentUser.id)
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    error = "Failed to subscribe to price drop: ${e.message}"
-                )
+                _uiState.value = _uiState.value.copy(error = "Failed to subscribe: ${e.message}")
             }
         }
     }
@@ -231,14 +225,11 @@ class EventsViewModel @Inject constructor(
     fun rsvp(eventId: String) {
         viewModelScope.launch {
             try {
-                val currentUser = authRepository.currentUser.value
-                if (currentUser != null) {
-                    eventRepository.rsvpEvent(eventId, currentUser.id)
-                }
+                val currentUser = authRepository.currentUser.first() ?: return@launch
+                _uiState.value = _uiState.value.copy(snackbarMessage = "RSVP’d")
+                eventRepository.rsvpEvent(eventId, currentUser.id)
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    error = "Failed to RSVP: ${e.message}"
-                )
+                _uiState.value = _uiState.value.copy(error = "Failed to RSVP: ${e.message}")
             }
         }
     }
@@ -269,12 +260,17 @@ class EventsViewModel @Inject constructor(
     fun refreshEvents() {
         loadEvents()
     }
+
+    fun clearSnackbar() {
+        _uiState.value = _uiState.value.copy(snackbarMessage = null)
+    }
 }
 
 data class EventsUiState(
     val events: List<Event> = emptyList(),
-    val selectedCategory: ContentCategory? = null,
     val isLoading: Boolean = false,
     val error: String? = null,
-    val eventIdToFriendsGoing: Map<String, Int> = emptyMap()
+    val selectedCategory: ContentCategory? = null,
+    val eventIdToFriendsGoing: Map<String, Int> = emptyMap(),
+    val snackbarMessage: String? = null
 )

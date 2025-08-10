@@ -401,6 +401,15 @@ fun UploadScreen(
                                 unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
                             )
                         )
+
+                        if (viewModel.locationLatitude.collectAsState().value != 0.0 && viewModel.locationLongitude.collectAsState().value != 0.0) {
+                            Spacer(Modifier.height(12.dp))
+                            MiniMapPreview(
+                                latitude = viewModel.locationLatitude.collectAsState().value,
+                                longitude = viewModel.locationLongitude.collectAsState().value,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
                 }
                 

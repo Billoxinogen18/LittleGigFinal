@@ -27,9 +27,13 @@ import coil.compose.AsyncImage
 import com.littlegig.app.data.model.*
 import com.littlegig.app.presentation.theme.*
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
 
 // Unique LittleGig Chat Bubble with Neumorphic Design
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun NeumorphicChatBubble(
     message: Message,
     isFromCurrentUser: Boolean,
@@ -39,6 +43,8 @@ fun NeumorphicChatBubble(
     modifier: Modifier = Modifier
 ) {
     val isDark = isSystemInDarkTheme()
+    var showReactions by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -250,6 +256,9 @@ fun NeumorphicChatBubble(
                                 modifier = Modifier.size(16.dp)
                             )
                         }
+                        IconButton(onClick = { showReactions = true }, modifier = Modifier.size(24.dp)) {
+                            Icon(Icons.Default.AddReaction, contentDescription = "React", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(16.dp))
+                        }
                     }
                 }
             }
@@ -277,6 +286,20 @@ fun NeumorphicChatBubble(
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+            }
+        }
+    }
+    if (showReactions) {
+        ModalBottomSheet(onDismissRequest = { showReactions = false }, sheetState = sheetState) {
+            Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
+                listOf("❤️","😄","🔥","👍","👏").forEach { emoji ->
+                    Text(text = emoji, style = MaterialTheme.typography.headlineSmall, modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {
+                            onLikeMessage(message.id)
+                            showReactions = false
+                        })
+                }
             }
         }
     }
