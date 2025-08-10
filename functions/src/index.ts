@@ -34,7 +34,7 @@ export const processTicketPurchase = functions.region('us-central1').runWith({ m
     await db.collection('payments').add(paymentData);
 
     // Generate Flutterwave payment URL
-    const flutterwaveUrl = `https://checkout.flutterwave.com/v3/hosted/pay/${paymentReference}?amount=${amount}&currency=${currency}&tx_ref=${paymentReference}&redirect_url=${encodeURIComponent('littlegig://payment/verify?ref=' + paymentReference)}&meta[eventId]=${eventId}&meta[userId]=${userId}`;
+Go    const flutterwaveUrl = `https://checkout.flutterwave.com/v3/hosted/pay/${paymentReference}?amount=${amount}&currency=${currency}&tx_ref=${paymentReference}&redirect_url=${encodeURIComponent('littlegig://payment/verify?ref=' + paymentReference)}&meta[eventId]=${eventId}&meta[userId]=${userId}`;
 
     return {
       success: true,
