@@ -256,7 +256,7 @@ fun LiquidGlassBottomNavigation(
         BottomNavItem("tickets", "Tickets", Icons.Default.Receipt),
         BottomNavItem("map", "LittleMap", Icons.Default.Map),
         BottomNavItem("chat", "Chat", Icons.Default.Chat),
-        BottomNavItem("account", "Account", Icons.Default.Person)
+        BottomNavItem("upload", "Upload", Icons.Default.Add)
     )
     
             // Elevated floating bottom navigation with proper glassmorphism

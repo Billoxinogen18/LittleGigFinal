@@ -25,6 +25,11 @@ import com.littlegig.app.presentation.events.ModernEventsScreen
 import com.littlegig.app.presentation.events.EventDetailsScreen
 import com.littlegig.app.presentation.events.ModernEventDetailsScreen
 import com.littlegig.app.presentation.account.ModernAccountScreen
+import com.littlegig.app.presentation.tickets.ModernTicketsScreen
+import com.littlegig.app.presentation.map.ModernMapScreen
+import com.littlegig.app.presentation.upload.ModernUploadScreen
+import com.littlegig.app.presentation.chat.ModernChatScreen
+import com.littlegig.app.presentation.inbox.ModernInboxScreen
 import com.littlegig.app.presentation.map.MapScreen
 import com.littlegig.app.presentation.settings.SettingsScreen
 import com.littlegig.app.presentation.tickets.TicketsScreen
@@ -100,19 +105,19 @@ fun MainScreen(
                         ModernEventsScreen(navController = navController)
                     }
                     composable("tickets") {
-                        TicketsScreen(navController = navController)
+                        ModernTicketsScreen(navController = navController)
                     }
                     composable("map") {
-                        MapScreen(navController = navController)
+                        ModernMapScreen(navController = navController)
                     }
                     composable("upload") {
-                        UploadScreen(navController = navController)
+                        ModernUploadScreen(navController = navController)
                     }
                     composable("chat") {
-                        ChatScreen(navController = navController)
+                        ModernChatScreen(navController = navController)
                     }
                     composable("inbox") {
-                        com.littlegig.app.presentation.inbox.InboxScreen()
+                        ModernInboxScreen(navController = navController)
                     }
                     composable("auth") {
                         AuthScreen(
