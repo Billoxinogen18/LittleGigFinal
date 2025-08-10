@@ -430,3 +430,27 @@ export const cleanupOldData = functions.region('us-central1').runWith({ memory: 
 
 // Export chat-related callable functions
 export * from './chat';
+
+export const seedDemoUsers = functions.region('us-central1').https.onCall(async (data, context) => {
+  const count: number = Math.max(1, Math.min(20, (data && data.count) || 10));
+  const batch = db.batch();
+  for (let i = 0; i < count; i++) {
+    const id = `demo_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+    const userRef = db.collection('users').doc(id);
+    batch.set(userRef, {
+      displayName: `Demo User ${i+1}`,
+      username: `demo${i+1}`,
+      email: `demo${i+1}@example.com`,
+      profileImageUrl: '',
+      userType: 'REGULAR',
+      rank: 'NOVICE',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      username_lower: `demo${i+1}`,
+      email_lower: `demo${i+1}@example.com`,
+      displayName_lower: `demo user ${i+1}`
+    });
+  }
+  await batch.commit();
+  return { success: true, created: count };
+});
