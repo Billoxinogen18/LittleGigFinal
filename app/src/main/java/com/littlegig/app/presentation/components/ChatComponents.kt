@@ -57,11 +57,31 @@ fun NeumorphicChatBubble(
                 // Message content based on type
                 when (message.messageType) {
                     MessageType.TEXT -> {
-                        Text(
-                            text = message.content,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                        val parts = remember(message.content) {
+                            val regex = Regex("@([A-Za-z0-9_]{2,30})")
+                            val result = mutableListOf<Pair<String, Boolean>>()
+                            var lastIndex = 0
+                            regex.findAll(message.content).forEach { m ->
+                                if (m.range.first > lastIndex) {
+                                    result.add(message.content.substring(lastIndex, m.range.first) to false)
+                                }
+                                result.add("@" + m.groupValues[1] to true)
+                                lastIndex = m.range.last + 1
+                            }
+                            if (lastIndex < message.content.length) {
+                                result.add(message.content.substring(lastIndex) to false)
+                            }
+                            result.toList()
+                        }
+                        Row {
+                            parts.forEach { (seg, isMention) ->
+                                Text(
+                                    text = seg,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = if (isMention) LittleGigPrimary else MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        }
                     }
                     MessageType.IMAGE -> {
                         AsyncImage(

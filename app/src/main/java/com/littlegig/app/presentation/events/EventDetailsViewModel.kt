@@ -18,13 +18,15 @@ import android.content.Intent
 import android.net.Uri
 import android.content.Context
 import java.util.Date
+import com.littlegig.app.data.repository.NotificationRepository
 
 @HiltViewModel
 class EventDetailsViewModel @Inject constructor(
     private val eventRepository: EventRepository,
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
-    private val paymentRepository: PaymentRepository
+    private val paymentRepository: PaymentRepository,
+    private val notificationRepository: NotificationRepository
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(EventDetailsUiState())
@@ -59,6 +61,7 @@ class EventDetailsViewModel @Inject constructor(
                             isLiked = isLiked,
                             isLoading = false
                         )
+                        try { notificationRepository.subscribeToEventTopic(event.id) } catch (_: Exception) {}
                     } else {
                         _uiState.value = _uiState.value.copy(
                             event = null,
@@ -226,6 +229,13 @@ class EventDetailsViewModel @Inject constructor(
     
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _uiState.value.event?.id?.let { eid ->
+            viewModelScope.launch { try { notificationRepository.unsubscribeFromEventTopic(eid) } catch (_: Exception) {} }
+        }
     }
 }
 

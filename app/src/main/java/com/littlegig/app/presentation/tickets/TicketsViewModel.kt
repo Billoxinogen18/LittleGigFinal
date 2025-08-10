@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
+import com.littlegig.app.utils.PaymentEventBus
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +26,21 @@ class TicketsViewModel @Inject constructor(
     
     init {
         loadUserTickets()
+        viewModelScope.launch {
+            PaymentEventBus.events.collect { evt ->
+                if (evt.success) {
+                    _uiState.value = _uiState.value.copy(
+                        isSuccess = true,
+                        successMessage = "Payment successful! Your ticket has been added to your wallet."
+                    )
+                    loadUserTickets()
+                } else {
+                    _uiState.value = _uiState.value.copy(
+                        error = "Payment verification failed"
+                    )
+                }
+            }
+        }
     }
     
     private fun loadUserTickets() {

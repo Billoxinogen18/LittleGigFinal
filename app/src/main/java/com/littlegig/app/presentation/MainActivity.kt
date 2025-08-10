@@ -21,6 +21,8 @@ import com.littlegig.app.presentation.auth.AuthViewModel
 import com.littlegig.app.data.repository.PaymentRepository
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import com.littlegig.app.utils.PaymentEventBus
+import com.littlegig.app.utils.PaymentVerificationEvent
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -75,7 +77,11 @@ class MainActivity : ComponentActivity() {
         val data = intent.data ?: return
         if (data.scheme == "littlegig" && data.host == "payment" && data.path == "/verify") {
             val ref = data.getQueryParameter("ref") ?: return
-            lifecycleScope.launch { paymentRepository.verifyPayment(ref) }
+            lifecycleScope.launch {
+                val result = paymentRepository.verifyPayment(ref)
+                val ok = result.getOrNull() == true
+                PaymentEventBus.emit(PaymentVerificationEvent(reference = ref, success = ok))
+            }
         }
     }
     

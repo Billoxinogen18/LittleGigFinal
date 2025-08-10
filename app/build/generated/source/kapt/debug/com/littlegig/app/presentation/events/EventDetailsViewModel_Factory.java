@@ -2,6 +2,7 @@ package com.littlegig.app.presentation.events;
 
 import com.littlegig.app.data.repository.AuthRepository;
 import com.littlegig.app.data.repository.EventRepository;
+import com.littlegig.app.data.repository.NotificationRepository;
 import com.littlegig.app.data.repository.PaymentRepository;
 import com.littlegig.app.data.repository.UserRepository;
 import dagger.internal.DaggerGenerated;
@@ -34,32 +35,37 @@ public final class EventDetailsViewModel_Factory implements Factory<EventDetails
 
   private final Provider<PaymentRepository> paymentRepositoryProvider;
 
+  private final Provider<NotificationRepository> notificationRepositoryProvider;
+
   public EventDetailsViewModel_Factory(Provider<EventRepository> eventRepositoryProvider,
       Provider<AuthRepository> authRepositoryProvider,
       Provider<UserRepository> userRepositoryProvider,
-      Provider<PaymentRepository> paymentRepositoryProvider) {
+      Provider<PaymentRepository> paymentRepositoryProvider,
+      Provider<NotificationRepository> notificationRepositoryProvider) {
     this.eventRepositoryProvider = eventRepositoryProvider;
     this.authRepositoryProvider = authRepositoryProvider;
     this.userRepositoryProvider = userRepositoryProvider;
     this.paymentRepositoryProvider = paymentRepositoryProvider;
+    this.notificationRepositoryProvider = notificationRepositoryProvider;
   }
 
   @Override
   public EventDetailsViewModel get() {
-    return newInstance(eventRepositoryProvider.get(), authRepositoryProvider.get(), userRepositoryProvider.get(), paymentRepositoryProvider.get());
+    return newInstance(eventRepositoryProvider.get(), authRepositoryProvider.get(), userRepositoryProvider.get(), paymentRepositoryProvider.get(), notificationRepositoryProvider.get());
   }
 
   public static EventDetailsViewModel_Factory create(
       Provider<EventRepository> eventRepositoryProvider,
       Provider<AuthRepository> authRepositoryProvider,
       Provider<UserRepository> userRepositoryProvider,
-      Provider<PaymentRepository> paymentRepositoryProvider) {
-    return new EventDetailsViewModel_Factory(eventRepositoryProvider, authRepositoryProvider, userRepositoryProvider, paymentRepositoryProvider);
+      Provider<PaymentRepository> paymentRepositoryProvider,
+      Provider<NotificationRepository> notificationRepositoryProvider) {
+    return new EventDetailsViewModel_Factory(eventRepositoryProvider, authRepositoryProvider, userRepositoryProvider, paymentRepositoryProvider, notificationRepositoryProvider);
   }
 
   public static EventDetailsViewModel newInstance(EventRepository eventRepository,
       AuthRepository authRepository, UserRepository userRepository,
-      PaymentRepository paymentRepository) {
-    return new EventDetailsViewModel(eventRepository, authRepository, userRepository, paymentRepository);
+      PaymentRepository paymentRepository, NotificationRepository notificationRepository) {
+    return new EventDetailsViewModel(eventRepository, authRepository, userRepository, paymentRepository, notificationRepository);
   }
 }

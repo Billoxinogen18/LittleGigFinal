@@ -42,6 +42,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import java.util.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
+import android.Manifest
+import androidx.compose.runtime.SideEffect
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 
 @Composable
 fun RecapsUploadScreen(
@@ -64,7 +71,14 @@ fun RecapsUploadScreen(
     ) { uris ->
         selectedImages = uris
     }
-    
+    val context = LocalContext.current
+    val coarsePermissionLauncher = rememberLauncherForActivityResult(RequestPermission()) { granted ->
+        if (granted) {
+            // In real app, fetch location from FusedLocationProvider; placeholder 0.0 here
+            selectedEvent?.let { viewModel.verifyLocation(it.id, 0.0, 0.0) }
+        }
+    }
+ 
     // Proper dark/light mode background
     Box(
         modifier = Modifier
@@ -152,8 +166,8 @@ fun RecapsUploadScreen(
                                     isSelected = selectedEvent?.id == event.id,
                                     onClick = {
                                         viewModel.selectEvent(event)
-                                        // Check if user is within 3km of event location
-                                        viewModel.verifyLocation(event.id, 0.0, 0.0) // TODO: Get actual user location
+                                        // Request location permission then verify location
+                                        coarsePermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
                                     }
                                 )
                             }

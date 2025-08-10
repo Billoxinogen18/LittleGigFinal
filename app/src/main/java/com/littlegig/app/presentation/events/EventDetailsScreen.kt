@@ -30,6 +30,13 @@ import androidx.browser.customtabs.CustomTabsIntent
 import android.net.Uri
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlinx.coroutines.flow.collect
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import com.littlegig.app.utils.PaymentEventBus
 
 @Composable
 fun EventDetailsScreen(
@@ -53,6 +60,20 @@ fun EventDetailsScreen(
                 if (isDark) DarkBackground else LightBackground
             )
     ) {
+        val snackbarHostState = remember { SnackbarHostState() }
+        LaunchedEffect(Unit) {
+            PaymentEventBus.events.collect { evt ->
+                if (evt.success) {
+                    val res = snackbarHostState.showSnackbar("Payment successful! View ticket in wallet.", actionLabel = "Open")
+                    if (res == SnackbarResult.ActionPerformed) {
+                        navController.navigate("tickets")
+                    }
+                } else {
+                    snackbarHostState.showSnackbar("Payment verification failed")
+                }
+            }
+        }
+        SnackbarHost(hostState = snackbarHostState)
         when {
             uiState.isLoading -> {
                 Box(
@@ -446,6 +467,28 @@ fun EventDetailsScreen(
                                         ),
                                         color = Color.White
                                     )
+                                }
+                            }
+                        }
+                    }
+                    item {
+                        // Recent recaps preview
+                        Spacer(Modifier.height(12.dp))
+                        AdvancedGlassmorphicCard {
+                            Column(Modifier.padding(16.dp)) {
+                                Text("Recent Recaps", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                                Spacer(Modifier.height(8.dp))
+                                val recapsVm: com.littlegig.app.presentation.recaps.RecapsViewerViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                                LaunchedEffect(uiState.event?.id) { uiState.event?.id?.let { recapsVm.load(it) } }
+                                val recaps by recapsVm.recaps
+                                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    recaps.take(5).forEach { r ->
+                                        AsyncImage(
+                                            model = r.mediaUrls.firstOrNull(), contentDescription = null,
+                                            modifier = Modifier.size(72.dp).clip(RoundedCornerShape(8.dp)),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    }
                                 }
                             }
                         }
