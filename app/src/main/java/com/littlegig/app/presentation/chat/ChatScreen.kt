@@ -501,8 +501,15 @@ fun ChatScreen(
                                             )
                                         }
                                     }
-                                    IconButton(onClick = { viewModel.pinChat(chat.id) }) {
-                                        Icon(Icons.Default.PushPin, contentDescription = "Pin")
+                                    val mePinned by viewModel.pinnedChatIds.collectAsState()
+                                    if (mePinned.contains(chat.id)) {
+                                        IconButton(onClick = { viewModel.unpinChat(chat.id) }) {
+                                            Icon(Icons.Default.PushPin, contentDescription = "Unpin", tint = LittleGigPrimary)
+                                        }
+                                    } else {
+                                        IconButton(onClick = { viewModel.pinChat(chat.id) }) {
+                                            Icon(Icons.Default.PushPin, contentDescription = "Pin")
+                                        }
                                     }
                                 }
                             }

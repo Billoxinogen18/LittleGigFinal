@@ -26,6 +26,8 @@ import com.littlegig.app.data.model.User
 import com.littlegig.app.presentation.components.*
 import com.littlegig.app.presentation.theme.*
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.browser.customtabs.CustomTabsIntent
+import android.net.Uri
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -399,6 +401,20 @@ fun EventDetailsScreen(
                                     }
                                 }
                             }
+                            HapticButton(onClick = { navController.navigate("recaps_viewer/${uiState.event!!.id}") }, modifier = Modifier.weight(1f)) {
+                                AdvancedNeumorphicCard { Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                                    Icon(Icons.Default.PlayArrow, contentDescription = null, tint = LittleGigPrimary, modifier = Modifier.size(20.dp))
+                                    Spacer(Modifier.width(8.dp))
+                                    Text("Recaps", color = if (isDark) Color.White else Color.Black)
+                                } }
+                            }
+                            HapticButton(onClick = { /* TODO: open upload recap screen */ }, modifier = Modifier.weight(1f)) {
+                                AdvancedNeumorphicCard { Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                                    Icon(Icons.Default.VideoLibrary, contentDescription = null, tint = LittleGigPrimary, modifier = Modifier.size(20.dp))
+                                    Spacer(Modifier.width(8.dp))
+                                    Text("Add Recap", color = if (isDark) Color.White else Color.Black)
+                                } }
+                            }
                         }
                     }
                     
@@ -432,6 +448,15 @@ fun EventDetailsScreen(
                                     )
                                 }
                             }
+                        }
+                    }
+                }
+                // Open paymentUrl if available
+                uiState.paymentUrl?.let { url ->
+                    LaunchedEffect(url) {
+                        runCatching {
+                            val intent = CustomTabsIntent.Builder().build()
+                            intent.launchUrl(context, Uri.parse(url))
                         }
                     }
                 }

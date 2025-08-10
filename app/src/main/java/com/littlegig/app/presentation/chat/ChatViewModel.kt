@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -48,10 +49,15 @@ class ChatViewModel @Inject constructor(
     private val _chatSearchQuery = MutableStateFlow("")
     val chatSearchQuery: StateFlow<String> = _chatSearchQuery.asStateFlow()
 
+    private val _pinnedChatIds = MutableStateFlow<List<String>>(emptyList())
+    val pinnedChatIds: StateFlow<List<String>> = _pinnedChatIds.asStateFlow()
+
     fun loadChats() {
         viewModelScope.launch {
             try {
                 val user = authRepository.currentUser.first() ?: return@launch
+                // initialize pinned ids from current user
+                _pinnedChatIds.value = authRepository.currentUser.value?.pinnedChats ?: emptyList()
                 chatRepository.getUserChats(user.id).collect { list ->
                     val me = authRepository.currentUser.value
                     val pinned = me?.pinnedChats ?: emptyList()
@@ -64,6 +70,12 @@ class ChatViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     error = "Failed to load chats: ${e.message}"
                 )
+            }
+        }
+        viewModelScope.launch {
+            // keep pinned ids in sync
+            authRepository.currentUser.collect { user ->
+                _pinnedChatIds.value = user?.pinnedChats ?: emptyList()
             }
         }
     }
@@ -80,6 +92,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             val me = authRepository.currentUser.first() ?: return@launch
             chatRepository.pinChatForUser(me.id, chatId)
+            _pinnedChatIds.value = (_pinnedChatIds.value + chatId).distinct()
         }
     }
 
@@ -87,6 +100,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             val me = authRepository.currentUser.first() ?: return@launch
             chatRepository.unpinChatForUser(me.id, chatId)
+            _pinnedChatIds.value = _pinnedChatIds.value - chatId
         }
     }
 

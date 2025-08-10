@@ -50,6 +50,8 @@ fun AccountLinkingScreen(
     var passwordVisible by remember { mutableStateOf(false) }
     var isPhoneAuth by remember { mutableStateOf(true) }
     var otpCode by remember { mutableStateOf("") }
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
     val ctx = LocalContext.current
     val activity = ctx as? Activity
     
@@ -239,19 +241,9 @@ fun AccountLinkingScreen(
                             } else {
                                 val emailOk = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
                                 val passOk = password.length >= 6
-                                if (!emailOk) {
-                                    viewModel.clearError()
-                                    // surface via UI state
-                                    // Simple immediate feedback
-                                    // Using same error channel
-                                    viewModel.signInAnonymously() // no-op to ensure ViewModel active
-                                    viewModel.clearError()
-                                    // Instead set error state directly
-                                    // But we don't have a direct setter; reuse error flow
-                                    // Emit by attempting and catching would be heavy; keep inline UI validation text
-                                } else if (!passOk) {
-                                    // Same note as above
-                                } else {
+                                emailError = if (!emailOk) "Please enter a valid email." else null
+                                passwordError = if (!passOk) "Password must be at least 6 characters." else null
+                                if (emailOk && passOk) {
                                     viewModel.linkAnonymousAccount(email, password, displayName, null, userType)
                                 }
                             }
@@ -283,16 +275,9 @@ fun AccountLinkingScreen(
                             }
                         }
                     }
-                    // Inline validation messages
                     if (!isPhoneAuth) {
-                        val emailOk = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-                        val passOk = password.length >= 6
-                        if (email.isNotBlank() && !emailOk) {
-                            Text(text = "Please enter a valid email.", color = Color(0xFFFF6B6B))
-                        }
-                        if (password.isNotBlank() && !passOk) {
-                            Text(text = "Password must be at least 6 characters.", color = Color(0xFFFF6B6B))
-                        }
+                        emailError?.let { Text(text = it, color = Color(0xFFFF6B6B)) }
+                        passwordError?.let { Text(text = it, color = Color(0xFFFF6B6B)) }
                     }
                 }
             }

@@ -60,6 +60,8 @@ import com.littlegig.app.presentation.payments.PaymentsViewModel;
 import com.littlegig.app.presentation.payments.PaymentsViewModel_HiltModules;
 import com.littlegig.app.presentation.recaps.RecapsUploadViewModel;
 import com.littlegig.app.presentation.recaps.RecapsUploadViewModel_HiltModules;
+import com.littlegig.app.presentation.recaps.RecapsViewerViewModel;
+import com.littlegig.app.presentation.recaps.RecapsViewerViewModel_HiltModules;
 import com.littlegig.app.presentation.settings.SettingsViewModel;
 import com.littlegig.app.presentation.settings.SettingsViewModel_HiltModules;
 import com.littlegig.app.presentation.tickets.TicketsViewModel;
@@ -432,7 +434,7 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     @Override
     public Map<Class<?>, Boolean> getViewModelKeys() {
-      return LazyClassKeyMap.<Boolean>of(ImmutableMap.<String, Boolean>builderWithExpectedSize(15).put(LazyClassKeyProvider.com_littlegig_app_presentation_account_AccountViewModel, AccountViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_auth_AuthViewModel, AuthViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_business_BusinessDashboardViewModel, BusinessDashboardViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_chat_ChatDetailsViewModel, ChatDetailsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_chat_ChatSearchViewModel, ChatSearchViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_chat_ChatViewModel, ChatViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_events_EventDetailsViewModel, EventDetailsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_events_EventsViewModel, EventsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_inbox_InboxViewModel, InboxViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_map_MapViewModel, MapViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_payments_PaymentsViewModel, PaymentsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_recaps_RecapsUploadViewModel, RecapsUploadViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_settings_SettingsViewModel, SettingsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_tickets_TicketsViewModel, TicketsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_upload_UploadViewModel, UploadViewModel_HiltModules.KeyModule.provide()).build());
+      return LazyClassKeyMap.<Boolean>of(ImmutableMap.<String, Boolean>builderWithExpectedSize(16).put(LazyClassKeyProvider.com_littlegig_app_presentation_account_AccountViewModel, AccountViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_auth_AuthViewModel, AuthViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_business_BusinessDashboardViewModel, BusinessDashboardViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_chat_ChatDetailsViewModel, ChatDetailsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_chat_ChatSearchViewModel, ChatSearchViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_chat_ChatViewModel, ChatViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_events_EventDetailsViewModel, EventDetailsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_events_EventsViewModel, EventsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_inbox_InboxViewModel, InboxViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_map_MapViewModel, MapViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_payments_PaymentsViewModel, PaymentsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_recaps_RecapsUploadViewModel, RecapsUploadViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_recaps_RecapsViewerViewModel, RecapsViewerViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_settings_SettingsViewModel, SettingsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_tickets_TicketsViewModel, TicketsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_littlegig_app_presentation_upload_UploadViewModel, UploadViewModel_HiltModules.KeyModule.provide()).build());
     }
 
     @Override
@@ -454,78 +456,83 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
     private static final class LazyClassKeyProvider {
       static String com_littlegig_app_presentation_business_BusinessDashboardViewModel = "com.littlegig.app.presentation.business.BusinessDashboardViewModel";
 
-      static String com_littlegig_app_presentation_events_EventDetailsViewModel = "com.littlegig.app.presentation.events.EventDetailsViewModel";
-
-      static String com_littlegig_app_presentation_chat_ChatSearchViewModel = "com.littlegig.app.presentation.chat.ChatSearchViewModel";
-
-      static String com_littlegig_app_presentation_upload_UploadViewModel = "com.littlegig.app.presentation.upload.UploadViewModel";
-
-      static String com_littlegig_app_presentation_inbox_InboxViewModel = "com.littlegig.app.presentation.inbox.InboxViewModel";
-
-      static String com_littlegig_app_presentation_recaps_RecapsUploadViewModel = "com.littlegig.app.presentation.recaps.RecapsUploadViewModel";
-
-      static String com_littlegig_app_presentation_tickets_TicketsViewModel = "com.littlegig.app.presentation.tickets.TicketsViewModel";
-
-      static String com_littlegig_app_presentation_map_MapViewModel = "com.littlegig.app.presentation.map.MapViewModel";
+      static String com_littlegig_app_presentation_auth_AuthViewModel = "com.littlegig.app.presentation.auth.AuthViewModel";
 
       static String com_littlegig_app_presentation_payments_PaymentsViewModel = "com.littlegig.app.presentation.payments.PaymentsViewModel";
 
-      static String com_littlegig_app_presentation_chat_ChatDetailsViewModel = "com.littlegig.app.presentation.chat.ChatDetailsViewModel";
-
-      static String com_littlegig_app_presentation_settings_SettingsViewModel = "com.littlegig.app.presentation.settings.SettingsViewModel";
+      static String com_littlegig_app_presentation_map_MapViewModel = "com.littlegig.app.presentation.map.MapViewModel";
 
       static String com_littlegig_app_presentation_account_AccountViewModel = "com.littlegig.app.presentation.account.AccountViewModel";
 
-      static String com_littlegig_app_presentation_auth_AuthViewModel = "com.littlegig.app.presentation.auth.AuthViewModel";
+      static String com_littlegig_app_presentation_tickets_TicketsViewModel = "com.littlegig.app.presentation.tickets.TicketsViewModel";
+
+      static String com_littlegig_app_presentation_upload_UploadViewModel = "com.littlegig.app.presentation.upload.UploadViewModel";
+
+      static String com_littlegig_app_presentation_settings_SettingsViewModel = "com.littlegig.app.presentation.settings.SettingsViewModel";
+
+      static String com_littlegig_app_presentation_events_EventsViewModel = "com.littlegig.app.presentation.events.EventsViewModel";
 
       static String com_littlegig_app_presentation_chat_ChatViewModel = "com.littlegig.app.presentation.chat.ChatViewModel";
 
-      static String com_littlegig_app_presentation_events_EventsViewModel = "com.littlegig.app.presentation.events.EventsViewModel";
+      static String com_littlegig_app_presentation_recaps_RecapsUploadViewModel = "com.littlegig.app.presentation.recaps.RecapsUploadViewModel";
+
+      static String com_littlegig_app_presentation_chat_ChatSearchViewModel = "com.littlegig.app.presentation.chat.ChatSearchViewModel";
+
+      static String com_littlegig_app_presentation_recaps_RecapsViewerViewModel = "com.littlegig.app.presentation.recaps.RecapsViewerViewModel";
+
+      static String com_littlegig_app_presentation_inbox_InboxViewModel = "com.littlegig.app.presentation.inbox.InboxViewModel";
+
+      static String com_littlegig_app_presentation_chat_ChatDetailsViewModel = "com.littlegig.app.presentation.chat.ChatDetailsViewModel";
+
+      static String com_littlegig_app_presentation_events_EventDetailsViewModel = "com.littlegig.app.presentation.events.EventDetailsViewModel";
 
       @KeepFieldType
       BusinessDashboardViewModel com_littlegig_app_presentation_business_BusinessDashboardViewModel2;
 
       @KeepFieldType
-      EventDetailsViewModel com_littlegig_app_presentation_events_EventDetailsViewModel2;
-
-      @KeepFieldType
-      ChatSearchViewModel com_littlegig_app_presentation_chat_ChatSearchViewModel2;
-
-      @KeepFieldType
-      UploadViewModel com_littlegig_app_presentation_upload_UploadViewModel2;
-
-      @KeepFieldType
-      InboxViewModel com_littlegig_app_presentation_inbox_InboxViewModel2;
-
-      @KeepFieldType
-      RecapsUploadViewModel com_littlegig_app_presentation_recaps_RecapsUploadViewModel2;
-
-      @KeepFieldType
-      TicketsViewModel com_littlegig_app_presentation_tickets_TicketsViewModel2;
-
-      @KeepFieldType
-      MapViewModel com_littlegig_app_presentation_map_MapViewModel2;
+      AuthViewModel com_littlegig_app_presentation_auth_AuthViewModel2;
 
       @KeepFieldType
       PaymentsViewModel com_littlegig_app_presentation_payments_PaymentsViewModel2;
 
       @KeepFieldType
-      ChatDetailsViewModel com_littlegig_app_presentation_chat_ChatDetailsViewModel2;
-
-      @KeepFieldType
-      SettingsViewModel com_littlegig_app_presentation_settings_SettingsViewModel2;
+      MapViewModel com_littlegig_app_presentation_map_MapViewModel2;
 
       @KeepFieldType
       AccountViewModel com_littlegig_app_presentation_account_AccountViewModel2;
 
       @KeepFieldType
-      AuthViewModel com_littlegig_app_presentation_auth_AuthViewModel2;
+      TicketsViewModel com_littlegig_app_presentation_tickets_TicketsViewModel2;
+
+      @KeepFieldType
+      UploadViewModel com_littlegig_app_presentation_upload_UploadViewModel2;
+
+      @KeepFieldType
+      SettingsViewModel com_littlegig_app_presentation_settings_SettingsViewModel2;
+
+      @KeepFieldType
+      EventsViewModel com_littlegig_app_presentation_events_EventsViewModel2;
 
       @KeepFieldType
       ChatViewModel com_littlegig_app_presentation_chat_ChatViewModel2;
 
       @KeepFieldType
-      EventsViewModel com_littlegig_app_presentation_events_EventsViewModel2;
+      RecapsUploadViewModel com_littlegig_app_presentation_recaps_RecapsUploadViewModel2;
+
+      @KeepFieldType
+      ChatSearchViewModel com_littlegig_app_presentation_chat_ChatSearchViewModel2;
+
+      @KeepFieldType
+      RecapsViewerViewModel com_littlegig_app_presentation_recaps_RecapsViewerViewModel2;
+
+      @KeepFieldType
+      InboxViewModel com_littlegig_app_presentation_inbox_InboxViewModel2;
+
+      @KeepFieldType
+      ChatDetailsViewModel com_littlegig_app_presentation_chat_ChatDetailsViewModel2;
+
+      @KeepFieldType
+      EventDetailsViewModel com_littlegig_app_presentation_events_EventDetailsViewModel2;
     }
   }
 
@@ -560,6 +567,8 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     private Provider<RecapsUploadViewModel> recapsUploadViewModelProvider;
 
+    private Provider<RecapsViewerViewModel> recapsViewerViewModelProvider;
+
     private Provider<SettingsViewModel> settingsViewModelProvider;
 
     private Provider<TicketsViewModel> ticketsViewModelProvider;
@@ -591,14 +600,15 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       this.mapViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 9);
       this.paymentsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 10);
       this.recapsUploadViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 11);
-      this.settingsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 12);
-      this.ticketsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 13);
-      this.uploadViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 14);
+      this.recapsViewerViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 12);
+      this.settingsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 13);
+      this.ticketsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 14);
+      this.uploadViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 15);
     }
 
     @Override
     public Map<Class<?>, javax.inject.Provider<ViewModel>> getHiltViewModelMap() {
-      return LazyClassKeyMap.<javax.inject.Provider<ViewModel>>of(ImmutableMap.<String, javax.inject.Provider<ViewModel>>builderWithExpectedSize(15).put(LazyClassKeyProvider.com_littlegig_app_presentation_account_AccountViewModel, ((Provider) accountViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_auth_AuthViewModel, ((Provider) authViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_business_BusinessDashboardViewModel, ((Provider) businessDashboardViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_chat_ChatDetailsViewModel, ((Provider) chatDetailsViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_chat_ChatSearchViewModel, ((Provider) chatSearchViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_chat_ChatViewModel, ((Provider) chatViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_events_EventDetailsViewModel, ((Provider) eventDetailsViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_events_EventsViewModel, ((Provider) eventsViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_inbox_InboxViewModel, ((Provider) inboxViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_map_MapViewModel, ((Provider) mapViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_payments_PaymentsViewModel, ((Provider) paymentsViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_recaps_RecapsUploadViewModel, ((Provider) recapsUploadViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_settings_SettingsViewModel, ((Provider) settingsViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_tickets_TicketsViewModel, ((Provider) ticketsViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_upload_UploadViewModel, ((Provider) uploadViewModelProvider)).build());
+      return LazyClassKeyMap.<javax.inject.Provider<ViewModel>>of(ImmutableMap.<String, javax.inject.Provider<ViewModel>>builderWithExpectedSize(16).put(LazyClassKeyProvider.com_littlegig_app_presentation_account_AccountViewModel, ((Provider) accountViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_auth_AuthViewModel, ((Provider) authViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_business_BusinessDashboardViewModel, ((Provider) businessDashboardViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_chat_ChatDetailsViewModel, ((Provider) chatDetailsViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_chat_ChatSearchViewModel, ((Provider) chatSearchViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_chat_ChatViewModel, ((Provider) chatViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_events_EventDetailsViewModel, ((Provider) eventDetailsViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_events_EventsViewModel, ((Provider) eventsViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_inbox_InboxViewModel, ((Provider) inboxViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_map_MapViewModel, ((Provider) mapViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_payments_PaymentsViewModel, ((Provider) paymentsViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_recaps_RecapsUploadViewModel, ((Provider) recapsUploadViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_recaps_RecapsViewerViewModel, ((Provider) recapsViewerViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_settings_SettingsViewModel, ((Provider) settingsViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_tickets_TicketsViewModel, ((Provider) ticketsViewModelProvider)).put(LazyClassKeyProvider.com_littlegig_app_presentation_upload_UploadViewModel, ((Provider) uploadViewModelProvider)).build());
     }
 
     @Override
@@ -608,41 +618,55 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_littlegig_app_presentation_chat_ChatViewModel = "com.littlegig.app.presentation.chat.ChatViewModel";
+      static String com_littlegig_app_presentation_recaps_RecapsUploadViewModel = "com.littlegig.app.presentation.recaps.RecapsUploadViewModel";
 
-      static String com_littlegig_app_presentation_tickets_TicketsViewModel = "com.littlegig.app.presentation.tickets.TicketsViewModel";
+      static String com_littlegig_app_presentation_map_MapViewModel = "com.littlegig.app.presentation.map.MapViewModel";
+
+      static String com_littlegig_app_presentation_upload_UploadViewModel = "com.littlegig.app.presentation.upload.UploadViewModel";
+
+      static String com_littlegig_app_presentation_auth_AuthViewModel = "com.littlegig.app.presentation.auth.AuthViewModel";
+
+      static String com_littlegig_app_presentation_payments_PaymentsViewModel = "com.littlegig.app.presentation.payments.PaymentsViewModel";
+
+      static String com_littlegig_app_presentation_events_EventsViewModel = "com.littlegig.app.presentation.events.EventsViewModel";
 
       static String com_littlegig_app_presentation_business_BusinessDashboardViewModel = "com.littlegig.app.presentation.business.BusinessDashboardViewModel";
 
       static String com_littlegig_app_presentation_chat_ChatDetailsViewModel = "com.littlegig.app.presentation.chat.ChatDetailsViewModel";
 
-      static String com_littlegig_app_presentation_chat_ChatSearchViewModel = "com.littlegig.app.presentation.chat.ChatSearchViewModel";
+      static String com_littlegig_app_presentation_settings_SettingsViewModel = "com.littlegig.app.presentation.settings.SettingsViewModel";
+
+      static String com_littlegig_app_presentation_tickets_TicketsViewModel = "com.littlegig.app.presentation.tickets.TicketsViewModel";
 
       static String com_littlegig_app_presentation_account_AccountViewModel = "com.littlegig.app.presentation.account.AccountViewModel";
 
-      static String com_littlegig_app_presentation_payments_PaymentsViewModel = "com.littlegig.app.presentation.payments.PaymentsViewModel";
-
-      static String com_littlegig_app_presentation_auth_AuthViewModel = "com.littlegig.app.presentation.auth.AuthViewModel";
-
       static String com_littlegig_app_presentation_events_EventDetailsViewModel = "com.littlegig.app.presentation.events.EventDetailsViewModel";
+
+      static String com_littlegig_app_presentation_chat_ChatViewModel = "com.littlegig.app.presentation.chat.ChatViewModel";
+
+      static String com_littlegig_app_presentation_recaps_RecapsViewerViewModel = "com.littlegig.app.presentation.recaps.RecapsViewerViewModel";
 
       static String com_littlegig_app_presentation_inbox_InboxViewModel = "com.littlegig.app.presentation.inbox.InboxViewModel";
 
-      static String com_littlegig_app_presentation_events_EventsViewModel = "com.littlegig.app.presentation.events.EventsViewModel";
-
-      static String com_littlegig_app_presentation_upload_UploadViewModel = "com.littlegig.app.presentation.upload.UploadViewModel";
-
-      static String com_littlegig_app_presentation_settings_SettingsViewModel = "com.littlegig.app.presentation.settings.SettingsViewModel";
-
-      static String com_littlegig_app_presentation_recaps_RecapsUploadViewModel = "com.littlegig.app.presentation.recaps.RecapsUploadViewModel";
-
-      static String com_littlegig_app_presentation_map_MapViewModel = "com.littlegig.app.presentation.map.MapViewModel";
+      static String com_littlegig_app_presentation_chat_ChatSearchViewModel = "com.littlegig.app.presentation.chat.ChatSearchViewModel";
 
       @KeepFieldType
-      ChatViewModel com_littlegig_app_presentation_chat_ChatViewModel2;
+      RecapsUploadViewModel com_littlegig_app_presentation_recaps_RecapsUploadViewModel2;
 
       @KeepFieldType
-      TicketsViewModel com_littlegig_app_presentation_tickets_TicketsViewModel2;
+      MapViewModel com_littlegig_app_presentation_map_MapViewModel2;
+
+      @KeepFieldType
+      UploadViewModel com_littlegig_app_presentation_upload_UploadViewModel2;
+
+      @KeepFieldType
+      AuthViewModel com_littlegig_app_presentation_auth_AuthViewModel2;
+
+      @KeepFieldType
+      PaymentsViewModel com_littlegig_app_presentation_payments_PaymentsViewModel2;
+
+      @KeepFieldType
+      EventsViewModel com_littlegig_app_presentation_events_EventsViewModel2;
 
       @KeepFieldType
       BusinessDashboardViewModel com_littlegig_app_presentation_business_BusinessDashboardViewModel2;
@@ -651,37 +675,28 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
       ChatDetailsViewModel com_littlegig_app_presentation_chat_ChatDetailsViewModel2;
 
       @KeepFieldType
-      ChatSearchViewModel com_littlegig_app_presentation_chat_ChatSearchViewModel2;
+      SettingsViewModel com_littlegig_app_presentation_settings_SettingsViewModel2;
+
+      @KeepFieldType
+      TicketsViewModel com_littlegig_app_presentation_tickets_TicketsViewModel2;
 
       @KeepFieldType
       AccountViewModel com_littlegig_app_presentation_account_AccountViewModel2;
 
       @KeepFieldType
-      PaymentsViewModel com_littlegig_app_presentation_payments_PaymentsViewModel2;
-
-      @KeepFieldType
-      AuthViewModel com_littlegig_app_presentation_auth_AuthViewModel2;
-
-      @KeepFieldType
       EventDetailsViewModel com_littlegig_app_presentation_events_EventDetailsViewModel2;
+
+      @KeepFieldType
+      ChatViewModel com_littlegig_app_presentation_chat_ChatViewModel2;
+
+      @KeepFieldType
+      RecapsViewerViewModel com_littlegig_app_presentation_recaps_RecapsViewerViewModel2;
 
       @KeepFieldType
       InboxViewModel com_littlegig_app_presentation_inbox_InboxViewModel2;
 
       @KeepFieldType
-      EventsViewModel com_littlegig_app_presentation_events_EventsViewModel2;
-
-      @KeepFieldType
-      UploadViewModel com_littlegig_app_presentation_upload_UploadViewModel2;
-
-      @KeepFieldType
-      SettingsViewModel com_littlegig_app_presentation_settings_SettingsViewModel2;
-
-      @KeepFieldType
-      RecapsUploadViewModel com_littlegig_app_presentation_recaps_RecapsUploadViewModel2;
-
-      @KeepFieldType
-      MapViewModel com_littlegig_app_presentation_map_MapViewModel2;
+      ChatSearchViewModel com_littlegig_app_presentation_chat_ChatSearchViewModel2;
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -741,13 +756,16 @@ public final class DaggerLittleGigApplication_HiltComponents_SingletonC {
           case 11: // com.littlegig.app.presentation.recaps.RecapsUploadViewModel 
           return (T) new RecapsUploadViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.recapRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get());
 
-          case 12: // com.littlegig.app.presentation.settings.SettingsViewModel 
+          case 12: // com.littlegig.app.presentation.recaps.RecapsViewerViewModel 
+          return (T) new RecapsViewerViewModel(singletonCImpl.recapRepositoryProvider.get());
+
+          case 13: // com.littlegig.app.presentation.settings.SettingsViewModel 
           return (T) new SettingsViewModel(singletonCImpl.authRepositoryProvider.get());
 
-          case 13: // com.littlegig.app.presentation.tickets.TicketsViewModel 
+          case 14: // com.littlegig.app.presentation.tickets.TicketsViewModel 
           return (T) new TicketsViewModel(singletonCImpl.ticketRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get());
 
-          case 14: // com.littlegig.app.presentation.upload.UploadViewModel 
+          case 15: // com.littlegig.app.presentation.upload.UploadViewModel 
           return (T) new UploadViewModel(singletonCImpl.eventRepositoryProvider.get(), singletonCImpl.authRepositoryProvider.get(), singletonCImpl.placesServiceProvider.get());
 
           default: throw new AssertionError(id);

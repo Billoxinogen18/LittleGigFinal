@@ -163,6 +163,10 @@ fun MainScreen(
                             navController = navController
                         )
                     }
+                    composable("recaps_viewer/{eventId}") { backStackEntry ->
+                        val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
+                        com.littlegig.app.presentation.recaps.RecapsViewerScreen(eventId = eventId)
+                    }
                 }
             }
         }
