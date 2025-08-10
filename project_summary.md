@@ -16,6 +16,7 @@
 - Fixed Firestore mapper warnings by aligning models (`User`: influencer alias, likedEvents, engagementScore, lastRankUpdate; `Event`: likedBy, ratings)
 - Enabled Android 13 back handling in `AndroidManifest.xml`
 - Upgraded build stack (AGP/Kotlin/Compose), configured local Android SDK, accepted licenses
+- Phase 2: Added E.164 normalization service, search lowercase index fields and queries, chat search debounce/cancel, contacts normalization service, improved Places error handling
 
 ## Current Phase (Build-Focused – Phase 1)
 - Auth

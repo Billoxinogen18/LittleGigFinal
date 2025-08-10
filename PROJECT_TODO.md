@@ -8,15 +8,16 @@
 - Build system: upgraded AGP to 8.4.2 and Kotlin to 1.9.24; set Java 17 and Compose Compiler 1.5.14 to support JDK 21; configured local Android SDK and accepted licenses.
 - Verified `./gradlew assembleDebug` builds successfully; APK at `app/build/outputs/apk/debug/app-debug.apk`.
 - Note: Device install pending (no emulator connected). Run: `adb connect 127.0.0.1:6555 && adb -s 127.0.0.1:6555 install -r app/build/outputs/apk/debug/app-debug.apk`.
+- Phase 2: Implemented search/indexing improvements (lowercase fields), E.164 phone normalization, chat search cancellation/debounce, Places error handling, and contacts normalization service. Build remains green and changes pushed to main.
 
 ## Current Phase (Build-Focused – Phase 1)
 - Keep assembleDebug green after each change and push to main
 - Prioritize Immediate Fixes and Short-Term items in this order:
-  1) Places: verify billing/key + robust error handling
-  2) Contacts: E.164 normalization and cached hash
-  3) Search: debounce + cancel in-flight + min length
-  4) Auth: anonymous-first + link account + phone primary
-  5) Observability: structured logs and breadcrumbs
+  1) Places: verify billing/key + robust error handling (in progress)
+  2) Contacts: E.164 normalization and cached hash (in progress)
+  3) Search: debounce + cancel in-flight + min length (done)
+  4) Auth: anonymous-first + link account + phone primary (in progress)
+  5) Observability: structured logs and breadcrumbs (pending)
 
 ## Build, Install, and Test
 - Assemble debug build: `./gradlew assembleDebug`
