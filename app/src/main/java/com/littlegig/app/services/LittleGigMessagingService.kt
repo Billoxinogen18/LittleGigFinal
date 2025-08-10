@@ -3,59 +3,52 @@ package com.littlegig.app.services
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class LittleGigMessagingService : FirebaseMessagingService() {
     
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        
         Log.d(TAG, "From: ${remoteMessage.from}")
-        
-        // Check if message contains a data payload
         if (remoteMessage.data.isNotEmpty()) {
             Log.d(TAG, "Message data payload: ${remoteMessage.data}")
-            
-            // Handle data payload
             handleDataMessage(remoteMessage.data)
         }
-        
-        // Check if message contains a notification payload
         remoteMessage.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
-            // Handle notification
         }
     }
     
     override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
-        
-        // Send token to server
         sendRegistrationToServer(token)
     }
     
     private fun handleDataMessage(data: Map<String, String>) {
         val type = data["type"]
-        
         when (type) {
-            "event_reminder" -> {
-                // Handle event reminder notification
-            }
-            "ticket_update" -> {
-                // Handle ticket status update
-            }
-            "new_event" -> {
-                // Handle new event notification
-            }
-            "payment_confirmation" -> {
-                // Handle payment confirmation
-            }
+            "event_reminder" -> { }
+            "ticket_update" -> { }
+            "new_event" -> { }
+            "payment_confirmation" -> { }
         }
     }
     
     private fun sendRegistrationToServer(token: String) {
-        // In a real app, send this token to your server
-        // so it can send push notifications to this device
-        Log.d(TAG, "Sending token to server: $token")
+        try {
+            val uid = FirebaseAuth.getInstance().currentUser?.uid
+            if (uid != null) {
+                FirebaseFirestore.getInstance().collection("users").document(uid)
+                    .set(mapOf("fcmToken" to token), com.google.firebase.firestore.SetOptions.merge())
+                    .addOnSuccessListener { Log.d(TAG, "FCM token saved for $uid") }
+                    .addOnFailureListener { e -> Log.w(TAG, "Failed to save FCM token", e) }
+            } else {
+                Log.d(TAG, "No signed-in user; token will be saved on next sign-in")
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Error saving FCM token", e)
+        }
     }
     
     companion object {
