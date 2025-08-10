@@ -85,6 +85,7 @@ class EventsViewModel @Inject constructor(
         viewModelScope.launch {
             println("🔥 DEBUG: EventsViewModel.loadEvents() called")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            com.littlegig.app.utils.PerfMonitor.startTrace("events_load")
             
             try {
                 eventRepository.getAllEvents()
@@ -96,6 +97,7 @@ class EventsViewModel @Inject constructor(
                             isLoading = false,
                             error = "Failed to load events: ${error.message}"
                         )
+                        com.littlegig.app.utils.PerfMonitor.stopTrace("events_load")
                     }
                     .collect { events ->
                         println("🔥 DEBUG: EventsViewModel received ${events.size} events")
@@ -121,6 +123,8 @@ class EventsViewModel @Inject constructor(
                             error = null,
                             eventIdToFriendsGoing = friendsGoingMap
                         )
+                        com.littlegig.app.utils.PerfMonitor.putMetric("events_load", "count", events.size.toLong())
+                        com.littlegig.app.utils.PerfMonitor.stopTrace("events_load")
                         println("🔥 DEBUG: UI state updated with ${filteredEvents.size} events")
                     }
             } catch (e: Exception) {
@@ -128,6 +132,7 @@ class EventsViewModel @Inject constructor(
                     isLoading = false,
                     error = "Network error: ${e.message}"
                 )
+                com.littlegig.app.utils.PerfMonitor.stopTrace("events_load")
             }
         }
     }

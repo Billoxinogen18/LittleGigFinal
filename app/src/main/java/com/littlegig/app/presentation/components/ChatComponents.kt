@@ -161,10 +161,8 @@ fun NeumorphicChatBubble(
                 
                 // Message metadata
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -173,6 +171,32 @@ fun NeumorphicChatBubble(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     
+                    if (isFromCurrentUser) {
+                        val delivered = message.deliveredTo.isNotEmpty()
+                        val read = message.readBy.isNotEmpty()
+                        if (read) {
+                            Icon(
+                                imageVector = Icons.Default.DoneAll,
+                                contentDescription = "Read",
+                                tint = LittleGigPrimary,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        } else if (delivered) {
+                            Icon(
+                                imageVector = Icons.Default.Done,
+                                contentDescription = "Delivered",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Schedule,
+                                contentDescription = "Sending",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
                     if (!isFromCurrentUser) {
                         IconButton(
                             onClick = { onLikeMessage(message.id) },

@@ -158,6 +158,7 @@ fun ChatDetailsScreen(
                 items(messages) { message ->
                     // mark last incoming as read
                     if (message.senderId != viewModel.currentUserId) viewModel.markAsReadIfNeeded(chatId, message)
+                    if (message.senderId != viewModel.currentUserId) viewModel.markAsDeliveredIfNeeded(chatId, message)
                     if (message.messageType == com.littlegig.app.data.model.MessageType.TICKET_SHARE && message.sharedTicket != null) {
                         TicketShareBubble(
                             messageId = message.id,
@@ -292,7 +293,8 @@ fun ChatDetailsScreen(
 class ChatDetailsViewModel @Inject constructor(
     private val chatRepository: com.littlegig.app.data.repository.ChatRepository,
     private val authRepository: com.littlegig.app.data.repository.AuthRepository,
-    private val chatMediaService: ChatMediaService
+    private val chatMediaService: ChatMediaService,
+    private val notificationRepository: com.littlegig.app.data.repository.NotificationRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChatDetailsUiState())
@@ -312,12 +314,16 @@ class ChatDetailsViewModel @Inject constructor(
     val typingUsers: StateFlow<List<String>> = _typingUsers.asStateFlow()
     var replyTarget by mutableStateOf<com.littlegig.app.data.model.Message?>(null)
     private var shareTicketChatId: String? = null
+    private var subscribedChatId: String? = null
 
     fun loadChat(chatId: String) {
         viewModelScope.launch {
             try {
                 // TODO: fetch Chat doc
                 _chat.value = com.littlegig.app.data.model.Chat(id = chatId)
+                // Subscribe to chat topic for notifications
+                try { notificationRepository.subscribeToChatTopic(chatId) } catch (_: Exception) {}
+                subscribedChatId = chatId
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(error = e.message)
             }
@@ -327,13 +333,21 @@ class ChatDetailsViewModel @Inject constructor(
     fun loadMessages(chatId: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            com.littlegig.app.utils.PerfMonitor.startTrace("chat_load_messages")
             try {
+                var first = true
                 chatRepository.getChatMessages(chatId).collect { chatMessages ->
                     _messages.value = chatMessages
+                    if (first) {
+                        com.littlegig.app.utils.PerfMonitor.putMetric("chat_load_messages", "count", chatMessages.size.toLong())
+                        com.littlegig.app.utils.PerfMonitor.stopTrace("chat_load_messages")
+                        first = false
+                    }
                 }
                 _uiState.value = _uiState.value.copy(isLoading = false)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
+                com.littlegig.app.utils.PerfMonitor.stopTrace("chat_load_messages")
             }
         }
     }
@@ -452,8 +466,22 @@ class ChatDetailsViewModel @Inject constructor(
         }
     }
 
+    fun markAsDeliveredIfNeeded(chatId: String, message: com.littlegig.app.data.model.Message) {
+        val me = currentUserId ?: return
+        if (!message.deliveredTo.contains(me)) {
+            viewModelScope.launch { chatRepository.markMessageDelivered(chatId, message.id, me) }
+        }
+    }
+
     fun chooseReplyTarget(message: com.littlegig.app.data.model.Message) { replyTarget = message }
     fun clearReplyTarget() { replyTarget = null }
+
+    override fun onCleared() {
+        super.onCleared()
+        subscribedChatId?.let { cid ->
+            viewModelScope.launch { try { notificationRepository.unsubscribeFromChatTopic(cid) } catch (_: Exception) {} }
+        }
+    }
 }
 
 data class ChatDetailsUiState(

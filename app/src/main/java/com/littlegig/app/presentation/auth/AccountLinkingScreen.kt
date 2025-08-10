@@ -119,6 +119,18 @@ fun AccountLinkingScreen(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(text = "Continue as Anonymous", fontWeight = FontWeight.Bold)
                     }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    NeumorphicButton(
+                        onClick = {
+                            val activity = ctx as? com.littlegig.app.presentation.MainActivity
+                            activity?.startGoogleSignIn()
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(Icons.Default.AccountCircle, contentDescription = null, modifier = Modifier.size(20.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "Link with Google", fontWeight = FontWeight.Bold)
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(32.dp))

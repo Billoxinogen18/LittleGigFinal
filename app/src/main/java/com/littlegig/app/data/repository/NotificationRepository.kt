@@ -31,7 +31,7 @@ class NotificationRepository @Inject constructor(
         }
     }
     
-    // Subscribe to topic for event notifications
+    // Subscribe to event topic
     suspend fun subscribeToEventTopic(eventId: String) {
         try {
             FirebaseMessaging.getInstance().subscribeToTopic("event_$eventId")
@@ -44,6 +44,24 @@ class NotificationRepository @Inject constructor(
     suspend fun unsubscribeFromEventTopic(eventId: String) {
         try {
             FirebaseMessaging.getInstance().unsubscribeFromTopic("event_$eventId")
+        } catch (e: Exception) {
+            // Handle unsubscription failure
+        }
+    }
+
+    // Subscribe to chat topic
+    suspend fun subscribeToChatTopic(chatId: String) {
+        try {
+            FirebaseMessaging.getInstance().subscribeToTopic("chat_" + chatId)
+        } catch (e: Exception) {
+            // Handle subscription failure
+        }
+    }
+
+    // Unsubscribe from chat topic
+    suspend fun unsubscribeFromChatTopic(chatId: String) {
+        try {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("chat_" + chatId)
         } catch (e: Exception) {
             // Handle unsubscription failure
         }

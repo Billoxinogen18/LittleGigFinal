@@ -149,6 +149,37 @@ class ChatRepository @Inject constructor(
         }
     }
 
+    suspend fun markMessageDelivered(chatId: String, messageId: String, userId: String): Result<Unit> {
+        return try {
+            firestore.collection("chats")
+                .document(chatId)
+                .collection("messages")
+                .document(messageId)
+                .update(mapOf("deliveredTo" to com.google.firebase.firestore.FieldValue.arrayUnion(userId)))
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getUserChatsPage(userId: String, limit: Int = 30, startAfterTime: Long? = null): Result<List<Chat>> {
+        return try {
+            var query = firestore.collection("chats")
+                .whereArrayContains("participants", userId)
+                .orderBy("lastMessageTime", Query.Direction.DESCENDING)
+                .limit(limit.toLong())
+            if (startAfterTime != null) {
+                query = query.startAfter(startAfterTime)
+            }
+            val snapshot = query.get().await()
+            val chats = snapshot.documents.mapNotNull { it.toObject(Chat::class.java)?.copy(id = it.id) }
+            Result.success(chats)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun setTypingStatus(chatId: String, userId: String, isTyping: Boolean): Result<Unit> {
         return try {
             val typingDoc = firestore.collection("chats")

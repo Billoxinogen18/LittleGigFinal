@@ -104,6 +104,9 @@ fun MainScreen(
                     composable("chat") {
                         ChatScreen(navController = navController)
                     }
+                    composable("inbox") {
+                        com.littlegig.app.presentation.inbox.InboxScreen()
+                    }
                     composable("auth") {
                         AuthScreen(
                             onGoogleSignIn = { 

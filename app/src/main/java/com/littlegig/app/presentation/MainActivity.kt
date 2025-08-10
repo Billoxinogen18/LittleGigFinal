@@ -16,11 +16,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.littlegig.app.presentation.LittleGigApp
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.activity.viewModels
+import com.littlegig.app.presentation.auth.AuthViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     
     private lateinit var googleSignInClient: GoogleSignInClient
+    private val authViewModel: AuthViewModel by viewModels()
     
     private val signInLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -66,21 +69,16 @@ class MainActivity : ComponentActivity() {
     
     // 🔥 REAL GOOGLE SIGN-IN SUCCESS HANDLING! 🔥
     private fun handleGoogleSignInSuccess(account: com.google.android.gms.auth.api.signin.GoogleSignInAccount) {
-        // Send the account to LittleGigApp for processing
-        val intent = Intent("GOOGLE_SIGN_IN_SUCCESS")
-        intent.putExtra("account_id", account.id)
-        intent.putExtra("account_email", account.email)
-        intent.putExtra("account_display_name", account.displayName)
-        intent.putExtra("account_photo_url", account.photoUrl?.toString())
-        intent.putExtra("account_id_token", account.idToken)
-        sendBroadcast(intent)
+        val current = authViewModel.currentUser.value
+        if (current == null || current.email.isNotEmpty()) {
+            authViewModel.signInWithGoogle(account)
+        } else {
+            authViewModel.linkAnonymousAccountWithGoogle(account)
+        }
     }
     
     // 🔥 REAL GOOGLE SIGN-IN FAILURE HANDLING! 🔥
     private fun handleGoogleSignInFailure(exception: ApiException) {
-        val intent = Intent("GOOGLE_SIGN_IN_FAILURE")
-        intent.putExtra("error_code", exception.statusCode)
-        intent.putExtra("error_message", exception.message)
-        sendBroadcast(intent)
+        // no-op for now (UI observes error state)
     }
 }

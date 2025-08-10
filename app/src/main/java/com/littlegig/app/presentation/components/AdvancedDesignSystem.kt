@@ -255,6 +255,7 @@ fun LiquidGlassBottomNavigation(
         BottomNavItem("tickets", "Tickets", Icons.Default.Receipt),
         BottomNavItem("map", "LittleMap", Icons.Default.Map),
         BottomNavItem("chat", "Chat", Icons.Default.Chat),
+        BottomNavItem("inbox", "Inbox", Icons.Default.Notifications),
         BottomNavItem("upload", "Upload", Icons.Default.Upload)
     )
     

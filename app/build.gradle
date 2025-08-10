@@ -89,6 +89,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-config-ktx'
+    implementation 'com.google.firebase:firebase-perf-ktx'
     
     // Google Services
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
