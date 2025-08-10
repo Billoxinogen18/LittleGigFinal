@@ -324,8 +324,10 @@ fun EventsScreen(
                             onRateClick = { /* no-op */ },
                             onAttendeesClick = { /* no-op */ },
                             onShareClick = {
-                                val link = viewModel.createEventShareLink(event)
-                                // fire and forget; ignore errors here
+                                val scope = rememberCoroutineScope()
+                                scope.launch {
+                                    viewModel.createEventShareLink(event)
+                                }
                             }
                         )
                     }
