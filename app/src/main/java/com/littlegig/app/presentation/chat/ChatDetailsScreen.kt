@@ -81,6 +81,10 @@ fun ChatDetailsScreen(
     var showTicketPicker by remember { mutableStateOf(false) }
     var searchOpen by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    val matchPositions = remember(messages, searchQuery) {
+        if (searchQuery.isBlank()) emptyList() else messages.mapIndexedNotNull { idx, m -> if (m.content.contains(searchQuery, true)) idx else null }
+    }
+    var currentMatchIndex by remember(searchQuery, matchPositions) { mutableStateOf(if (matchPositions.isNotEmpty()) 0 else -1) }
 
     LaunchedEffect(chatId) {
         viewModel.loadChat(chatId)
@@ -177,20 +181,25 @@ fun ChatDetailsScreen(
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(Modifier.width(8.dp))
-                    val idx = messages.indexOfFirst { it.content.contains(searchQuery, ignoreCase = true) }
-                    TextButton(onClick = {
-                        val next = if (searchQuery.isBlank()) -1 else messages.indexOfLast { it.content.contains(searchQuery, ignoreCase = true) }
-                        if (next >= 0) {
-                            uiScope.launch { listState.animateScrollToItem(next) }
+                    Text(text = if (matchPositions.isNotEmpty()) "${currentMatchIndex + 1}/${matchPositions.size}" else "0/0", style = MaterialTheme.typography.labelMedium)
+                    IconButton(onClick = {
+                        if (matchPositions.isNotEmpty()) {
+                            currentMatchIndex = (currentMatchIndex - 1 + matchPositions.size) % matchPositions.size
+                            val pos = matchPositions[currentMatchIndex]
+                            uiScope.launch { listState.animateScrollToItem(pos) }
                         }
-                    }) { Text("Jump") }
+                    }) { Icon(Icons.Default.ArrowUpward, contentDescription = "Prev") }
+                    IconButton(onClick = {
+                        if (matchPositions.isNotEmpty()) {
+                            currentMatchIndex = (currentMatchIndex + 1) % matchPositions.size
+                            val pos = matchPositions[currentMatchIndex]
+                            uiScope.launch { listState.animateScrollToItem(pos) }
+                        }
+                    }) { Icon(Icons.Default.ArrowDownward, contentDescription = "Next") }
                 }
             }
 
-            var currentMatchIndex by remember { mutableStateOf(-1) }
-            val matchPositions = remember(messages, searchQuery) {
-                if (searchQuery.isBlank()) emptyList() else messages.mapIndexedNotNull { idx, m -> if (m.content.contains(searchQuery, true)) idx else null }
-            }
+            var lastDate: String? = null
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -198,7 +207,6 @@ fun ChatDetailsScreen(
                 state = listState,
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
-                var lastDate: String? = null
                 items(messages) { message ->
                     val dateText = java.text.SimpleDateFormat("MMM d, yyyy").format(java.util.Date(message.timestamp))
                     if (dateText != lastDate) {

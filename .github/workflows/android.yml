@@ -35,8 +35,45 @@ jobs:
       - name: Build Debug APK
         run: ./gradlew --no-daemon assembleDebug
 
-      - name: Upload APK artifact
+      - name: Create release notes
+        run: |
+          echo "LittleGig Debug Build" > RELEASE_NOTES.txt
+          echo "Commit: $GITHUB_SHA" >> RELEASE_NOTES.txt
+          echo "Date: $(date -u)" >> RELEASE_NOTES.txt
+          echo "APK: app/build/outputs/apk/debug/app-debug.apk" >> RELEASE_NOTES.txt
+
+      - name: Upload raw APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Upload Proguard mapping if exists
+        uses: actions/upload-artifact@v4
+        with:
+          name: mapping-debug
+          path: app/build/outputs/mapping/debug/mapping.txt
+          if-no-files-found: ignore
+
+      - name: Upload release notes
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: RELEASE_NOTES.txt
+          if-no-files-found: error
+
+      - name: Optional Zip artifacts
+        run: |
+          mkdir -p artifacts
+          cp app/build/outputs/apk/debug/app-debug.apk artifacts/
+          cp -f RELEASE_NOTES.txt artifacts/
+          if [ -f app/build/outputs/mapping/debug/mapping.txt ]; then cp app/build/outputs/mapping/debug/mapping.txt artifacts/; fi
+          cd artifacts && zip -r app-debug-bundle.zip .
+
+      - name: Upload zipped bundle (optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-bundle
+          path: artifacts/app-debug-bundle.zip
+          if-no-files-found: ignore
