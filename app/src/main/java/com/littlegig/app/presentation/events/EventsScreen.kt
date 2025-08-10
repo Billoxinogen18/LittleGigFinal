@@ -76,7 +76,7 @@ fun EventsScreen(
                         Color(0xFF141B2E)
                     ) else listOf(
                         Color(0xFFF8FAFF),
-                        Color(0xFFFFFFFF)
+                        Color.White
                     )
                 )
             )
@@ -305,6 +305,7 @@ fun EventsScreen(
                 // Full-screen snapping feed (TikTok-style)
                 @OptIn(ExperimentalFoundationApi::class)
                 val context = LocalContext.current
+                val shareScope = rememberCoroutineScope()
                 val pagerState = rememberPagerState(pageCount = { uiState.events.size })
                 LaunchedEffect(pagerState.currentPage, uiState.events.size) {
                     if (uiState.events.isNotEmpty() && pagerState.currentPage >= uiState.events.size - 3) {
@@ -324,19 +325,25 @@ fun EventsScreen(
                             onRateClick = { /* no-op */ },
                             onAttendeesClick = { /* no-op */ },
                             onShareClick = {
-                                val scope = rememberCoroutineScope()
-                                scope.launch {
-                                    viewModel.createEventShareLink(event)
+                                shareScope.launch {
+                                    val link = viewModel.createEventShareLink(event)
+                                    link?.let {
+                                        val sendIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                                            type = "text/plain"
+                                            putExtra(android.content.Intent.EXTRA_TEXT, it)
+                                        }
+                                        val shareIntent = android.content.Intent.createChooser(sendIntent, "Share Event")
+                                        context.startActivity(shareIntent)
+                                    }
                                 }
                             }
                         )
                     }
-                                }
-             }
-         }
-         }
-         
-         // Floating action button for quick upload
+                }
+            }
+        }
+        
+        // Floating action button for quick upload
         Box(
             modifier = Modifier
                 .fillMaxSize()
