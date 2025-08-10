@@ -187,6 +187,10 @@ fun ChatDetailsScreen(
                 }
             }
 
+            var currentMatchIndex by remember { mutableStateOf(-1) }
+            val matchPositions = remember(messages, searchQuery) {
+                if (searchQuery.isBlank()) emptyList() else messages.mapIndexedNotNull { idx, m -> if (m.content.contains(searchQuery, true)) idx else null }
+            }
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -238,6 +242,7 @@ fun ChatDetailsScreen(
                             onLikeMessage = { msgId -> viewModel.toggleReaction(chatId, msgId, "♥") },
                             onMentionClick = { username -> navController.navigate("profile/$username") },
                             onShareTicket = { /* no-op */ },
+                            searchQuery = if (searchOpen) searchQuery else null,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .pointerInput(Unit) {
@@ -335,6 +340,10 @@ fun ChatDetailsScreen(
                                 }
                             }
                             Spacer(Modifier.height(8.dp))
+                        }
+                        if (ticketsState.tickets.isEmpty()) {
+                            ChatBubbleSkeleton(isMe = true)
+                            ChatBubbleSkeleton(isMe = false)
                         }
                     }
                 }

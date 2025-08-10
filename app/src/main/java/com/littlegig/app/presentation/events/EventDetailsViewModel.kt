@@ -212,6 +212,12 @@ class EventDetailsViewModel @Inject constructor(
             }
         }
     }
+    fun getPaymentUrl(eventId: String, amount: Double, title: String): String? {
+        return _uiState.value.paymentUrl
+    }
+    fun getCurrentUserId(): String? = authRepository.currentUser.value?.id
+    fun getCurrentUserName(): String = authRepository.currentUser.value?.displayName ?: ""
+    fun getCurrentUserImage(): String = authRepository.currentUser.value?.profileImageUrl ?: ""
     
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)

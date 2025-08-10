@@ -37,6 +37,9 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.littlegig.app.utils.PaymentEventBus
+import com.littlegig.app.data.repository.ChatRepository
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun EventDetailsScreen(
@@ -441,33 +444,35 @@ fun EventDetailsScreen(
                     
                     item {
                         // Buy Ticket Button
-                        HapticButton(
-                            onClick = { viewModel.buyTicket() },
+                        val scope = rememberCoroutineScope()
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp)
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            AdvancedNeumorphicCard {
-                                Row(
-                                    modifier = Modifier.padding(20.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.ShoppingCart,
-                                        contentDescription = null,
-                                        tint = Color.White,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(12.dp))
-                                    Text(
-                                        text = "Buy Ticket - KSH ${uiState.event!!.price}",
-                                        style = MaterialTheme.typography.titleMedium.copy(
-                                            fontWeight = FontWeight.SemiBold
-                                        ),
-                                        color = Color.White
-                                    )
-                                }
+                            OutlinedButton(
+                                onClick = {
+                                    // Navigate to payment with Custom Tabs
+                                    val url = viewModel.getPaymentUrl(uiState.event!!.id, uiState.event!!.price, uiState.event!!.title)
+                                    if (url != null) {
+                                        val intent = CustomTabsIntent.Builder().build()
+                                        intent.launchUrl(context, Uri.parse(url))
+                                    }
+                                },
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Icon(Icons.Default.ShoppingCart, contentDescription = null)
+                                Spacer(Modifier.width(6.dp))
+                                Text("Buy Ticket")
+                            }
+                            OutlinedButton(onClick = {
+                                // Navigate to chat; user can select conversation and paste event link/details
+                                navController.navigate("chat")
+                            }, shape = RoundedCornerShape(12.dp)) {
+                                Icon(Icons.Default.Share, contentDescription = null)
+                                Spacer(Modifier.width(6.dp))
+                                Text("Share to Chat")
                             }
                         }
                     }
