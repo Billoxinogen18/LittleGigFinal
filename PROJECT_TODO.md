@@ -10,6 +10,7 @@
 - Note: Device install pending (no emulator connected). Run: `adb connect 127.0.0.1:6555 && adb -s 127.0.0.1:6555 install -r app/build/outputs/apk/debug/app-debug.apk`.
 - Phase 2: Implemented search/indexing improvements (lowercase fields), E.164 phone normalization, chat search cancellation/debounce, Places error handling, and contacts normalization service. Build remains green and changes pushed to main.
 - Phase 3: Observability foundation (Timber + Crashlytics tree + breadcrumbs), Contacts DataStore cache with hash/TTL, Places key/billing verification in `UploadViewModel`, chat empty-state guidance. Build remains green and pushed.
+- Phase 4 (in progress): Chat UI upgraded (neumorphic input/bubbles), ticket share hooks, chat cloud functions exported; next: media upload, replies, ticket redeem UI. Build green and pushed.
 
 ## Current Phase (Build-Focused – Phase 1)
 - Keep assembleDebug green after each change and push to main
@@ -28,7 +29,7 @@
 ## Cloud Functions Deployment
 - From `functions/`: `npm install && npm run build`
 - Deploy all: `firebase deploy --only functions`
-- Specific functions: `firebase deploy --only functions:updateUserLocation,functions:getActiveUsersNearby`
+- Specific functions: `firebase deploy --only functions:updateUserLocation,functions:getActiveUsersNearby,functions:sendMessage,functions:shareTicket,functions:redeemTicket`
 
 ## Immediate Fixes (Now)
 - Chat

@@ -16,19 +16,15 @@
 - Fixed Firestore mapper warnings by aligning models (`User`: influencer alias, likedEvents, engagementScore, lastRankUpdate; `Event`: likedBy, ratings)
 - Enabled Android 13 back handling in `AndroidManifest.xml`
 - Upgraded build stack (AGP/Kotlin/Compose), configured local Android SDK, accepted licenses
-- Phase 2: Added E.164 normalization service, search lowercase index fields and queries, chat search debounce/cancel, contacts normalization service, improved Places error handling
-- Phase 3: Observability foundation (Timber + Crashlytics tree + breadcrumbs), Contacts DataStore cache with hash/TTL, Places key/billing verification used in Upload flow, chat empty-state UX
+- Phase 2: E.164 normalization, lowercase index fields and queries, chat search debounce/cancel, contacts normalization, improved Places error handling
+- Phase 3: Observability (Timber + Crashlytics breadcrumbs), Contacts DataStore cache with hash/TTL, Places key/billing verification in Upload flow, chat empty-state UX
+- Phase 4 (in progress): Modern chat UI (neumorphic input/bubbles), ticket share hooks, chat callable functions exported; upcoming: media uploads, replies, redeem UI
 
 ## Current Phase (Build-Focused – Phase 1)
-- Auth
-  - Anonymous-first launch; link account from Settings
-  - Phone auth primary; Google sign-in secondary
-- Contacts
-  - Normalize to E.164; cache contacts hash; empty-state UX
-- Places/Map
-  - Verify Places billing/key; robust error handling
-- Observability
-  - Structured logs for auth/chat; Crashlytics breadcrumbs via Timber tree
+- Auth: anonymous-first + linking flows (phone primary), Google/email secondary
+- Chat: typing indicators in place; building media/replies/ticket share end-to-end
+- Tickets: integrate chat share and redeem; notifications upon purchase and share
+- Observability: structured logs via Timber + Crashlytics
 
 ## Build & Install
 - Build: `./gradlew assembleDebug`
