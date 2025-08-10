@@ -9,6 +9,15 @@
 - Verified `./gradlew assembleDebug` builds successfully; APK at `app/build/outputs/apk/debug/app-debug.apk`.
 - Note: Device install pending (no emulator connected). Run: `adb connect 127.0.0.1:6555 && adb -s 127.0.0.1:6555 install -r app/build/outputs/apk/debug/app-debug.apk`.
 
+## Current Phase (Build-Focused – Phase 1)
+- Keep assembleDebug green after each change and push to main
+- Prioritize Immediate Fixes and Short-Term items in this order:
+  1) Places: verify billing/key + robust error handling
+  2) Contacts: E.164 normalization and cached hash
+  3) Search: debounce + cancel in-flight + min length
+  4) Auth: anonymous-first + link account + phone primary
+  5) Observability: structured logs and breadcrumbs
+
 ## Build, Install, and Test
 - Assemble debug build: `./gradlew assembleDebug`
 - Install on emulator/device: `adb -s 127.0.0.1:6555 install -r app/build/outputs/apk/debug/app-debug.apk`
