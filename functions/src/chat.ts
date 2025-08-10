@@ -55,7 +55,7 @@ export const createChat = functions.https.onCall(async (data, context) => {
             eventId: eventId || null,
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
             isActive: true
-        };
+        } as any;
         
         const chatRef = await admin.firestore()
             .collection('chats')
@@ -74,33 +74,21 @@ export const sendMessage = functions.https.onCall(async (data, context) => {
     }
     
     const userId = context.auth.uid;
-    const { chatId, content, messageType, mediaUrls, sharedTicket } = data;
+    const { chatId, content = '', messageType = 'TEXT', mediaUrls = [], sharedTicket = null } = data;
     
     try {
-        // Verify user is in chat
-        const chatDoc = await admin.firestore()
-            .collection('chats')
-            .doc(chatId)
-            .get();
-        
-        if (!chatDoc.exists) {
-            throw new functions.https.HttpsError('not-found', 'Chat not found');
-        }
-        
-        const chat = chatDoc.data();
-        if (!chat || !chat.participants.includes(userId)) {
+        // Verify chat and membership
+        const chatDoc = await admin.firestore().collection('chats').doc(chatId).get();
+        if (!chatDoc.exists) throw new functions.https.HttpsError('not-found', 'Chat not found');
+        const chat = chatDoc.data() as any;
+        if (!(chat.participants || []).includes(userId)) {
             throw new functions.https.HttpsError('permission-denied', 'Not a member of this chat');
         }
+        // Get sender data
+        const userDoc = await admin.firestore().collection('users').doc(userId).get();
+        const user = userDoc.data() as any;
         
-        // Get user data
-        const userDoc = await admin.firestore()
-            .collection('users')
-            .doc(userId)
-            .get();
-        
-        const user = userDoc.data();
-        
-        // Create message
+        // Create nested message under chat
         const messageData = {
             chatId,
             senderId: userId,
@@ -108,39 +96,34 @@ export const sendMessage = functions.https.onCall(async (data, context) => {
             senderImageUrl: user?.profileImageUrl || '',
             content,
             messageType,
-            mediaUrls: mediaUrls || [],
-            sharedTicket: sharedTicket || null,
+            mediaUrls,
+            sharedTicket,
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            isRead: false
+            isRead: false,
+            readBy: [] as string[]
         };
+        const msgRef = await admin.firestore().collection('chats').doc(chatId).collection('messages').add(messageData);
         
-        const messageRef = await admin.firestore()
-            .collection('messages')
-            .add(messageData);
+        // Update chat summary
+        await chatDoc.ref.update({
+            lastMessage: content || (messageType === 'IMAGE' ? '📷 Photo' : messageType === 'VIDEO' ? '🎬 Video' : 'New message'),
+            lastMessageTime: admin.firestore.FieldValue.serverTimestamp(),
+            lastMessageSenderId: userId
+        });
         
-        // Update chat last message
-        await admin.firestore()
-            .collection('chats')
-            .doc(chatId)
-            .update({
-                lastMessage: messageData,
-                lastMessageTime: admin.firestore.FieldValue.serverTimestamp()
-            });
-        
-        // Send push notifications to other participants
-        const otherParticipants = chat?.participants?.filter((id: string) => id !== userId) || [];
-        for (const participantId of otherParticipants) {
-            await sendChatNotification(participantId, chat?.name || 'Chat', user?.displayName || 'Someone', content, chatId);
+        // Push notifications to other participants
+        const other = (chat.participants || []).filter((id: string) => id !== userId);
+        for (const pid of other) {
+            await sendChatNotification(pid, chat?.name || 'Chat', user?.displayName || 'Someone', content || messageType, chatId);
         }
         
-        return { success: true, messageId: messageRef.id };
+        return { success: true, messageId: msgRef.id };
     } catch (error) {
         console.error('Error sending message:', error);
         throw new functions.https.HttpsError('internal', 'Failed to send message');
     }
 });
 
-// Pin a message (admin/host only)
 export const pinMessage = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
@@ -162,7 +145,6 @@ export const pinMessage = functions.https.onCall(async (data, context) => {
     }
 });
 
-// Set announcement (admin/host only)
 export const setAnnouncement = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
@@ -195,53 +177,31 @@ export const shareTicket = functions.https.onCall(async (data, context) => {
     
     try {
         // Verify user owns the ticket
-        const ticketDoc = await admin.firestore()
-            .collection('tickets')
-            .doc(ticketId)
-            .get();
-        
-        if (!ticketDoc.exists) {
-            throw new functions.https.HttpsError('not-found', 'Ticket not found');
-        }
-        
-        const ticket = ticketDoc.data();
-        if (!ticket || ticket.userId !== userId) {
-            throw new functions.https.HttpsError('permission-denied', 'You do not own this ticket');
-        }
-        
-        if (ticket.isRedeemed) {
-            throw new functions.https.HttpsError('permission-denied', 'Ticket already redeemed');
-        }
+        const ticketDoc = await admin.firestore().collection('tickets').doc(ticketId).get();
+        if (!ticketDoc.exists) throw new functions.https.HttpsError('not-found', 'Ticket not found');
+        const ticket = ticketDoc.data() as any;
+        if (ticket.userId !== userId) throw new functions.https.HttpsError('permission-denied', 'You do not own this ticket');
+        if (ticket.isRedeemed) throw new functions.https.HttpsError('permission-denied', 'Ticket already redeemed');
         
         // Get event data
-        const eventDoc = await admin.firestore()
-            .collection('events')
-            .doc(ticket.eventId)
-            .get();
+        const eventDoc = await admin.firestore().collection('events').doc(ticket.eventId).get();
+        const event = eventDoc.data() as any;
         
-        const event = eventDoc.data();
-        
-        // Create shared ticket data
+        // Build shared ticket payload
         const sharedTicket = {
             ticketId,
-            eventName: event?.title || 'Unknown Event',
-            eventImageUrl: event?.imageUrls?.[0] || '',
-            ticketType: ticket.ticketType,
-            price: ticket.price,
+            eventName: event?.title || 'Event',
+            eventImageUrl: (event?.imageUrls && event.imageUrls[0]) || '',
+            ticketType: ticket.ticketType || 'General',
+            price: ticket.price || ticket.totalAmount || 0,
             isRedeemed: false,
             redeemedBy: null,
             redeemedAt: null
         };
         
-        // Send ticket share message
-        await sendMessage({
-            chatId,
-            content: 'Shared a ticket',
-            messageType: 'TICKET_SHARE',
-            sharedTicket
-        } as any, { auth: { uid: userId } } as any);
-        
-        return { success: true };
+        // Use sendMessage implementation to write and notify
+        const res = await sendMessage({ chatId, content: 'Shared a ticket', messageType: 'TICKET_SHARE', sharedTicket } as any, { auth: { uid: userId } } as any);
+        return res;
     } catch (error) {
         console.error('Error sharing ticket:', error);
         throw new functions.https.HttpsError('internal', 'Failed to share ticket');
@@ -254,54 +214,43 @@ export const redeemTicket = functions.https.onCall(async (data, context) => {
     }
     
     const userId = context.auth.uid;
-    const { messageId, ticketId } = data;
+    const { chatId, messageId, ticketId } = data;
     
     try {
-        // Use transaction to ensure atomicity
+        // Transactional update
         const result = await admin.firestore().runTransaction(async (transaction) => {
-            // Get the shared ticket message
-            const messageDoc = await transaction.get(
-                admin.firestore().collection('messages').doc(messageId)
-            );
-            
-            if (!messageDoc.exists) {
-                throw new functions.https.HttpsError('not-found', 'Message not found');
+            // Resolve message path
+            let messageRef: FirebaseFirestore.DocumentReference;
+            if (chatId) {
+                messageRef = admin.firestore().collection('chats').doc(chatId).collection('messages').doc(messageId);
+            } else {
+                // Fallback legacy path (not recommended)
+                messageRef = admin.firestore().collection('messages').doc(messageId);
             }
-            
-            const message = messageDoc.data();
-            const sharedTicket = message?.sharedTicket;`3231`
-            
+            const messageDoc = await transaction.get(messageRef);
+            if (!messageDoc.exists) throw new functions.https.HttpsError('not-found', 'Message not found');
+            const message = messageDoc.data() as any;
+            const sharedTicket = message?.sharedTicket;
             if (!sharedTicket || sharedTicket.ticketId !== ticketId) {
                 throw new functions.https.HttpsError('invalid-argument', 'Invalid ticket');
             }
+            if (sharedTicket.isRedeemed) throw new functions.https.HttpsError('permission-denied', 'Ticket already redeemed');
             
-            if (sharedTicket.isRedeemed) {
-                throw new functions.https.HttpsError('permission-denied', 'Ticket already redeemed');
-            }
-            
-            // Update ticket as redeemed
-            transaction.update(
-                admin.firestore().collection('tickets').doc(ticketId),
-                {
-                    isRedeemed: true,
-                    redeemedBy: userId,
-                    redeemedAt: admin.firestore.FieldValue.serverTimestamp()
-                }
-            );
-            
-            // Update message shared ticket
-            transaction.update(
-                admin.firestore().collection('messages').doc(messageId),
-                {
-                    'sharedTicket.isRedeemed': true,
-                    'sharedTicket.redeemedBy': userId,
-                    'sharedTicket.redeemedAt': admin.firestore.FieldValue.serverTimestamp()
-                }
-            );
-            
+            // Update ticket
+            const ticketRef = admin.firestore().collection('tickets').doc(ticketId);
+            transaction.update(ticketRef, {
+                isRedeemed: true,
+                redeemedBy: userId,
+                redeemedAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+            // Update message
+            transaction.update(messageRef, {
+                'sharedTicket.isRedeemed': true,
+                'sharedTicket.redeemedBy': userId,
+                'sharedTicket.redeemedAt': admin.firestore.FieldValue.serverTimestamp()
+            });
             return { success: true };
         });
-        
         return result;
     } catch (error) {
         console.error('Error redeeming ticket:', error);
@@ -318,33 +267,19 @@ export const updateTypingStatus = functions.https.onCall(async (data, context) =
     const { chatId, isTyping } = data;
     
     try {
-        const userDoc = await admin.firestore()
-            .collection('users')
-            .doc(userId)
-            .get();
-        
+        const userDoc = await admin.firestore().collection('users').doc(userId).get();
         const user = userDoc.data();
-        
+        const typingRef = admin.firestore().collection('chats').doc(chatId).collection('typing').doc(userId);
         if (isTyping) {
-            // Set typing indicator
-            await admin.firestore()
-                .collection('typingIndicators')
-                .doc(`${chatId}_${userId}`)
-                .set({
-                    chatId,
-                    userId,
-                    userName: user?.displayName || 'Anonymous',
-                    isTyping: true,
-                    timestamp: admin.firestore.FieldValue.serverTimestamp()
-                });
+            await typingRef.set({
+                userId,
+                userName: user?.displayName || 'Anonymous',
+                isTyping: true,
+                timestamp: admin.firestore.FieldValue.serverTimestamp()
+            });
         } else {
-            // Remove typing indicator
-            await admin.firestore()
-                .collection('typingIndicators')
-                .doc(`${chatId}_${userId}`)
-                .delete();
+            await typingRef.delete();
         }
-        
         return { success: true };
     } catch (error) {
         console.error('Error updating typing status:', error);
@@ -354,15 +289,9 @@ export const updateTypingStatus = functions.https.onCall(async (data, context) =
 
 async function sendChatNotification(userId: string, chatName: string, senderName: string, message: string, chatId?: string) {
     try {
-        // Get user's FCM token
-        const userDoc = await admin.firestore()
-            .collection('users')
-            .doc(userId)
-            .get();
-        
-        const user = userDoc.data();
+        const userDoc = await admin.firestore().collection('users').doc(userId).get();
+        const user = userDoc.data() as any;
         const fcmToken = user?.fcmToken;
-        
         if (fcmToken) {
             const notification = {
                 token: fcmToken,
@@ -374,8 +303,7 @@ async function sendChatNotification(userId: string, chatName: string, senderName
                     type: 'chat_message',
                     chatId: chatId || ''
                 }
-            };
-            
+            } as any;
             await admin.messaging().send(notification);
         }
     } catch (error) {

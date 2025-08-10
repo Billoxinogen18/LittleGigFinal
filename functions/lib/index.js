@@ -1,6 +1,20 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createDynamicLink = exports.sendEventReminders = exports.notifyPriceDrop = exports.notifyWaitlistOnCapacity = exports.cleanupOldData = exports.sendPushNotification = exports.getActiveUsersNearby = exports.updateUserLocation = exports.calculateUserRanks = exports.getPaymentHistory = exports.upgradeToBusinessAccount = exports.verifyPayment = exports.processTicketPurchase = void 0;
+exports.cleanupOldData = exports.sendPushNotification = exports.getActiveUsersNearby = exports.updateUserLocation = exports.calculateUserRanks = exports.getPaymentHistory = exports.upgradeToBusinessAccount = exports.verifyPayment = exports.processTicketPurchase = void 0;
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const axios_1 = require("axios");
@@ -367,151 +381,6 @@ exports.cleanupOldData = functions.region('us-central1').runWith({ memory: '256M
         console.error('Cleanup error:', error);
     }
 });
-// --- Growth Features: Waitlist and Price Drop Alerts ---
-exports.notifyWaitlistOnCapacity = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 60 }).firestore
-    .document('events/{eventId}')
-    .onUpdate(async (change, context) => {
-    const before = change.before.data();
-    const after = change.after.data();
-    const eventId = context.params.eventId;
-    try {
-        // If tickets sold decreased or capacity increased -> new slots
-        const beforeRemaining = (before.capacity || 0) - (before.ticketsSold || 0);
-        const afterRemaining = (after.capacity || 0) - (after.ticketsSold || 0);
-        if (afterRemaining > beforeRemaining && afterRemaining > 0) {
-            const waitlistSnap = await db
-                .collection('events')
-                .doc(eventId)
-                .collection('waitlist')
-                .orderBy('createdAt', 'asc')
-                .limit(afterRemaining)
-                .get();
-            const notifications = [];
-            for (const doc of waitlistSnap.docs) {
-                const userId = doc.data().userId;
-                notifications.push(sendEventNotification(userId, after.title || 'Event', 'Spots just opened up! Tap to buy now', { type: 'waitlist', eventId }));
-            }
-            await Promise.all(notifications);
-        }
-        return null;
-    }
-    catch (error) {
-        console.error('notifyWaitlistOnCapacity error', error);
-        return null;
-    }
-});
-exports.notifyPriceDrop = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 60 }).firestore
-    .document('events/{eventId}')
-    .onUpdate(async (change, context) => {
-    const before = change.before.data();
-    const after = change.after.data();
-    const eventId = context.params.eventId;
-    try {
-        if ((before.price || 0) > (after.price || 0)) {
-            const alertsSnap = await db
-                .collection('events')
-                .doc(eventId)
-                .collection('priceAlerts')
-                .get();
-            const notifications = [];
-            for (const doc of alertsSnap.docs) {
-                const userId = doc.data().userId;
-                notifications.push(sendEventNotification(userId, after.title || 'Event', 'Price just dropped! Don’t miss out', { type: 'price_drop', eventId }));
-            }
-            await Promise.all(notifications);
-        }
-        return null;
-    }
-    catch (error) {
-        console.error('notifyPriceDrop error', error);
-        return null;
-    }
-});
-async function sendEventNotification(userId, title, body, data) {
-    var _a;
-    try {
-        const userDoc = await db.collection('users').doc(userId).get();
-        const fcmToken = (_a = userDoc.data()) === null || _a === void 0 ? void 0 : _a.fcmToken;
-        if (!fcmToken)
-            return null;
-        const message = {
-            token: fcmToken,
-            notification: { title, body },
-            data,
-            android: { priority: 'high' }
-        };
-        return admin.messaging().send(message);
-    }
-    catch (e) {
-        console.error('sendEventNotification error', e);
-        return null;
-    }
-}
-// Event reminders for RSVPs (run hourly to find events starting soon)
-exports.sendEventReminders = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 540 }).pubsub.schedule('every 60 minutes').onRun(async () => {
-    try {
-        const now = Date.now();
-        const soon = now + 2 * 60 * 60 * 1000; // 2 hours
-        const eventsSnap = await db.collection('events')
-            .where('isActive', '==', true)
-            .get();
-        const tasks = [];
-        for (const doc of eventsSnap.docs) {
-            const event = doc.data();
-            const dateTime = (event.dateTime && typeof event.dateTime.toMillis === 'function') ? event.dateTime.toMillis() : (event.dateTime || 0);
-            if (dateTime >= now && dateTime <= soon) {
-                const rsvps = await db.collection('events').doc(doc.id).collection('rsvps').get();
-                for (const rsvp of rsvps.docs) {
-                    const userId = rsvp.data().userId;
-                    tasks.push(sendEventNotification(userId, event.title || 'Event starting soon', 'Happening in a couple of hours. See you there!', { type: 'event_reminder', eventId: doc.id }));
-                }
-            }
-        }
-        await Promise.all(tasks);
-        return null;
-    }
-    catch (e) {
-        console.error('sendEventReminders error', e);
-        return null;
-    }
-});
-// Create Dynamic Link for sharing (requires config: dynamiclinks.domain, dynamiclinks.android_package, dynamiclinks.api_key)
-exports.createDynamicLink = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 30, minInstances: 1 }).https.onCall(async (data, context) => {
-    var _a, _b, _c;
-    try {
-        const { link, title, imageUrl } = data;
-        const domain = (_a = functions.config().dynamiclinks) === null || _a === void 0 ? void 0 : _a.domain;
-        const androidPackage = (_b = functions.config().dynamiclinks) === null || _b === void 0 ? void 0 : _b.android_package;
-        const apiKey = (_c = functions.config().dynamiclinks) === null || _c === void 0 ? void 0 : _c.api_key;
-        if (!domain || !androidPackage || !apiKey) {
-            throw new functions.https.HttpsError('failed-precondition', 'Dynamic Links not configured');
-        }
-        const payload = {
-            dynamicLinkInfo: {
-                domainUriPrefix: domain,
-                link,
-                androidInfo: { androidPackageName: androidPackage },
-                socialMetaTagInfo: {
-                    socialTitle: title || 'LittleGig',
-                    socialDescription: 'Discover amazing events',
-                    socialImageLink: imageUrl || ''
-                }
-            },
-            suffix: { option: 'SHORT' }
-        };
-        const resp = await axios_1.default.post(`https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${apiKey}`, payload, {
-            headers: { 'Content-Type': 'application/json' }
-        });
-        const json = resp.data;
-        if (json.error) {
-            console.error('Dynamic link error', json.error);
-            throw new functions.https.HttpsError('internal', 'Failed to create dynamic link');
-        }
-        return { shortLink: json.shortLink };
-    }
-    catch (e) {
-        console.error('createDynamicLink error', e);
-        throw new functions.https.HttpsError('internal', 'Failed to create dynamic link');
-    }
-});
+// Export chat-related callable functions
+__exportStar(require("./chat"), exports);
 //# sourceMappingURL=index.js.map

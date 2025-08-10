@@ -59,32 +59,24 @@ exports.createChat = functions.https.onCall(async (data, context) => {
     }
 });
 exports.sendMessage = functions.https.onCall(async (data, context) => {
-    var _a;
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
     }
     const userId = context.auth.uid;
-    const { chatId, content, messageType, mediaUrls, sharedTicket } = data;
+    const { chatId, content = '', messageType = 'TEXT', mediaUrls = [], sharedTicket = null } = data;
     try {
-        // Verify user is in chat
-        const chatDoc = await admin.firestore()
-            .collection('chats')
-            .doc(chatId)
-            .get();
-        if (!chatDoc.exists) {
+        // Verify chat and membership
+        const chatDoc = await admin.firestore().collection('chats').doc(chatId).get();
+        if (!chatDoc.exists)
             throw new functions.https.HttpsError('not-found', 'Chat not found');
-        }
         const chat = chatDoc.data();
-        if (!chat || !chat.participants.includes(userId)) {
+        if (!(chat.participants || []).includes(userId)) {
             throw new functions.https.HttpsError('permission-denied', 'Not a member of this chat');
         }
-        // Get user data
-        const userDoc = await admin.firestore()
-            .collection('users')
-            .doc(userId)
-            .get();
+        // Get sender data
+        const userDoc = await admin.firestore().collection('users').doc(userId).get();
         const user = userDoc.data();
-        // Create message
+        // Create nested message under chat
         const messageData = {
             chatId,
             senderId: userId,
@@ -92,35 +84,31 @@ exports.sendMessage = functions.https.onCall(async (data, context) => {
             senderImageUrl: (user === null || user === void 0 ? void 0 : user.profileImageUrl) || '',
             content,
             messageType,
-            mediaUrls: mediaUrls || [],
-            sharedTicket: sharedTicket || null,
+            mediaUrls,
+            sharedTicket,
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            isRead: false
+            isRead: false,
+            readBy: []
         };
-        const messageRef = await admin.firestore()
-            .collection('messages')
-            .add(messageData);
-        // Update chat last message
-        await admin.firestore()
-            .collection('chats')
-            .doc(chatId)
-            .update({
-            lastMessage: messageData,
-            lastMessageTime: admin.firestore.FieldValue.serverTimestamp()
+        const msgRef = await admin.firestore().collection('chats').doc(chatId).collection('messages').add(messageData);
+        // Update chat summary
+        await chatDoc.ref.update({
+            lastMessage: content || (messageType === 'IMAGE' ? '📷 Photo' : messageType === 'VIDEO' ? '🎬 Video' : 'New message'),
+            lastMessageTime: admin.firestore.FieldValue.serverTimestamp(),
+            lastMessageSenderId: userId
         });
-        // Send push notifications to other participants
-        const otherParticipants = ((_a = chat === null || chat === void 0 ? void 0 : chat.participants) === null || _a === void 0 ? void 0 : _a.filter((id) => id !== userId)) || [];
-        for (const participantId of otherParticipants) {
-            await sendChatNotification(participantId, (chat === null || chat === void 0 ? void 0 : chat.name) || 'Chat', (user === null || user === void 0 ? void 0 : user.displayName) || 'Someone', content, chatId);
+        // Push notifications to other participants
+        const other = (chat.participants || []).filter((id) => id !== userId);
+        for (const pid of other) {
+            await sendChatNotification(pid, (chat === null || chat === void 0 ? void 0 : chat.name) || 'Chat', (user === null || user === void 0 ? void 0 : user.displayName) || 'Someone', content || messageType, chatId);
         }
-        return { success: true, messageId: messageRef.id };
+        return { success: true, messageId: msgRef.id };
     }
     catch (error) {
         console.error('Error sending message:', error);
         throw new functions.https.HttpsError('internal', 'Failed to send message');
     }
 });
-// Pin a message (admin/host only)
 exports.pinMessage = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
@@ -143,7 +131,6 @@ exports.pinMessage = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('internal', 'Failed to pin message');
     }
 });
-// Set announcement (admin/host only)
 exports.setAnnouncement = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
@@ -168,7 +155,6 @@ exports.setAnnouncement = functions.https.onCall(async (data, context) => {
     }
 });
 exports.shareTicket = functions.https.onCall(async (data, context) => {
-    var _a;
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
     }
@@ -176,45 +162,31 @@ exports.shareTicket = functions.https.onCall(async (data, context) => {
     const { chatId, ticketId } = data;
     try {
         // Verify user owns the ticket
-        const ticketDoc = await admin.firestore()
-            .collection('tickets')
-            .doc(ticketId)
-            .get();
-        if (!ticketDoc.exists) {
+        const ticketDoc = await admin.firestore().collection('tickets').doc(ticketId).get();
+        if (!ticketDoc.exists)
             throw new functions.https.HttpsError('not-found', 'Ticket not found');
-        }
         const ticket = ticketDoc.data();
-        if (!ticket || ticket.userId !== userId) {
+        if (ticket.userId !== userId)
             throw new functions.https.HttpsError('permission-denied', 'You do not own this ticket');
-        }
-        if (ticket.isRedeemed) {
+        if (ticket.isRedeemed)
             throw new functions.https.HttpsError('permission-denied', 'Ticket already redeemed');
-        }
         // Get event data
-        const eventDoc = await admin.firestore()
-            .collection('events')
-            .doc(ticket.eventId)
-            .get();
+        const eventDoc = await admin.firestore().collection('events').doc(ticket.eventId).get();
         const event = eventDoc.data();
-        // Create shared ticket data
+        // Build shared ticket payload
         const sharedTicket = {
             ticketId,
-            eventName: (event === null || event === void 0 ? void 0 : event.title) || 'Unknown Event',
-            eventImageUrl: ((_a = event === null || event === void 0 ? void 0 : event.imageUrls) === null || _a === void 0 ? void 0 : _a[0]) || '',
-            ticketType: ticket.ticketType,
-            price: ticket.price,
+            eventName: (event === null || event === void 0 ? void 0 : event.title) || 'Event',
+            eventImageUrl: ((event === null || event === void 0 ? void 0 : event.imageUrls) && event.imageUrls[0]) || '',
+            ticketType: ticket.ticketType || 'General',
+            price: ticket.price || ticket.totalAmount || 0,
             isRedeemed: false,
             redeemedBy: null,
             redeemedAt: null
         };
-        // Send ticket share message
-        await (0, exports.sendMessage)({
-            chatId,
-            content: 'Shared a ticket',
-            messageType: 'TICKET_SHARE',
-            sharedTicket
-        }, { auth: { uid: userId } });
-        return { success: true };
+        // Use sendMessage implementation to write and notify
+        const res = await (0, exports.sendMessage)({ chatId, content: 'Shared a ticket', messageType: 'TICKET_SHARE', sharedTicket }, { auth: { uid: userId } });
+        return res;
     }
     catch (error) {
         console.error('Error sharing ticket:', error);
@@ -226,32 +198,38 @@ exports.redeemTicket = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
     }
     const userId = context.auth.uid;
-    const { messageId, ticketId } = data;
+    const { chatId, messageId, ticketId } = data;
     try {
-        // Use transaction to ensure atomicity
+        // Transactional update
         const result = await admin.firestore().runTransaction(async (transaction) => {
-            // Get the shared ticket message
-            const messageDoc = await transaction.get(admin.firestore().collection('messages').doc(messageId));
-            if (!messageDoc.exists) {
-                throw new functions.https.HttpsError('not-found', 'Message not found');
+            // Resolve message path
+            let messageRef;
+            if (chatId) {
+                messageRef = admin.firestore().collection('chats').doc(chatId).collection('messages').doc(messageId);
             }
+            else {
+                // Fallback legacy path (not recommended)
+                messageRef = admin.firestore().collection('messages').doc(messageId);
+            }
+            const messageDoc = await transaction.get(messageRef);
+            if (!messageDoc.exists)
+                throw new functions.https.HttpsError('not-found', 'Message not found');
             const message = messageDoc.data();
             const sharedTicket = message === null || message === void 0 ? void 0 : message.sharedTicket;
-            `3231`;
             if (!sharedTicket || sharedTicket.ticketId !== ticketId) {
                 throw new functions.https.HttpsError('invalid-argument', 'Invalid ticket');
             }
-            if (sharedTicket.isRedeemed) {
+            if (sharedTicket.isRedeemed)
                 throw new functions.https.HttpsError('permission-denied', 'Ticket already redeemed');
-            }
-            // Update ticket as redeemed
-            transaction.update(admin.firestore().collection('tickets').doc(ticketId), {
+            // Update ticket
+            const ticketRef = admin.firestore().collection('tickets').doc(ticketId);
+            transaction.update(ticketRef, {
                 isRedeemed: true,
                 redeemedBy: userId,
                 redeemedAt: admin.firestore.FieldValue.serverTimestamp()
             });
-            // Update message shared ticket
-            transaction.update(admin.firestore().collection('messages').doc(messageId), {
+            // Update message
+            transaction.update(messageRef, {
                 'sharedTicket.isRedeemed': true,
                 'sharedTicket.redeemedBy': userId,
                 'sharedTicket.redeemedAt': admin.firestore.FieldValue.serverTimestamp()
@@ -272,18 +250,11 @@ exports.updateTypingStatus = functions.https.onCall(async (data, context) => {
     const userId = context.auth.uid;
     const { chatId, isTyping } = data;
     try {
-        const userDoc = await admin.firestore()
-            .collection('users')
-            .doc(userId)
-            .get();
+        const userDoc = await admin.firestore().collection('users').doc(userId).get();
         const user = userDoc.data();
+        const typingRef = admin.firestore().collection('chats').doc(chatId).collection('typing').doc(userId);
         if (isTyping) {
-            // Set typing indicator
-            await admin.firestore()
-                .collection('typingIndicators')
-                .doc(`${chatId}_${userId}`)
-                .set({
-                chatId,
+            await typingRef.set({
                 userId,
                 userName: (user === null || user === void 0 ? void 0 : user.displayName) || 'Anonymous',
                 isTyping: true,
@@ -291,11 +262,7 @@ exports.updateTypingStatus = functions.https.onCall(async (data, context) => {
             });
         }
         else {
-            // Remove typing indicator
-            await admin.firestore()
-                .collection('typingIndicators')
-                .doc(`${chatId}_${userId}`)
-                .delete();
+            await typingRef.delete();
         }
         return { success: true };
     }
@@ -306,11 +273,7 @@ exports.updateTypingStatus = functions.https.onCall(async (data, context) => {
 });
 async function sendChatNotification(userId, chatName, senderName, message, chatId) {
     try {
-        // Get user's FCM token
-        const userDoc = await admin.firestore()
-            .collection('users')
-            .doc(userId)
-            .get();
+        const userDoc = await admin.firestore().collection('users').doc(userId).get();
         const user = userDoc.data();
         const fcmToken = user === null || user === void 0 ? void 0 : user.fcmToken;
         if (fcmToken) {
