@@ -13,10 +13,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import timber.log.Timber
+import com.littlegig.app.services.PhoneAuthService
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthProvider
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val phoneAuthService: PhoneAuthService
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -24,6 +28,88 @@ class AuthViewModel @Inject constructor(
     
     val currentUser = authRepository.currentUser
     
+    // OTP state
+    private var verificationId: String? = null
+    private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
+    
+    fun startPhoneVerification(activity: android.app.Activity, phoneE164: String) {
+        Timber.i("Auth: startPhoneVerification $phoneE164")
+        _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+        phoneAuthService.startPhoneNumberVerification(activity, phoneE164, callbacks = object : PhoneAuthService.Callbacks {
+            override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+                this@AuthViewModel.verificationId = verificationId
+                this@AuthViewModel.resendToken = token
+                _uiState.value = _uiState.value.copy(isLoading = false, otpSent = true)
+            }
+            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                Timber.i("Auth: phone auto-verified")
+                _uiState.value = _uiState.value.copy(isLoading = false, otpSent = true)
+                // Optionally auto-link/sign-in
+            }
+            override fun onVerificationFailed(error: Exception) {
+                Timber.w(error, "Auth: phone verification failed")
+                _uiState.value = _uiState.value.copy(isLoading = false, error = error.message)
+            }
+        })
+    }
+
+    fun resendPhoneVerification(activity: android.app.Activity, phoneE164: String) {
+        val token = resendToken ?: return startPhoneVerification(activity, phoneE164)
+        Timber.i("Auth: resendPhoneVerification $phoneE164")
+        _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+        phoneAuthService.resendVerificationCode(activity, phoneE164, token, callbacks = object : PhoneAuthService.Callbacks {
+            override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+                this@AuthViewModel.verificationId = verificationId
+                this@AuthViewModel.resendToken = token
+                _uiState.value = _uiState.value.copy(isLoading = false, otpSent = true)
+            }
+            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                _uiState.value = _uiState.value.copy(isLoading = false, otpSent = true)
+            }
+            override fun onVerificationFailed(error: Exception) {
+                _uiState.value = _uiState.value.copy(isLoading = false, error = error.message)
+            }
+        })
+    }
+
+    fun verifyOtpAndLink(displayName: String, userType: UserType = UserType.REGULAR, code: String) {
+        viewModelScope.launch {
+            Timber.i("Auth: verifyOtpAndLink start")
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            try {
+                val vid = verificationId ?: throw Exception("Missing verificationId")
+                val credential = phoneAuthService.getCredential(vid, code)
+                val result = authRepository.linkAnonymousWithPhoneCredential(credential, displayName, userType)
+                result.onSuccess {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                }.onFailure {
+                    _uiState.value = _uiState.value.copy(isLoading = false, error = it.message)
+                }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
+            }
+        }
+    }
+
+    fun verifyOtpAndSignIn(code: String) {
+        viewModelScope.launch {
+            Timber.i("Auth: verifyOtpAndSignIn start")
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            try {
+                val vid = verificationId ?: throw Exception("Missing verificationId")
+                val credential = phoneAuthService.getCredential(vid, code)
+                val result = authRepository.signInWithPhoneCredential(credential)
+                result.onSuccess {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                }.onFailure {
+                    _uiState.value = _uiState.value.copy(isLoading = false, error = it.message)
+                }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
+            }
+        }
+    }
+
     // 🔥 ANONYMOUS AUTHENTICATION - TIKTOK STYLE! 🔥
     fun signInAnonymously() {
         viewModelScope.launch {
@@ -243,5 +329,6 @@ class AuthViewModel @Inject constructor(
 
 data class AuthUiState(
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val otpSent: Boolean = false
 )

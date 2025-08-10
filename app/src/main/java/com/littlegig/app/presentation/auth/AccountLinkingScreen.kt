@@ -28,6 +28,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.littlegig.app.data.model.UserType
 import com.littlegig.app.presentation.components.*
 import com.littlegig.app.presentation.theme.*
+import androidx.compose.ui.platform.LocalContext
+import android.app.Activity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +49,9 @@ fun AccountLinkingScreen(
     var userType by remember { mutableStateOf(UserType.REGULAR) }
     var passwordVisible by remember { mutableStateOf(false) }
     var isPhoneAuth by remember { mutableStateOf(true) }
+    var otpCode by remember { mutableStateOf("") }
+    val ctx = LocalContext.current
+    val activity = ctx as? Activity
     
     // Navigate to main screen when account is linked
     LaunchedEffect(currentUser) {
@@ -68,10 +73,7 @@ fun AccountLinkingScreen(
                 )
             )
     ) {
-        // Animated background orbs
         com.littlegig.app.presentation.auth.FloatingOrbs()
-        
-        // Liquid glass background
         com.littlegig.app.presentation.auth.LiquidGlassBackground()
         
         Column(
@@ -83,7 +85,6 @@ fun AccountLinkingScreen(
         ) {
             Spacer(modifier = Modifier.height(60.dp))
             
-            // Welcome message for anonymous users
             LiquidGlassCard(
                 modifier = Modifier.fillMaxWidth(),
                 glowEffect = true
@@ -102,40 +103,26 @@ fun AccountLinkingScreen(
                         color = Color.White,
                         textAlign = TextAlign.Center
                     )
-                    
                     Spacer(modifier = Modifier.height(16.dp))
-                    
                     Text(
                         text = "You're already exploring! Create an account to save your preferences and unlock more features.",
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.White.copy(alpha = 0.8f),
                         textAlign = TextAlign.Center
                     )
-                    
                     Spacer(modifier = Modifier.height(24.dp))
-                    
-                    // Skip button
                     NeumorphicButton(
                         onClick = onSkip,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Icon(
-                            Icons.Default.SkipNext,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
+                        Icon(Icons.Default.SkipNext, contentDescription = null, modifier = Modifier.size(20.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Continue as Anonymous",
-                            fontWeight = FontWeight.Bold
-                        )
+                        Text(text = "Continue as Anonymous", fontWeight = FontWeight.Bold)
                     }
                 }
             }
-            
             Spacer(modifier = Modifier.height(32.dp))
             
-            // Account linking form
             LiquidGlassCard(
                 modifier = Modifier.fillMaxWidth(),
                 glowEffect = true
@@ -146,14 +133,11 @@ fun AccountLinkingScreen(
                 ) {
                     Text(
                         text = "Create Your Account",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
+                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),
                         color = Color.White
                     )
-                    
                     Text(
                         text = "🧠 Your preferences and activity will be preserved!",
                         style = MaterialTheme.typography.bodyMedium,
@@ -163,7 +147,6 @@ fun AccountLinkingScreen(
                     )
                     
                     if (isPhoneAuth) {
-                        // Phone number input
                         NeumorphicTextField(
                             value = phoneNumber,
                             onValueChange = { phoneNumber = it },
@@ -172,7 +155,6 @@ fun AccountLinkingScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                             modifier = Modifier.fillMaxWidth()
                         )
-                        
                         NeumorphicTextField(
                             value = displayName,
                             onValueChange = { displayName = it },
@@ -181,40 +163,34 @@ fun AccountLinkingScreen(
                             modifier = Modifier.fillMaxWidth()
                         )
                         
-                        // User Type Selection
-                        Column {
-                            Text(
-                                text = "Account Type",
-                                style = MaterialTheme.typography.titleSmall.copy(
-                                    fontWeight = FontWeight.Medium
-                                ),
-                                color = Color.White
+                        // OTP section
+                        if (uiState.otpSent) {
+                            NeumorphicTextField(
+                                value = otpCode,
+                                onValueChange = { otpCode = it },
+                                label = "Enter OTP",
+                                leadingIcon = Icons.Default.Lock,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                modifier = Modifier.fillMaxWidth()
                             )
-                            
-                            Spacer(modifier = Modifier.height(8.dp))
-                            
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                NeumorphicChip(
-                                    onClick = { userType = UserType.REGULAR },
-                                    isSelected = userType == UserType.REGULAR,
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text("Regular", color = Color.White)
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                                NeumorphicButton(onClick = { viewModel.verifyOtpAndLink(displayName, userType, otpCode) }, modifier = Modifier.weight(1f)) {
+                                    Text("Verify & Link")
                                 }
-                                NeumorphicChip(
-                                    onClick = { userType = UserType.BUSINESS },
-                                    isSelected = userType == UserType.BUSINESS,
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text("Business", color = Color.White)
-                                }
+                                NeumorphicButton(onClick = {
+                                    val e164 = com.littlegig.app.services.PhoneNumberService().normalizeToE164(phoneNumber) ?: phoneNumber
+                                    activity?.let { viewModel.resendPhoneVerification(it, e164) }
+                                }, modifier = Modifier.weight(1f)) { Text("Resend") }
+                            }
+                        } else {
+                            NeumorphicButton(onClick = {
+                                val e164 = com.littlegig.app.services.PhoneNumberService().normalizeToE164(phoneNumber) ?: phoneNumber
+                                activity?.let { viewModel.startPhoneVerification(it, e164) }
+                            }, modifier = Modifier.fillMaxWidth()) {
+                                Text("Send OTP")
                             }
                         }
                     } else {
-                        // Email auth
                         NeumorphicTextField(
                             value = email,
                             onValueChange = { email = it },
@@ -223,7 +199,6 @@ fun AccountLinkingScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                             modifier = Modifier.fillMaxWidth()
                         )
-                        
                         NeumorphicTextField(
                             value = password,
                             onValueChange = { password = it },
@@ -234,7 +209,6 @@ fun AccountLinkingScreen(
                             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             modifier = Modifier.fillMaxWidth()
                         )
-                        
                         NeumorphicTextField(
                             value = displayName,
                             onValueChange = { displayName = it },
@@ -246,82 +220,43 @@ fun AccountLinkingScreen(
                     
                     Spacer(modifier = Modifier.height(8.dp))
                     
-                    // Link account button
                     NeumorphicButton(
                         onClick = {
                             if (isPhoneAuth) {
-                                viewModel.linkAnonymousAccountWithPhone(phoneNumber, displayName, userType)
+                                // Linking is handled via OTP verify above
                             } else {
                                 viewModel.linkAnonymousAccount(email, password, displayName, null, userType)
                             }
                         },
-                        enabled = !uiState.isLoading && 
-                                ((isPhoneAuth && phoneNumber.isNotBlank() && displayName.isNotBlank()) || 
-                                 (!isPhoneAuth && email.isNotBlank() && password.isNotBlank() && displayName.isNotBlank())),
+                        enabled = !uiState.isLoading && (
+                            (!isPhoneAuth && email.isNotBlank() && password.isNotBlank() && displayName.isNotBlank())
+                        ),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         if (uiState.isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                color = Color.White,
-                                strokeWidth = 2.dp
-                            )
+                            CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.White, strokeWidth = 2.dp)
                             Spacer(modifier = Modifier.width(8.dp))
                         }
-                        
-                        Icon(
-                            imageVector = Icons.Default.Link,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
+                        Icon(imageVector = Icons.Default.Link, contentDescription = null, modifier = Modifier.size(20.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Link Account",
-                            fontWeight = FontWeight.Bold
-                        )
+                        Text(text = if (isPhoneAuth) "Waiting for OTP…" else "Link Account", fontWeight = FontWeight.Bold)
                     }
                     
-                    // Toggle auth method
-                    TextButton(
-                        onClick = { isPhoneAuth = !isPhoneAuth },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = if (isPhoneAuth) "Use Email Instead" else "Use Phone Instead",
-                            color = Color.White.copy(alpha = 0.7f)
-                        )
+                    TextButton(onClick = { isPhoneAuth = !isPhoneAuth }, modifier = Modifier.fillMaxWidth()) {
+                        Text(text = if (isPhoneAuth) "Use Email Instead" else "Use Phone Instead", color = Color.White.copy(alpha = 0.7f))
                     }
                     
-                    // Error display
                     uiState.error?.let { error ->
-                        LiquidGlassCard(
-                            modifier = Modifier.fillMaxWidth(),
-                            glowEffect = false
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Warning,
-                                    contentDescription = null,
-                                    tint = Color(0xFFFF6B6B),
-                                    modifier = Modifier.size(20.dp)
-                                )
+                        LiquidGlassCard(modifier = Modifier.fillMaxWidth(), glowEffect = false) {
+                            Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Icon(imageVector = Icons.Default.Warning, contentDescription = null, tint = Color(0xFFFF6B6B), modifier = Modifier.size(20.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = error,
-                                    color = Color(0xFFFF6B6B),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                                Text(text = error, color = Color(0xFFFF6B6B), style = MaterialTheme.typography.bodyMedium)
                             }
                         }
                     }
                 }
             }
-            
             Spacer(modifier = Modifier.height(32.dp))
         }
     }

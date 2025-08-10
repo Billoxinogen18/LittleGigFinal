@@ -73,4 +73,8 @@ class PhoneAuthService @Inject constructor(
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
+
+    fun getCredential(verificationId: String, code: String): PhoneAuthCredential {
+        return PhoneAuthProvider.getCredential(verificationId, code)
+    }
 }

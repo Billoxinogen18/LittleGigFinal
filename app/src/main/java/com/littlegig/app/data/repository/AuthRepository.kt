@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.google.firebase.auth.PhoneAuthCredential
 
 @Singleton
 class AuthRepository @Inject constructor(
@@ -101,7 +102,6 @@ class AuthRepository @Inject constructor(
                         _currentUserState.value = resolvedUser
                     }
                 } catch (e: Exception) {
-                    // On failure, keep cached or create anon
                     val fallback = getCachedUser(firebaseUser.uid) ?: createAnonymousUser(firebaseUser.uid)
                     cacheUser(fallback)
                     _currentUserState.value = fallback
@@ -706,5 +706,86 @@ class AuthRepository @Inject constructor(
         val phoneSuffix = phoneNumber.takeLast(4)
         val randomSuffix = (100..999).random()
         return "${base}${phoneSuffix}${randomSuffix}".lowercase()
+    }
+
+    // Link anonymous Firebase user with a verified PhoneAuthCredential
+    suspend fun linkAnonymousWithPhoneCredential(
+        credential: PhoneAuthCredential,
+        displayName: String,
+        userType: UserType = UserType.REGULAR
+    ): Result<User> {
+        if (!isNetworkAvailable()) return Result.failure(Exception("No network connection"))
+        return try {
+            val currentUser = auth.currentUser ?: throw Exception("No anonymous user to link")
+            val linkResult = currentUser.linkWithCredential(credential).await()
+            val linkedUser = linkResult.user ?: throw Exception("Failed to link phone credential")
+
+            val existingUserDoc = firestore.collection("users").document(currentUser.uid).get().await()
+            val existingUser: User = (if (existingUserDoc.exists()) existingUserDoc.toObject(User::class.java)?.copy(id = existingUserDoc.id) else createAnonymousUser(currentUser.uid))
+                ?: throw Exception("Failed to get existing user data")
+
+            val username = generateUsername(displayName, linkedUser.phoneNumber ?: "")
+            val linkedUserData = User(
+                id = linkedUser.uid,
+                email = "",
+                displayName = displayName,
+                username = username,
+                phoneNumber = linkedUser.phoneNumber ?: "",
+                userType = userType,
+                rank = UserRank.NOVICE,
+                followers = existingUser.followers,
+                following = existingUser.following,
+                bio = existingUser.bio,
+                profilePictureUrl = existingUser.profilePictureUrl,
+                profileImageUrl = existingUser.profileImageUrl,
+                isInfluencer = existingUser.isInfluencer,
+                businessId = existingUser.businessId,
+                createdAt = existingUser.createdAt,
+                updatedAt = System.currentTimeMillis()
+            )
+
+            firestore.collection("users").document(linkedUser.uid).set(linkedUserData).await()
+            val lower = mutableMapOf<String, Any>(
+                "username_lower" to linkedUserData.username.lowercase(),
+                "displayName_lower" to linkedUserData.displayName.lowercase()
+            )
+            linkedUserData.phoneNumber.let {
+                val e164 = com.littlegig.app.services.PhoneNumberService().normalizeToE164(it)
+                if (e164 != null) lower["phoneNumber_e164"] = e164
+            }
+            firestore.collection("users").document(linkedUser.uid).set(lower, com.google.firebase.firestore.SetOptions.merge()).await()
+
+            cacheUser(linkedUserData)
+            _currentUserState.value = linkedUserData
+            Result.success(linkedUserData)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // Sign in (non-anonymous) with PhoneAuthCredential
+    suspend fun signInWithPhoneCredential(credential: PhoneAuthCredential): Result<User> {
+        if (!isNetworkAvailable()) return Result.failure(Exception("No network connection"))
+        return try {
+            val result = auth.signInWithCredential(credential).await()
+            val firebaseUser = result.user ?: throw Exception("Failed to sign in with phone")
+            val userDoc = firestore.collection("users").document(firebaseUser.uid).get().await()
+            if (userDoc.exists()) {
+                val user = userDoc.toObject(User::class.java)?.copy(id = userDoc.id) ?: throw Exception("Failed to parse user data")
+                cacheUser(user)
+                Result.success(user)
+            } else {
+                val user = createAnonymousUser(firebaseUser.uid).copy(
+                    phoneNumber = firebaseUser.phoneNumber ?: "",
+                    displayName = "User",
+                    updatedAt = System.currentTimeMillis()
+                )
+                firestore.collection("users").document(firebaseUser.uid).set(user).await()
+                cacheUser(user)
+                Result.success(user)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }
