@@ -11,12 +11,14 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
 import java.util.*
+import com.littlegig.app.services.PhoneNumberService
 
 @Singleton
 class UserRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val storage: FirebaseStorage,
-    private val context: Context
+    private val context: Context,
+    private val phoneNumberService: PhoneNumberService
 ) {
     
     suspend fun getUserById(userId: String): Result<User?> {
@@ -50,13 +52,13 @@ class UserRepository @Inject constructor(
     suspend fun getUsersByPhoneNumbers(phoneNumbers: List<String>): Result<List<User>> {
         return try {
             if (phoneNumbers.isEmpty()) return Result.success(emptyList())
-            val normalized = phoneNumbers.map { it.trim() }.filter { it.isNotEmpty() }
+            val normalized = phoneNumberService.normalizeMany(phoneNumbers)
             if (normalized.isEmpty()) return Result.success(emptyList())
             val batchSize = 10
             val results = mutableListOf<User>()
             for (chunk in normalized.chunked(batchSize)) {
                 val snap = firestore.collection("users")
-                    .whereIn("phoneNumber", chunk)
+                    .whereIn("phoneNumber_e164", chunk)
                     .get()
                     .await()
                 snap.documents.forEach { doc ->
@@ -72,8 +74,19 @@ class UserRepository @Inject constructor(
 
     suspend fun updateUserProfile(userId: String, updates: Map<String, Any>): Result<Unit> {
         return try {
+            // derive normalized/index fields
+            val lower = mutableMapOf<String, Any>()
+            updates["username"]?.let { lower["username_lower"] = it.toString().lowercase() }
+            updates["email"]?.let { lower["email_lower"] = it.toString().lowercase() }
+            updates["displayName"]?.let { lower["displayName_lower"] = it.toString().lowercase() }
+            updates["phoneNumber"]?.let {
+                val e164 = phoneNumberService.normalizeToE164(it.toString())
+                if (e164 != null) lower["phoneNumber_e164"] = e164
+            }
+            
+            val merged = updates + lower
             // Use merge to create doc if it doesn't exist (handles anonymous users)
-            firestore.collection("users").document(userId).set(updates, SetOptions.merge()).await()
+            firestore.collection("users").document(userId).set(merged, SetOptions.merge()).await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -138,13 +151,15 @@ class UserRepository @Inject constructor(
     
     suspend fun searchUsers(query: String): List<User> {
         return try {
-            val queryLower = query.lowercase()
+            val q = query.trim()
+            if (q.length < 2) return emptyList()
+            val queryLower = q.lowercase()
             val results = mutableListOf<User>()
 
-            // Server-side prefix queries (case-sensitive data); best-effort
+            // Server-side prefix queries on lowercase fields
             val usernameQuery = firestore.collection("users")
-                .whereGreaterThanOrEqualTo("username", queryLower)
-                .whereLessThanOrEqualTo("username", queryLower + '\uf8ff')
+                .whereGreaterThanOrEqualTo("username_lower", queryLower)
+                .whereLessThanOrEqualTo("username_lower", queryLower + '\uf8ff')
                 .limit(20)
                 .get()
                 .await()
@@ -153,8 +168,8 @@ class UserRepository @Inject constructor(
             }
 
             val emailQuery = firestore.collection("users")
-                .whereGreaterThanOrEqualTo("email", queryLower)
-                .whereLessThanOrEqualTo("email", queryLower + '\uf8ff')
+                .whereGreaterThanOrEqualTo("email_lower", queryLower)
+                .whereLessThanOrEqualTo("email_lower", queryLower + '\uf8ff')
                 .limit(20)
                 .get()
                 .await()
@@ -163,8 +178,8 @@ class UserRepository @Inject constructor(
             }
 
             val nameQuery = firestore.collection("users")
-                .whereGreaterThanOrEqualTo("displayName", queryLower)
-                .whereLessThanOrEqualTo("displayName", queryLower + '\uf8ff')
+                .whereGreaterThanOrEqualTo("displayName_lower", queryLower)
+                .whereLessThanOrEqualTo("displayName_lower", queryLower + '\uf8ff')
                 .limit(20)
                 .get()
                 .await()
@@ -172,14 +187,17 @@ class UserRepository @Inject constructor(
                 doc.toObject(User::class.java)?.copy(id = doc.id)?.let { if (it !in results) results.add(it) }
             }
 
-            val phoneQuery = firestore.collection("users")
-                .whereGreaterThanOrEqualTo("phoneNumber", query)
-                .whereLessThanOrEqualTo("phoneNumber", query + '\uf8ff')
-                .limit(20)
-                .get()
-                .await()
-            phoneQuery.documents.forEach { doc ->
-                doc.toObject(User::class.java)?.copy(id = doc.id)?.let { if (it !in results) results.add(it) }
+            // Phone: normalize possible phone query to E.164 and/or prefix match
+            val normalizedPhone = phoneNumberService.normalizeToE164(q)
+            if (normalizedPhone != null) {
+                val phoneEq = firestore.collection("users")
+                    .whereEqualTo("phoneNumber_e164", normalizedPhone)
+                    .limit(20)
+                    .get()
+                    .await()
+                phoneEq.documents.forEach { doc ->
+                    doc.toObject(User::class.java)?.copy(id = doc.id)?.let { if (it !in results) results.add(it) }
+                }
             }
 
             var deduped = results.distinctBy { it.id }
@@ -188,10 +206,10 @@ class UserRepository @Inject constructor(
                 val page = firestore.collection("users").limit(100).get().await()
                 val all = page.documents.mapNotNull { it.toObject(User::class.java)?.copy(id = it.id) }
                 deduped = all.filter { u ->
-                    u.username.contains(query, ignoreCase = true) ||
-                    u.displayName.contains(query, ignoreCase = true) ||
-                    u.email.contains(query, ignoreCase = true) ||
-                    u.phoneNumber.contains(query, ignoreCase = true)
+                    u.username.contains(q, ignoreCase = true) ||
+                    u.displayName.contains(q, ignoreCase = true) ||
+                    u.email.contains(q, ignoreCase = true) ||
+                    u.phoneNumber.contains(q, ignoreCase = true)
                 }
             }
             deduped.take(20)

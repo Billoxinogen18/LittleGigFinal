@@ -201,6 +201,16 @@ class AuthRepository @Inject constructor(
                 .set(linkedUserData)
                 .await()
             
+            // Write index fields
+            val lower = mutableMapOf<String, Any>(
+                "username_lower" to linkedUserData.username.lowercase(),
+                "email_lower" to linkedUserData.email.lowercase(),
+                "displayName_lower" to linkedUserData.displayName.lowercase()
+            )
+            val e164 = com.littlegig.app.services.PhoneNumberService().normalizeToE164(linkedUserData.phoneNumber)
+            if (e164 != null) lower["phoneNumber_e164"] = e164
+            firestore.collection("users").document(linkedUser.uid).set(lower, com.google.firebase.firestore.SetOptions.merge()).await()
+            
                 cacheUser(linkedUserData)
                 _currentUserState.value = linkedUserData
             Result.success(linkedUserData)
@@ -258,6 +268,16 @@ class AuthRepository @Inject constructor(
                     .document(firebaseUser.uid)
                     .set(newUser)
                     .await()
+                
+                // Write index fields
+                val lower = mutableMapOf<String, Any>(
+                    "username_lower" to newUser.username.lowercase(),
+                    "email_lower" to newUser.email.lowercase(),
+                    "displayName_lower" to newUser.displayName.lowercase()
+                )
+                val e164 = com.littlegig.app.services.PhoneNumberService().normalizeToE164(newUser.phoneNumber)
+                if (e164 != null) lower["phoneNumber_e164"] = e164
+                firestore.collection("users").document(firebaseUser.uid).set(lower, com.google.firebase.firestore.SetOptions.merge()).await()
                 
                 cacheUser(newUser)
                 _currentUserState.value = newUser
@@ -385,6 +405,16 @@ class AuthRepository @Inject constructor(
                 .set(linkedUserData)
                 .await()
             
+            // Write index fields
+            val lower = mutableMapOf<String, Any>(
+                "username_lower" to linkedUserData.username.lowercase(),
+                "email_lower" to linkedUserData.email.lowercase(),
+                "displayName_lower" to linkedUserData.displayName.lowercase()
+            )
+            val e164 = com.littlegig.app.services.PhoneNumberService().normalizeToE164(linkedUserData.phoneNumber)
+            if (e164 != null) lower["phoneNumber_e164"] = e164
+            firestore.collection("users").document(currentUser.uid).set(lower, com.google.firebase.firestore.SetOptions.merge()).await()
+            
             cacheUser(linkedUserData)
             Result.success(linkedUserData)
         } catch (e: Exception) {
@@ -454,6 +484,16 @@ class AuthRepository @Inject constructor(
                 .set(user)
                 .await()
             
+            // Write index fields
+            val lower = mutableMapOf<String, Any>(
+                "username_lower" to user.username.lowercase(),
+                "email_lower" to user.email.lowercase(),
+                "displayName_lower" to user.displayName.lowercase()
+            )
+            val e164 = com.littlegig.app.services.PhoneNumberService().normalizeToE164(user.phoneNumber)
+            if (e164 != null) lower["phoneNumber_e164"] = e164
+            firestore.collection("users").document(firebaseUser.uid).set(lower, com.google.firebase.firestore.SetOptions.merge()).await()
+            
             cacheUser(user)
             Result.success(user)
         } catch (e: Exception) {
@@ -511,6 +551,19 @@ class AuthRepository @Inject constructor(
                 .document(firebaseUser.uid)
                 .update(updates)
                 .await()
+            
+            // Update index fields if needed
+            val lower = mutableMapOf<String, Any>()
+            updates["username"]?.let { lower["username_lower"] = it.toString().lowercase() }
+            updates["email"]?.let { lower["email_lower"] = it.toString().lowercase() }
+            updates["displayName"]?.let { lower["displayName_lower"] = it.toString().lowercase() }
+            updates["phoneNumber"]?.let {
+                val e164 = com.littlegig.app.services.PhoneNumberService().normalizeToE164(it.toString())
+                if (e164 != null) lower["phoneNumber_e164"] = e164
+            }
+            if (lower.isNotEmpty()) {
+                firestore.collection("users").document(firebaseUser.uid).set(lower, com.google.firebase.firestore.SetOptions.merge()).await()
+            }
             
             // Update cached user with new data instead of clearing cache
             val cachedUser = currentUser.value

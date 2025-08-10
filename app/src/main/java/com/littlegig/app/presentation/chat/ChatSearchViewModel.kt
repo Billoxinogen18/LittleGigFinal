@@ -31,15 +31,19 @@ class ChatSearchViewModel @Inject constructor(
     val currentUser = authRepository.currentUser
     
     init {
-        // Debounce search queries
         searchQuery
-            .debounce(300)
-            .onEach { query ->
-                if (query.isNotEmpty()) {
-                    performSearch(query)
-                } else {
-                    _searchResults.value = emptyList()
+            .map { it.trim() }
+            .debounce(350)
+            .distinctUntilChanged()
+            .flatMapLatest { q ->
+                if (q.length < 2) flowOf(emptyList())
+                else flow {
+                    val results = userRepository.searchUsers(q)
+                    emit(results)
                 }
+            }
+            .onEach { users ->
+                _searchResults.value = users
             }
             .launchIn(viewModelScope)
     }
@@ -51,11 +55,8 @@ class ChatSearchViewModel @Inject constructor(
     private suspend fun performSearch(query: String) {
         try {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            
-            // Search by username, email, name, and phone number
             val results = userRepository.searchUsers(query)
             _searchResults.value = results
-            
             _uiState.value = _uiState.value.copy(isLoading = false)
         } catch (e: Exception) {
             _uiState.value = _uiState.value.copy(
@@ -70,13 +71,11 @@ class ChatSearchViewModel @Inject constructor(
             try {
                 val currentUser = currentUser.value ?: return@launch
                 
-                // Create or get existing chat
                 val chatId = chatRepository.createChat(
                     participants = listOf(currentUser.id, user.id),
                     chatType = ChatType.DIRECT
                 )
                 
-                // Navigate to chat (this will be handled by navigation)
                 _uiState.value = _uiState.value.copy(
                     chatStarted = true,
                     selectedChatId = chatId.getOrNull()
@@ -100,10 +99,10 @@ class ChatSearchViewModel @Inject constructor(
                     userRepository.followUser(currentUser.id, user.id)
                 }
                 
-                // Refresh search results to update follow status
                 val currentQuery = searchQuery.value
-                if (currentQuery.isNotEmpty()) {
-                    performSearch(currentQuery)
+                if (currentQuery.length >= 2) {
+                    val results = userRepository.searchUsers(currentQuery)
+                    _searchResults.value = results
                 }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(

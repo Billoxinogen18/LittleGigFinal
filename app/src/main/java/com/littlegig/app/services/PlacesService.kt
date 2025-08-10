@@ -44,6 +44,8 @@ class PlacesService @Inject constructor(
             if (!response.isSuccessful) return@withContext emptyList()
             val body = response.body?.string() ?: return@withContext emptyList()
             val json = JSONObject(body)
+            val status = json.optString("status", "OK")
+            if (status != "OK") return@withContext emptyList()
             val predictions = json.optJSONArray("predictions") ?: return@withContext emptyList()
             val list = mutableListOf<PlaceSuggestion>()
             for (i in 0 until predictions.length()) {
@@ -79,6 +81,8 @@ class PlacesService @Inject constructor(
             if (!response.isSuccessful) return@withContext null
             val body = response.body?.string() ?: return@withContext null
             val json = JSONObject(body)
+            val status = json.optString("status", "OK")
+            if (status != "OK") return@withContext null
             val result = json.optJSONObject("result") ?: return@withContext null
             val name = result.optString("name")
             val formatted = result.optString("formatted_address")

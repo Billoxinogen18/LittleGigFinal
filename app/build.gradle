@@ -126,6 +126,9 @@ dependencies {
     // SwipeRefresh
     implementation 'com.google.accompanist:accompanist-swiperefresh:0.34.0'
     
+    // Phone number normalization
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.13.33'
+    
     // Material Design Icons
     implementation 'androidx.compose.material:material-icons-extended'
     
