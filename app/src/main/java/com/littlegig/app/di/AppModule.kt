@@ -19,6 +19,7 @@ import javax.inject.Singleton
 import com.littlegig.app.services.PhoneNumberService
 import com.littlegig.app.services.ContactsService
 import com.littlegig.app.services.PhoneAuthService
+import com.littlegig.app.services.ChatMediaService
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -83,4 +84,9 @@ object AppModule {
     @Provides
     @Singleton
     fun providePhoneAuthService(auth: FirebaseAuth): PhoneAuthService = PhoneAuthService(auth)
+
+    @Provides
+    @Singleton
+    fun provideChatMediaService(@ApplicationContext context: Context, storage: FirebaseStorage): ChatMediaService =
+        ChatMediaService(storage, context.contentResolver)
 }

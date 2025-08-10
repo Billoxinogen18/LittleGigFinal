@@ -38,6 +38,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import com.littlegig.app.data.model.Message
 import com.littlegig.app.data.model.MessageType
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import com.littlegig.app.services.ChatMediaService
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun ChatDetailsScreen(
@@ -51,6 +56,10 @@ fun ChatDetailsScreen(
     val isDark = isSystemInDarkTheme()
     var messageText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
+    val context = LocalContext.current
+    val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let { viewModel.uploadAndSendMedia(chatId, it, "image/*") }
+    }
     
     LaunchedEffect(chatId) {
         viewModel.loadChat(chatId)
@@ -166,7 +175,7 @@ fun ChatDetailsScreen(
                         viewModel.setTyping(chatId, false)
                     }
                 },
-                onAttachMedia = { /* TODO: media picker + upload to storage, then send media message */ },
+                onAttachMedia = { imagePicker.launch("image/*") },
                 onShareTicket = { viewModel.promptShareTicket(chatId) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -236,7 +245,8 @@ fun ChatDetailsScreen(
 @HiltViewModel
 class ChatDetailsViewModel @Inject constructor(
     private val chatRepository: com.littlegig.app.data.repository.ChatRepository,
-    private val authRepository: com.littlegig.app.data.repository.AuthRepository
+    private val authRepository: com.littlegig.app.data.repository.AuthRepository,
+    private val chatMediaService: ChatMediaService
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(ChatDetailsUiState())
@@ -349,6 +359,30 @@ class ChatDetailsViewModel @Inject constructor(
             try {
                 chatRepository.pinMessage(chatId, messageId)
                 _chat.value = _chat.value?.copy(pinnedMessageId = messageId)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = e.message)
+            }
+        }
+    }
+
+    fun uploadAndSendMedia(chatId: String, uri: Uri, mime: String?) {
+        viewModelScope.launch {
+            try {
+                chatMediaService.uploadChatMedia(chatId, uri, mime).collect { progress ->
+                    if (progress.downloadUrl != null) {
+                        val me = authRepository.currentUser.value ?: return@collect
+                        val msg = com.littlegig.app.data.model.Message(
+                            senderId = me.id,
+                            senderName = me.displayName,
+                            senderImageUrl = me.profileImageUrl,
+                            content = if (mime?.contains("image") == true) "📷 Photo" else "🎬 Video",
+                            messageType = if (mime?.contains("image") == true) com.littlegig.app.data.model.MessageType.IMAGE else com.littlegig.app.data.model.MessageType.VIDEO,
+                            mediaUrls = listOf(progress.downloadUrl),
+                            timestamp = System.currentTimeMillis()
+                        )
+                        chatRepository.sendMessage(chatId, msg)
+                    }
+                }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(error = e.message)
             }
