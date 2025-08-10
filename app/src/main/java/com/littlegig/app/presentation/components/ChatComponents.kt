@@ -34,6 +34,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.tween
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.graphics.graphicsLayer
 
 // Unique LittleGig Chat Bubble with Neumorphic Design
 @Composable
@@ -44,6 +50,7 @@ fun NeumorphicChatBubble(
     onLikeMessage: (String) -> Unit,
     onMentionClick: (String) -> Unit = {},
     onShareTicket: (SharedTicket) -> Unit,
+    searchQuery: String? = null,
     modifier: Modifier = Modifier
 ) {
     val isDark = isSystemInDarkTheme()
@@ -99,10 +106,31 @@ fun NeumorphicChatBubble(
                                             .clickable { onMentionClick(seg.removePrefix("@")) }
                                     )
                                 } else {
+                                    val annotated = if (!searchQuery.isNullOrBlank()) {
+                                        buildAnnotatedString {
+                                            val lower = seg.lowercase()
+                                            val q = searchQuery!!.lowercase()
+                                            var idx = 0
+                                            while (idx < seg.length) {
+                                                val hit = lower.indexOf(q, idx)
+                                                if (hit < 0) {
+                                                    append(seg.substring(idx))
+                                                    break
+                                                }
+                                                append(seg.substring(idx, hit))
+                                                withStyle(SpanStyle(background = LittleGigPrimary.copy(alpha = 0.25f), color = MaterialTheme.colorScheme.onSurface)) {
+                                                    append(seg.substring(hit, hit + q.length))
+                                                }
+                                                idx = hit + q.length
+                                            }
+                                        }
+                                    } else buildAnnotatedString { append(seg) }
                                     Text(
-                                        text = seg,
+                                        text = annotated,
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurface
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        maxLines = Int.MAX_VALUE,
+                                        overflow = TextOverflow.Clip
                                     )
                                 }
                             }
@@ -125,7 +153,7 @@ fun NeumorphicChatBubble(
                                 .fillMaxWidth()
                                 .height(200.dp)
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(Color.Black.copy(alpha = 0.1f)),
+                                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.1f)),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -187,10 +215,14 @@ fun NeumorphicChatBubble(
                         }
                     }
                     MessageType.EVENT_SHARE -> {
-                        Text(
-                            text = "📅 Event shared",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface
+                        val title = message.metadata["eventTitle"] ?: message.content.ifBlank { "Event" }
+                        val image = message.metadata["imageUrl"]
+                        val date = message.metadata["dateMillis"]?.toLongOrNull()
+                        NeumorphicEventShareCard(
+                            title = title,
+                            imageUrl = image,
+                            dateTime = date,
+                            onOpen = {}
                         )
                     }
                     MessageType.SYSTEM -> {
@@ -304,6 +336,41 @@ fun NeumorphicChatBubble(
                             showReactions = false
                         })
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun NeumorphicEventShareCard(
+    title: String,
+    imageUrl: String?,
+    dateTime: Long?,
+    onOpen: () -> Unit
+) {
+    AdvancedNeumorphicCard {
+        Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = null,
+                modifier = Modifier.size(56.dp).clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f)) {
+                Text(title, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+                if (dateTime != null) {
+                    Text(
+                        text = java.text.SimpleDateFormat("MMM d, h:mm a").format(java.util.Date(dateTime)),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+            OutlinedButton(onClick = onOpen, shape = RoundedCornerShape(12.dp)) {
+                Icon(Icons.Default.Event, contentDescription = null)
+                Spacer(Modifier.width(6.dp))
+                Text("Open")
             }
         }
     }
@@ -448,52 +515,33 @@ fun NeumorphicTypingIndicator(
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Typing users
+            // Animated avatar pulses
+            typingUsers.take(3).forEachIndexed { idx, user ->
+                val pulse = rememberInfiniteTransition(label = "typing_avatar_$idx").animateFloat(
+                    initialValue = 0.85f, targetValue = 1.05f,
+                    animationSpec = infiniteRepeatable(animation = tween(700, delayMillis = idx * 120), repeatMode = RepeatMode.Reverse),
+                    label = "typing_avatar_scale_$idx"
+                )
+                Box(
+                    modifier = Modifier
+                        .size(18.dp)
+                        .clip(CircleShape)
+                        .background(LittleGigPrimary.copy(alpha = 0.25f))
+                        .graphicsLayer(scaleX = pulse.value, scaleY = pulse.value),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(user.userName.firstOrNull()?.uppercase() ?: "?", style = MaterialTheme.typography.labelSmall)
+                }
+            }
+            // Names
             Text(
                 text = typingUsers.joinToString(", ") { it.userName },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            
-            Spacer(modifier = Modifier.width(8.dp))
-            
-            // Animated dots
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                val colors = listOf(
-                    Color(0xFFE91E63), // Red
-                    Color(0xFF2196F3), // Blue
-                    Color(0xFFFF9800), // Orange
-                    Color(0xFF4CAF50), // Green
-                    Color(0xFF9C27B0)  // Purple
-                )
-                
-                colors.forEachIndexed { index, color ->
-                    val infiniteTransition = rememberInfiniteTransition(label = "typing_dot_$index")
-                    val animatedAlpha by infiniteTransition.animateFloat(
-                        initialValue = 0.3f,
-                        targetValue = 1f,
-                        animationSpec = infiniteRepeatable(
-                            animation = tween(
-                                durationMillis = 600,
-                                delayMillis = index * 200
-                            ),
-                            repeatMode = RepeatMode.Reverse
-                        ),
-                        label = "dot_alpha_$index"
-                    )
-                    
-                    Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(color.copy(alpha = animatedAlpha))
-                    )
-                }
-            }
         }
     }
 }
@@ -583,6 +631,18 @@ fun NeumorphicChatInput(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun ChatBubbleSkeleton(isMe: Boolean, modifier: Modifier = Modifier) {
+    AdvancedGlassmorphicCard(modifier = modifier.padding(
+        start = if (isMe) 48.dp else 8.dp,
+        end = if (isMe) 8.dp else 48.dp,
+        top = 4.dp,
+        bottom = 4.dp
+    )) {
+        Box(Modifier.size(width = 160.dp, height = 18.dp)) { }
     }
 }
 
