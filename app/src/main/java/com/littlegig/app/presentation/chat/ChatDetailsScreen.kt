@@ -43,6 +43,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import com.littlegig.app.services.ChatMediaService
 import androidx.compose.ui.platform.LocalContext
+import com.littlegig.app.data.model.TypingIndicator as ModelTypingIndicator
 
 @Composable
 fun ChatDetailsScreen(
@@ -60,18 +61,20 @@ fun ChatDetailsScreen(
     val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let { viewModel.uploadAndSendMedia(chatId, it, "image/*") }
     }
-    
+    val typing by viewModel.typingUsers.collectAsState()
+
     LaunchedEffect(chatId) {
         viewModel.loadChat(chatId)
         viewModel.loadMessages(chatId)
+        viewModel.observeTyping(chatId)
     }
-    
+
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
             listState.animateScrollToItem(messages.size - 1)
         }
     }
-    
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -142,7 +145,7 @@ fun ChatDetailsScreen(
                     }
                 }
             }
-            
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -153,6 +156,8 @@ fun ChatDetailsScreen(
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
                 items(messages) { message ->
+                    // mark last incoming as read
+                    if (message.senderId != viewModel.currentUserId) viewModel.markAsReadIfNeeded(chatId, message)
                     if (message.messageType == com.littlegig.app.data.model.MessageType.TICKET_SHARE && message.sharedTicket != null) {
                         TicketShareBubble(
                             messageId = message.id,
@@ -163,13 +168,46 @@ fun ChatDetailsScreen(
                         NeumorphicChatBubble(
                             message = message,
                             isFromCurrentUser = message.senderId == viewModel.currentUserId,
-                            onLikeMessage = { /* TODO: reactions */ _ -> },
-                            onShareTicket = { /* redeem flow triggers in chat viewmodel */ }
+                            onLikeMessage = { /* TODO */ _ -> },
+                            onShareTicket = { /* no-op */ },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .pointerInput(Unit) {
+                                    detectTapGestures(onLongPress = {
+                                        viewModel.chooseReplyTarget(message)
+                                    })
+                                }
                         )
                     }
                 }
             }
-            
+
+            // typing indicator
+            if (typing.isNotEmpty()) {
+                val indicators = typing.map { userName -> ModelTypingIndicator(userName = userName, isTyping = true) }
+                NeumorphicTypingIndicator(typingUsers = indicators, modifier = Modifier.align(Alignment.Start))
+            }
+
+            // reply preview above input
+            viewModel.replyTarget?.let { target ->
+                AdvancedGlassmorphicCard(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Reply, contentDescription = null, tint = LittleGigPrimary)
+                        Spacer(Modifier.width(8.dp))
+                        Column(Modifier.weight(1f)) {
+                            Text(text = target.senderName, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(text = target.content.take(80), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
+                        }
+                        IconButton(onClick = { viewModel.clearReplyTarget() }) { Icon(Icons.Default.Close, contentDescription = null) }
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
+            }
+
             NeumorphicChatInput(
                 message = messageText,
                 onMessageChange = {
@@ -190,7 +228,7 @@ fun ChatDetailsScreen(
                     .padding(16.dp)
             )
         }
-        
+
         if (uiState.isLoading) {
             Box(
                 modifier = Modifier
@@ -206,7 +244,7 @@ fun ChatDetailsScreen(
                 }
             }
         }
-        
+
         if (uiState.error != null) {
             Box(
                 modifier = Modifier
@@ -256,24 +294,25 @@ class ChatDetailsViewModel @Inject constructor(
     private val authRepository: com.littlegig.app.data.repository.AuthRepository,
     private val chatMediaService: ChatMediaService
 ) : ViewModel() {
-    
+
     private val _uiState = MutableStateFlow(ChatDetailsUiState())
     val uiState: StateFlow<ChatDetailsUiState> = _uiState.asStateFlow()
-    
+
     private val _messages = MutableStateFlow<List<com.littlegig.app.data.model.Message>>(emptyList())
     val messages: StateFlow<List<com.littlegig.app.data.model.Message>> = _messages.asStateFlow()
-    
+
     private val _chat = MutableStateFlow<com.littlegig.app.data.model.Chat?>(null)
     val chat: StateFlow<com.littlegig.app.data.model.Chat?> = _chat.asStateFlow()
-    
+
     val currentUserId: String?
         get() = authRepository.currentUser.value?.id
     var showAdminActions by mutableStateOf(false)
     var promptAnnouncement by mutableStateOf(false)
     private val _typingUsers = MutableStateFlow<List<String>>(emptyList())
     val typingUsers: StateFlow<List<String>> = _typingUsers.asStateFlow()
+    var replyTarget by mutableStateOf<com.littlegig.app.data.model.Message?>(null)
     private var shareTicketChatId: String? = null
-    
+
     fun loadChat(chatId: String) {
         viewModelScope.launch {
             try {
@@ -284,7 +323,7 @@ class ChatDetailsViewModel @Inject constructor(
             }
         }
     }
-    
+
     fun loadMessages(chatId: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -307,7 +346,7 @@ class ChatDetailsViewModel @Inject constructor(
             }
         }
     }
-    
+
     fun sendMessage(chatId: String, content: String) {
         viewModelScope.launch {
             try {
@@ -320,13 +359,13 @@ class ChatDetailsViewModel @Inject constructor(
                         senderImageUrl = currentUser.profileImageUrl,
                         messageType = com.littlegig.app.data.model.MessageType.TEXT,
                         timestamp = System.currentTimeMillis(),
-                        readBy = emptyList()
+                        readBy = emptyList(),
+                        replyToMessageId = replyTarget?.id
                     )
                     chatRepository.sendMessage(chatId, message)
+                    replyTarget = null
                 }
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(error = e.message)
-            }
+            } catch (e: Exception) { _uiState.value = _uiState.value.copy(error = e.message) }
         }
     }
 
@@ -340,7 +379,7 @@ class ChatDetailsViewModel @Inject constructor(
         val me = currentUserId ?: return
         viewModelScope.launch { chatRepository.setTypingStatus(chatId, me, isTyping) }
     }
-    
+
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
     }
@@ -405,6 +444,16 @@ class ChatDetailsViewModel @Inject constructor(
                 error = res.exceptionOrNull()?.message)
         }
     }
+
+    fun markAsReadIfNeeded(chatId: String, message: com.littlegig.app.data.model.Message) {
+        val me = currentUserId ?: return
+        if (!message.readBy.contains(me)) {
+            viewModelScope.launch { chatRepository.markMessageAsRead(chatId, message.id, me) }
+        }
+    }
+
+    fun chooseReplyTarget(message: com.littlegig.app.data.model.Message) { replyTarget = message }
+    fun clearReplyTarget() { replyTarget = null }
 }
 
 data class ChatDetailsUiState(
