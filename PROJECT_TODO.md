@@ -1,5 +1,14 @@
 # LittleGig – Comprehensive TODO and Runbook
 
+## Changelog (2025-08-10)
+- Fixed Firestore mapping warnings by aligning models:
+  - `User`: added `likedEvents`, `engagementScore`, `lastRankUpdate`, and legacy alias `influencer` with `isInfluencer` defaulted accordingly.
+  - `Event`: added `likedBy` and `ratings` fields used by repositories.
+- Enabled back callback: set `android:enableOnBackInvokedCallback="true"` in `app/src/main/AndroidManifest.xml`.
+- Build system: upgraded AGP to 8.4.2 and Kotlin to 1.9.24; set Java 17 and Compose Compiler 1.5.14 to support JDK 21; configured local Android SDK and accepted licenses.
+- Verified `./gradlew assembleDebug` builds successfully; APK at `app/build/outputs/apk/debug/app-debug.apk`.
+- Note: Device install pending (no emulator connected). Run: `adb connect 127.0.0.1:6555 && adb -s 127.0.0.1:6555 install -r app/build/outputs/apk/debug/app-debug.apk`.
+
 ## Build, Install, and Test
 - Assemble debug build: `./gradlew assembleDebug`
 - Install on emulator/device: `adb -s 127.0.0.1:6555 install -r app/build/outputs/apk/debug/app-debug.apk`
