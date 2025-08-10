@@ -63,7 +63,7 @@ fun ModernEventsScreen(
         Column(modifier = Modifier.fillMaxSize()) {
             // Modern Header
             ModernEventsHeader(
-                onSearchClick = { /* Search */ },
+                onSearchClick = { navController.navigate("chat_search") },
                 onNotificationClick = { navController.navigate("inbox") },
                 onProfileClick = { navController.navigate("account") }
             )

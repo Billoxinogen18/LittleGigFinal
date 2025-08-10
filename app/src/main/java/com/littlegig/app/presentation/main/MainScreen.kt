@@ -23,6 +23,8 @@ import com.littlegig.app.presentation.components.*
 import com.littlegig.app.presentation.events.EventsScreen
 import com.littlegig.app.presentation.events.ModernEventsScreen
 import com.littlegig.app.presentation.events.EventDetailsScreen
+import com.littlegig.app.presentation.events.ModernEventDetailsScreen
+import com.littlegig.app.presentation.account.ModernAccountScreen
 import com.littlegig.app.presentation.map.MapScreen
 import com.littlegig.app.presentation.settings.SettingsScreen
 import com.littlegig.app.presentation.tickets.TicketsScreen
@@ -126,14 +128,14 @@ fun MainScreen(
                         )
                     }
                     composable("account") {
-                        AccountScreen(
+                        ModernAccountScreen(
                             navController = navController,
                             onSignOut = onSignOut
                         )
                     }
                     composable("event_details/{eventId}") { backStackEntry ->
                         val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
-                        EventDetailsScreen(
+                        ModernEventDetailsScreen(
                             eventId = eventId,
                             navController = navController
                         )
