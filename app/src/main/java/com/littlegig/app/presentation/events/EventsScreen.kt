@@ -329,11 +329,12 @@ fun EventsScreen(
                             }
                         )
                     }
-                }
-            }
-        }
-        
-        // Floating action button for quick upload
+                                }
+             }
+         }
+         }
+         
+         // Floating action button for quick upload
         Box(
             modifier = Modifier
                 .fillMaxSize()
