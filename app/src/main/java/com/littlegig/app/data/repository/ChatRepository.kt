@@ -372,6 +372,38 @@ class ChatRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun pinChatForUser(userId: String, chatId: String): Result<Unit> {
+        return try {
+            val userRef = firestore.collection("users").document(userId)
+            firestore.runTransaction { tx ->
+                val doc = tx.get(userRef)
+                val current = (doc.get("pinnedChats") as? List<String>) ?: emptyList()
+                tx.update(userRef, "pinnedChats", (current + chatId).distinct())
+            }.await()
+            Result.success(Unit)
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun unpinChatForUser(userId: String, chatId: String): Result<Unit> {
+        return try {
+            val userRef = firestore.collection("users").document(userId)
+            firestore.runTransaction { tx ->
+                val doc = tx.get(userRef)
+                val current = (doc.get("pinnedChats") as? List<String>) ?: emptyList()
+                tx.update(userRef, "pinnedChats", current - chatId)
+            }.await()
+            Result.success(Unit)
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun searchChatsLocally(chats: List<Chat>, query: String): List<Chat> {
+        val q = query.trim()
+        if (q.isBlank()) return chats
+        return chats.filter { c ->
+            (c.name ?: "").contains(q, ignoreCase = true) || (c.lastMessage ?: "").contains(q, ignoreCase = true)
+        }
+    }
     
     suspend fun getUnreadMessageCount(userId: String): Result<Int> {
         return try {

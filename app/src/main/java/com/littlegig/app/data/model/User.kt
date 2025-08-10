@@ -23,6 +23,7 @@ data class User(
     val rank: UserRank = UserRank.NOVICE,
     val followers: List<String> = emptyList(),
     val following: List<String> = emptyList(),
+    val pinnedChats: List<String> = emptyList(),
     // Events the user has liked (for quick membership checks)
     val likedEvents: List<String> = emptyList(),
     // Product analytics field populated by Cloud Functions

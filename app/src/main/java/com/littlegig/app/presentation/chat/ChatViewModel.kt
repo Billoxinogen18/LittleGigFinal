@@ -45,12 +45,18 @@ class ChatViewModel @Inject constructor(
     private var hasMoreChats: Boolean = true
     private var isLoadingChatsPage: Boolean = false
 
+    private val _chatSearchQuery = MutableStateFlow("")
+    val chatSearchQuery: StateFlow<String> = _chatSearchQuery.asStateFlow()
+
     fun loadChats() {
         viewModelScope.launch {
             try {
                 val user = authRepository.currentUser.first() ?: return@launch
                 chatRepository.getUserChats(user.id).collect { list ->
-                    _chats.value = list
+                    val me = authRepository.currentUser.value
+                    val pinned = me?.pinnedChats ?: emptyList()
+                    val sorted = list.sortedWith(compareByDescending<Chat> { pinned.contains(it.id) }.thenByDescending { it.lastMessageTime })
+                    _chats.value = sorted
                     // track last timestamp for pagination
                     lastChatsTime = list.lastOrNull()?.lastMessageTime
                 }
@@ -59,6 +65,28 @@ class ChatViewModel @Inject constructor(
                     error = "Failed to load chats: ${e.message}"
                 )
             }
+        }
+    }
+
+    fun updateChatSearchQuery(query: String) {
+        _chatSearchQuery.value = query
+        viewModelScope.launch {
+            val current = _chats.value
+            _chats.value = chatRepository.searchChatsLocally(current, query)
+        }
+    }
+
+    fun pinChat(chatId: String) {
+        viewModelScope.launch {
+            val me = authRepository.currentUser.first() ?: return@launch
+            chatRepository.pinChatForUser(me.id, chatId)
+        }
+    }
+
+    fun unpinChat(chatId: String) {
+        viewModelScope.launch {
+            val me = authRepository.currentUser.first() ?: return@launch
+            chatRepository.unpinChatForUser(me.id, chatId)
         }
     }
 

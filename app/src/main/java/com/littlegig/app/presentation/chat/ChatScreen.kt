@@ -115,13 +115,23 @@ fun ChatScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Chats",
-                            style = MaterialTheme.typography.headlineMedium.copy(
-                                fontWeight = FontWeight.Bold
-                            ),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                text = "Chats",
+                                style = MaterialTheme.typography.headlineMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            OutlinedTextField(
+                                value = viewModel.chatSearchQuery.collectAsState().value,
+                                onValueChange = { viewModel.updateChatSearchQuery(it) },
+                                placeholder = { Text("Search chats...") },
+                                singleLine = true,
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                        }
                         
                         Row {
                             IconButton(
@@ -490,6 +500,9 @@ fun ChatScreen(
                                                 color = Color.White
                                             )
                                         }
+                                    }
+                                    IconButton(onClick = { viewModel.pinChat(chat.id) }) {
+                                        Icon(Icons.Default.PushPin, contentDescription = "Pin")
                                     }
                                 }
                             }
