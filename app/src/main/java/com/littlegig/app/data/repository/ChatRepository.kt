@@ -368,4 +368,18 @@ class ChatRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun redeemSharedTicket(chatId: String, messageId: String, ticketId: String): Result<Unit> {
+        return try {
+            val data = mapOf(
+                "chatId" to chatId,
+                "messageId" to messageId,
+                "ticketId" to ticketId
+            )
+            functions.getHttpsCallable("redeemTicket").call(data).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 } 

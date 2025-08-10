@@ -305,6 +305,15 @@ fun NeumorphicTicketShareCard(
     }
 }
 
+@Composable
+fun TicketShareBubble(
+    messageId: String,
+    ticket: SharedTicket,
+    onRedeem: (messageId: String, ticketId: String) -> Unit
+) {
+    NeumorphicTicketShareCard(ticket = ticket, onRedeem = { onRedeem(messageId, ticket.ticketId) })
+}
+
 // Unique Typing Indicator with Multi-colored Dots
 @Composable
 fun NeumorphicTypingIndicator(

@@ -153,12 +153,20 @@ fun ChatDetailsScreen(
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
                 items(messages) { message ->
-                    NeumorphicChatBubble(
-                        message = message,
-                        isFromCurrentUser = message.senderId == viewModel.currentUserId,
-                        onLikeMessage = { /* TODO: reactions */ _ -> },
-                        onShareTicket = { /* redeem flow triggers in chat viewmodel */ }
-                    )
+                    if (message.messageType == com.littlegig.app.data.model.MessageType.TICKET_SHARE && message.sharedTicket != null) {
+                        TicketShareBubble(
+                            messageId = message.id,
+                            ticket = message.sharedTicket,
+                            onRedeem = { mid, tid -> viewModel.redeemTicket(chatId, mid, tid) }
+                        )
+                    } else {
+                        NeumorphicChatBubble(
+                            message = message,
+                            isFromCurrentUser = message.senderId == viewModel.currentUserId,
+                            onLikeMessage = { /* TODO: reactions */ _ -> },
+                            onShareTicket = { /* redeem flow triggers in chat viewmodel */ }
+                        )
+                    }
                 }
             }
             
@@ -386,6 +394,15 @@ class ChatDetailsViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(error = e.message)
             }
+        }
+    }
+
+    fun redeemTicket(chatId: String, messageId: String, ticketId: String) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            val res = chatRepository.redeemSharedTicket(chatId, messageId, ticketId)
+            _uiState.value = _uiState.value.copy(isLoading = false,
+                error = res.exceptionOrNull()?.message)
         }
     }
 }
