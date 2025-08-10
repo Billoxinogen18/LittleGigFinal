@@ -24,6 +24,13 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.ui.unit.IntOffset
+import kotlin.math.roundToInt
+import com.littlegig.app.presentation.tickets.TicketsViewModel
+import com.littlegig.app.data.model.Ticket
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -71,6 +78,9 @@ fun ChatDetailsScreen(
         uri?.let { viewModel.uploadAndSendMedia(chatId, it, "image/*") }
     }
     val typing by viewModel.typingUsers.collectAsState()
+    var showTicketPicker by remember { mutableStateOf(false) }
+    var searchOpen by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
 
     LaunchedEffect(chatId) {
         viewModel.loadChat(chatId)
@@ -152,6 +162,28 @@ fun ChatDetailsScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
+                    IconButton(onClick = { searchOpen = !searchOpen }) {
+                        Icon(Icons.Default.Search, contentDescription = "Search in chat", tint = LittleGigPrimary)
+                    }
+                }
+            }
+            if (searchOpen) {
+                val uiScope = rememberCoroutineScope()
+                Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = { Text("Find in chat...") },
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    val idx = messages.indexOfFirst { it.content.contains(searchQuery, ignoreCase = true) }
+                    TextButton(onClick = {
+                        val next = if (searchQuery.isBlank()) -1 else messages.indexOfLast { it.content.contains(searchQuery, ignoreCase = true) }
+                        if (next >= 0) {
+                            uiScope.launch { listState.animateScrollToItem(next) }
+                        }
+                    }) { Text("Jump") }
                 }
             }
 
@@ -172,10 +204,31 @@ fun ChatDetailsScreen(
                     // mark last incoming as read
                     if (message.senderId != viewModel.currentUserId) viewModel.markAsReadIfNeeded(chatId, message)
                     if (message.senderId != viewModel.currentUserId) viewModel.markAsDeliveredIfNeeded(chatId, message)
-                    if (message.messageType == com.littlegig.app.data.model.MessageType.TICKET_SHARE && message.sharedTicket != null) {
+                    val isTicketShare = message.messageType == com.littlegig.app.data.model.MessageType.TICKET_SHARE && message.sharedTicket != null
+                    var offsetX by remember(message.id) { mutableStateOf(0f) }
+                    val animatedOffset by animateFloatAsState(targetValue = offsetX, label = "swipe_offset")
+                    Box(modifier = Modifier
+                        .offset { IntOffset(animatedOffset.roundToInt(), 0) }
+                        .pointerInput(Unit) {
+                            detectDragGestures(
+                                onDragEnd = {
+                                    if (offsetX > 120f) {
+                                        viewModel.chooseReplyTarget(message)
+                                    }
+                                    offsetX = 0f
+                                },
+                                onDrag = { change, dragAmount ->
+                                    change.consume()
+                                    val (dx, _) = dragAmount
+                                    if (dx > 0) offsetX = (offsetX + dx).coerceAtMost(180f)
+                                }
+                            )
+                        }
+                    ) {
+                    if (isTicketShare) {
                         TicketShareBubble(
                             messageId = message.id,
-                            ticket = message.sharedTicket,
+                            ticket = message.sharedTicket!!,
                             onRedeem = { mid, tid -> viewModel.redeemTicket(chatId, mid, tid) }
                         )
                     } else {
@@ -197,6 +250,7 @@ fun ChatDetailsScreen(
                             SendingShimmerBubble(modifier = Modifier
                                 .padding(start = 48.dp, end = 8.dp, top = 0.dp, bottom = 4.dp))
                         }
+                    }
                     }
                 }
             }
@@ -245,21 +299,46 @@ fun ChatDetailsScreen(
                 message = messageText,
                 onMessageChange = {
                     messageText = it
-                    viewModel.setTyping(chatId, it.isNotBlank())
+                    // typing indicator updates could be triggered here
                 },
                 onSendMessage = {
                     if (messageText.isNotBlank()) {
                         viewModel.sendMessage(chatId, messageText)
                         messageText = ""
-                        viewModel.setTyping(chatId, false)
                     }
                 },
                 onAttachMedia = { imagePicker.launch("image/*") },
-                onShareTicket = { viewModel.promptShareTicket(chatId) },
+                onShareTicket = { showTicketPicker = true },
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
                     .padding(16.dp)
             )
+
+            if (showTicketPicker) {
+                val ticketsVm: TicketsViewModel = hiltViewModel()
+                val ticketsState by ticketsVm.uiState.collectAsState()
+                ModalBottomSheet(onDismissRequest = { showTicketPicker = false }) {
+                    Column(Modifier.fillMaxWidth().padding(16.dp)) {
+                        Text("Share a ticket", style = MaterialTheme.typography.titleMedium)
+                        Spacer(Modifier.height(8.dp))
+                        ticketsState.tickets.forEach { t: Ticket ->
+                            AdvancedNeumorphicCard {
+                                Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    Column(Modifier.weight(1f)) {
+                                        Text(t.eventTitle, style = MaterialTheme.typography.bodyMedium)
+                                        Text("${t.status}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    }
+                                    TextButton(onClick = {
+                                        viewModel.shareTicketToChat(chatId, t)
+                                        showTicketPicker = false
+                                    }) { Text("Share") }
+                                }
+                            }
+                            Spacer(Modifier.height(8.dp))
+                        }
+                    }
+                }
+            }
         }
 
         if (uiState.isLoading) {
@@ -443,6 +522,34 @@ class ChatDetailsViewModel @Inject constructor(
     fun setTyping(chatId: String, isTyping: Boolean) {
         val me = currentUserId ?: return
         viewModelScope.launch { chatRepository.setTypingStatus(chatId, me, isTyping) }
+    }
+
+    fun shareTicketToChat(chatId: String, ticket: com.littlegig.app.data.model.Ticket) {
+        viewModelScope.launch {
+            try {
+                val me = currentUserId ?: return@launch
+                val shared = com.littlegig.app.data.model.SharedTicket(
+                    ticketId = ticket.id,
+                    eventName = ticket.eventTitle,
+                    eventImageUrl = ticket.eventImageUrl,
+                    ticketType = "General",
+                    price = ticket.totalAmount,
+                    isRedeemed = false
+                )
+                val message = com.littlegig.app.data.model.Message(
+                    senderId = me,
+                    senderName = authRepository.currentUser.value?.displayName ?: "",
+                    senderImageUrl = authRepository.currentUser.value?.profileImageUrl ?: "",
+                    content = "Shared a ticket",
+                    messageType = com.littlegig.app.data.model.MessageType.TICKET_SHARE,
+                    sharedTicket = shared,
+                    timestamp = System.currentTimeMillis()
+                )
+                chatRepository.sendMessage(chatId, message)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = e.message)
+            }
+        }
     }
 
     fun clearError() {

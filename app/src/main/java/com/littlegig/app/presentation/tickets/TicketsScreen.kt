@@ -41,6 +41,8 @@ import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.app.Activity
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material.icons.outlined.Wallet
 
 @Composable
 fun TicketsScreen(
@@ -326,129 +328,69 @@ fun BeautifulTicketCard(
 ) {
     val isDark = isSystemInDarkTheme()
     
-    Card(
-        onClick = onTicketClick,
-        modifier = Modifier
-            .width(300.dp)
-            .height(200.dp),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isDark) DarkSurface else LightSurface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
+    AdvancedNeumorphicCard {
+        Column(
+            modifier = Modifier
+                .width(280.dp)
+                .padding(16.dp)
         ) {
-            // Background image
+            // Event image
             AsyncImage(
-                model = ticket.eventImageUrl.ifEmpty { "https://via.placeholder.com/300x200" },
-                contentDescription = ticket.eventTitle,
-                modifier = Modifier.fillMaxSize(),
+                model = ticket.eventImageUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(140.dp)
+                    .clip(RoundedCornerShape(12.dp)),
                 contentScale = ContentScale.Crop
             )
             
-            // Gradient overlay
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                Color.Black.copy(alpha = 0.7f)
-                            )
-                        )
-                    )
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            Text(
+                text = ticket.eventTitle,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = "${java.text.SimpleDateFormat("MMM d, h:mm a").format(java.util.Date(ticket.eventDateTime))}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             
-            // Ticket content
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                // Top section - Event info
-                Column {
-                    Text(
-                        text = ticket.eventTitle,
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = Color.White
-                    )
-                    
-                    Spacer(modifier = Modifier.height(4.dp))
-                    
-                    Text(
-                        text = java.text.SimpleDateFormat("MMM dd, yyyy", java.util.Locale.getDefault()).format(java.util.Date(ticket.eventDateTime)),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.White.copy(alpha = 0.9f)
-                    )
-                    
-                    Spacer(modifier = Modifier.height(4.dp))
-                    
-                    Text(
-                        text = ticket.eventLocation,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.8f)
-                    )
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = onTicketClick, shape = RoundedCornerShape(12.dp)) {
+                    Icon(Icons.Default.ConfirmationNumber, contentDescription = null)
+                    Spacer(Modifier.width(6.dp))
+                    Text("View")
                 }
-                
-                // Bottom section - Ticket actions
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    // Ticket details
-                    Column {
-                        Text(
-                            text = "Ticket #${ticket.id}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.White.copy(alpha = 0.7f)
-                        )
-                        
-                        Spacer(modifier = Modifier.height(4.dp))
-                        
-                        Text(
-                            text = "$${ticket.totalAmount}",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold
-                            ),
-                            color = Color.White
-                        )
-                    }
-                    
-                    // Action buttons
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        // QR Code button
-                        IconButton(
-                            onClick = onQrCodeClick
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.QrCode,
-                                contentDescription = "Show QR Code",
-                                tint = Color.White,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                        
-                        // Share button
-                        IconButton(
-                            onClick = onShareClick
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Share,
-                                contentDescription = "Share Ticket",
-                                tint = Color.White,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }
+                OutlinedButton(onClick = onQrCodeClick, shape = RoundedCornerShape(12.dp)) {
+                    Icon(Icons.Default.QrCode, contentDescription = null)
+                    Spacer(Modifier.width(6.dp))
+                    Text("QR")
+                }
+                OutlinedButton(onClick = onShareClick, shape = RoundedCornerShape(12.dp)) {
+                    Icon(Icons.Default.Share, contentDescription = null)
+                    Spacer(Modifier.width(6.dp))
+                    Text("Share")
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            // Add to Google Wallet CTA stub
+            Surface(
+                onClick = { /* TODO: Integrate Google Wallet */ },
+                shape = RoundedCornerShape(16.dp),
+                color = Color(0xFF1A73E8).copy(alpha = 0.12f),
+                border = BorderStroke(1.dp, Color(0xFF1A73E8))
+            ) {
+                Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Outlined.Wallet, contentDescription = null, tint = Color(0xFF1A73E8))
+                    Spacer(Modifier.width(8.dp))
+                    Text("Add to Google Wallet", color = Color(0xFF1A73E8), style = MaterialTheme.typography.labelLarge)
                 }
             }
         }
