@@ -10,6 +10,7 @@ import com.littlegig.app.presentation.chat.ChatSearchViewModel_HiltModules;
 import com.littlegig.app.presentation.chat.ChatViewModel_HiltModules;
 import com.littlegig.app.presentation.events.EventDetailsViewModel_HiltModules;
 import com.littlegig.app.presentation.events.EventsViewModel_HiltModules;
+import com.littlegig.app.presentation.inbox.InboxViewModel_HiltModules;
 import com.littlegig.app.presentation.map.MapViewModel_HiltModules;
 import com.littlegig.app.presentation.payments.PaymentsViewModel_HiltModules;
 import com.littlegig.app.presentation.recaps.RecapsUploadViewModel_HiltModules;
@@ -179,6 +180,7 @@ public final class LittleGigApplication_HiltComponents {
           EventsViewModel_HiltModules.KeyModule.class,
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
           HiltWrapper_SavedStateHandleModule.class,
+          InboxViewModel_HiltModules.KeyModule.class,
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class,
           MapViewModel_HiltModules.KeyModule.class,
@@ -231,6 +233,7 @@ public final class LittleGigApplication_HiltComponents {
           EventDetailsViewModel_HiltModules.BindsModule.class,
           EventsViewModel_HiltModules.BindsModule.class,
           HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
+          InboxViewModel_HiltModules.BindsModule.class,
           MapViewModel_HiltModules.BindsModule.class,
           PaymentsViewModel_HiltModules.BindsModule.class,
           RecapsUploadViewModel_HiltModules.BindsModule.class,
