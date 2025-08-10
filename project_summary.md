@@ -13,24 +13,50 @@
 - Firebase BoM: 33.1.2
 
 ## Recent Engineering Updates (2025-08-10)
-- Fixed Firestore mapper warnings by aligning models (`User`: influencer alias, likedEvents, engagementScore, lastRankUpdate; `Event`: likedBy, ratings)
-- Enabled Android 13 back handling in `AndroidManifest.xml`
-- Upgraded build stack (AGP/Kotlin/Compose), configured local Android SDK, accepted licenses
-- Phase 2: E.164 normalization, lowercase index fields and queries, chat search debounce/cancel, contacts normalization, improved Places error handling
-- Phase 3: Observability (Timber + Crashlytics breadcrumbs), Contacts DataStore cache with hash/TTL, Places key/billing verification in Upload flow, chat empty-state UX
-- Phase 4 (in progress): Modern chat UI (neumorphic input/bubbles), ticket share hooks, chat callable functions exported; media uploads, replies, redeem UI; delivery/read ticks, chat topic subscriptions, Inbox tab w/ badge, Google link polish; Firebase Perf traces
+- Models aligned (`User`, `Event`), Android 13 back handling, build stack upgraded
+- Search/indexing: lowercase fields, debounce & cancel, contacts E.164 and DataStore caching
+- Places key/billing verification, upload flow error surfacing
+- Observability: Timber + Crashlytics breadcrumbs, Firebase Performance traces
+- Chat: neumorphic UI, media uploads, replies, ticket share/redeem UI, delivery/read ticks; pinned chats; typing indicator; local chat search
+- Inbox: in-app inbox with unread badge on bottom nav
+- Recaps: stories-like viewer and route
+- Payments: Flutterwave checkout, open via Custom Tabs
 
-## Current Phase (Build-Focused – Phase 1)
-- Auth: anonymous-first + linking flows (phone primary), Google/email secondary
-- Chat: typing indicators in place; building media/replies/ticket share end-to-end
-- Tickets: integrate chat share and redeem; notifications upon purchase and share
-- Observability: structured logs via Timber + Crashlytics
+## Two-Phase Delivery (Complete)
+- Phase 1
+  - Email linking validation (inline errors)
+  - Pinned chats UI and state sync
+  - Recaps viewer + navigation entry points from Event Details
+  - Payments: open `paymentUrl` via Custom Tabs; deep link skeleton
+- Phase 2
+  - Deep link verification: `littlegig://payment/verify?ref=...` → verifies and updates wallet
+  - Tickets wallet auto-refresh + success snackbar and quick navigate to Tickets
+  - Event Details: recent recaps preview row; subscribe/unsubscribe to event topic
+  - Recap upload: route wired, permission prompt, proximity verification hook
+  - Chat: reactions (per-user), mention parsing and highlighting
 
 ## Build & Install
 - Build: `./gradlew assembleDebug`
 - Install (emulator): `adb connect 127.0.0.1:6555 && adb -s 127.0.0.1:6555 install -r app/build/outputs/apk/debug/app-debug.apk`
 
-## Next Phase Candidates
-- Notifications: channels, inbox foundations
-- Tickets/Payments: end-to-end sandbox purchase, wallet, QR validation
-- Events: creation wizard with templates and waitlist
+## Cloud Functions (Deploy)
+- Configure key: `firebase functions:config:set flutterwave.secret_key="YOUR_FLUTTERWAVE_SECRET_KEY"`
+- Build & deploy:
+  - From `functions/`: `npm install && npm run build`
+  - Deploy all: `firebase deploy --only functions`
+
+## Core Feature Matrix (High-level)
+- Auth: anonymous-first, phone/email/Google linking
+- Contacts: E.164 normalization + cache
+- Search: case-insensitive, debounce/cancel
+- Chat: messages, media, replies, ticket share/redeem, delivery/read ticks, typing, pinned chats, reactions, mentions, search
+- Events: feed paging, event details, recaps viewer/preview, recap upload entry
+- Tickets/Payments: Flutterwave checkout, deep link verify, wallet refresh, receipts endpoint
+- Notifications: FCM topics (chat/event), in-app inbox badge
+- Perf/Obs: custom traces, Crashlytics breadcrumbs
+
+## Next Polishing Targets
+- Payments: dedicated ticket details/QR, full receipts UI
+- Recaps: actual device location (FusedLocationProvider)
+- Chat: clickable mentions → profile, emoji picker for reactions
+- UI: refine micro-animations and accessibility labels

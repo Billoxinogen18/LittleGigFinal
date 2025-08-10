@@ -13,20 +13,21 @@ A sophisticated event discovery and social platform built with **Jetpack Compose
 - **12dp Corner Radius** - Consistent rounded corners throughout the app
 
 ### 🔥 **Core Features**
-- **Real-time Event Discovery** - Browse and search events with advanced filtering
-- **Payment Processing** - Flutterwave integration for ticket purchases
-- **User Ranking System** - Automatic engagement-based ranking (NOVICE → SUPERSTAR)
-- **Active Now System** - Location-based user discovery (3km radius)
-- **Push Notifications** - FCM integration for real-time updates
-- **Chat System** - Real-time messaging between users
-- **Event Recaps** - Instagram Stories-like media uploads with location verification
-- **Profile Management** - Complete user profiles with analytics
+- **Events**: TikTok-style feed with auto-paging, Event Details with actions, recent recaps preview
+- **Payments**: Flutterwave hosted checkout, Custom Tabs, deep link verification `littlegig://payment/verify?ref=...`, wallet auto-refresh
+- **Tickets**: Wallet carousel UI, QR ready, receipts/history endpoint available via Cloud Function
+- **Chat**: Real-time messages, media uploads, replies, ticket share/redeem, delivery/read ticks, typing indicator, pinned chats, search, reactions, mentions
+- **Recaps**: Stories-like viewer, upload entry with proximity check and permission prompt
+- **Notifications**: FCM topics per chat/event, in-app inbox with unread badge
+- **Active Now**: Location-based discovery scaffolding
+- **Ranking**: Daily engagement-based ranks
+- **Profiles**: Account, settings, linking, and analytics
 
 ### 📱 **Authentication**
-- **Email/Password Auth** - Traditional Firebase authentication
-- **Phone Number Auth** - SMS verification (ready for Firebase Phone Auth)
-- **Auto-generated Usernames** - Unique usernames from email/phone
-- **Profile Picture Upload** - Firebase Storage integration
+- Anonymous-first session bootstrap
+- Link Phone, Google, or Email to upgrade account
+- Inline validation for email/password linking
+- Profile image upload to Firebase Storage
 
 ### 🎫 **Event Management**
 - **Event Creation** - Rich event forms with location autocomplete
@@ -83,6 +84,8 @@ Update `app/src/main/res/values/strings.xml`:
 <string name="google_places_key">YOUR_GOOGLE_PLACES_API_KEY</string>
 ```
 
+Also set your Google Sign-In client ID if used by your project.
+
 ### **4. Flutterwave Configuration**
 Set your Flutterwave secret key in Firebase Functions:
 ```bash
@@ -103,6 +106,16 @@ firebase deploy --only functions
 ./gradlew assembleDebug
 ```
 
+### **7. Deep Link Verification (Android)**
+The app registers a deep link for payment verification:
+```
+Scheme: littlegig
+Host: payment
+Path: /verify
+Query: ref=<paymentReference>
+```
+On return, the app verifies the reference and refreshes the ticket wallet with a success snackbar.
+
 ## 🎯 **Deployed Cloud Functions**
 
 All 8 functions are live and working:
@@ -115,6 +128,8 @@ All 8 functions are live and working:
 6. **`getActiveUsersNearby`** - Location discovery
 7. **`sendPushNotification`** - FCM notifications
 8. **`cleanupOldData`** - Weekly data cleanup
+
+> Tip: deploy with `firebase deploy --only functions` after `npm run build` in `functions/`.
 
 ## 📱 **App Screenshots**
 
@@ -198,6 +213,9 @@ DarkShadow = Color(0xFF000000)
 - **Compose Optimization** - Minimal recomposition
 - **Memory Management** - Proper resource cleanup
 
+### **Paging**
+- Auto-paging using `rememberLazyListState` + `snapshotFlow` for Events, Users, and Chats; no "Load More" buttons.
+
 ## 🔒 **Security**
 
 ### **Authentication**
@@ -206,9 +224,9 @@ DarkShadow = Color(0xFF000000)
 - **Session Management** - Secure session handling
 
 ### **Data Protection**
-- **Firestore Rules** - Database security rules
-- **Storage Rules** - File access control
-- **API Security** - Secure API endpoints
+- Firestore Rules (relaxed in dev per README notes)
+- Storage Rules (relaxed in dev per README notes)
+- API Security via Firebase Functions IAM
 
 ## 📊 **Analytics & Monitoring**
 
