@@ -49,6 +49,23 @@ class UserRepository @Inject constructor(
         }
     }
 
+    suspend fun listUsersPage(limit: Int = 50, startAfterId: String? = null): Result<List<User>> {
+        return try {
+            var query = firestore.collection("users").limit(limit.toLong())
+            if (startAfterId != null) {
+                val doc = firestore.collection("users").document(startAfterId).get().await()
+                if (doc.exists()) {
+                    query = query.startAfter(doc)
+                }
+            }
+            val snapshot = query.get().await()
+            val users = snapshot.documents.mapNotNull { it.toObject(User::class.java)?.copy(id = it.id) }
+            Result.success(users)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun getUsersByPhoneNumbers(phoneNumbers: List<String>): Result<List<User>> {
         return try {
             if (phoneNumbers.isEmpty()) return Result.success(emptyList())
@@ -369,6 +386,43 @@ class UserRepository @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    suspend fun blockUser(requesterId: String, targetUserId: String): Result<Unit> {
+        return try {
+            val ref = firestore.collection("users").document(requesterId)
+            firestore.runTransaction { tx ->
+                val doc = tx.get(ref)
+                val blocked = (doc.get("blockedUsers") as? List<String>) ?: emptyList()
+                tx.update(ref, "blockedUsers", (blocked + targetUserId).distinct())
+            }.await()
+            Result.success(Unit)
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun unblockUser(requesterId: String, targetUserId: String): Result<Unit> {
+        return try {
+            val ref = firestore.collection("users").document(requesterId)
+            firestore.runTransaction { tx ->
+                val doc = tx.get(ref)
+                val blocked = (doc.get("blockedUsers") as? List<String>) ?: emptyList()
+                tx.update(ref, "blockedUsers", blocked - targetUserId)
+            }.await()
+            Result.success(Unit)
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun reportUser(reporterId: String, targetUserId: String, reason: String): Result<Unit> {
+        return try {
+            val data = mapOf(
+                "reporterId" to reporterId,
+                "targetUserId" to targetUserId,
+                "reason" to reason,
+                "createdAt" to System.currentTimeMillis()
+            )
+            firestore.collection("reports").add(data).await()
+            Result.success(Unit)
+        } catch (e: Exception) { Result.failure(e) }
     }
 }
 
