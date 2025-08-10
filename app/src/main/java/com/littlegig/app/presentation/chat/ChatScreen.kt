@@ -41,6 +41,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import android.provider.ContactsContract
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,6 +59,10 @@ fun ChatScreen(
     var showSearch by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     var showContactsOnly by remember { mutableStateOf(true) }
+
+    LaunchedEffect(contactsUsers.size, allUsers.size) {
+        Timber.i("ChatSearch counts: contacts=${contactsUsers.size}, all=${allUsers.size}")
+    }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -319,6 +324,37 @@ fun ChatScreen(
                     }
                 }
                 
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            if (showSearch && displayedUsers.isEmpty()) {
+                AdvancedGlassmorphicCard {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Contacts,
+                            contentDescription = null,
+                            tint = LittleGigPrimary,
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = if (showContactsOnly) "No contacts on LittleGig yet. Invite friends or switch to All users." else "No users found for your search.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        if (showContactsOnly) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Tip: Grant Contacts permission to discover friends automatically.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(16.dp))
             }
             

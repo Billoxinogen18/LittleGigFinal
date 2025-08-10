@@ -96,6 +96,9 @@ dependencies {
     implementation 'com.google.android.libraries.places:places:4.0.0'
     implementation 'com.google.maps.android:maps-compose:2.15.0'
     
+    // SMS Retriever / Phone Auth helpers
+    implementation 'com.google.android.gms:play-services-auth-api-phone:18.0.1'
+
     // Image Loading
     implementation 'io.coil-kt:coil-compose:2.6.0'
     
@@ -128,6 +131,12 @@ dependencies {
     
     // Phone number normalization
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.13.33'
+
+    // Observability & logging
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    // DataStore for lightweight persistence/caching
+    implementation 'androidx.datastore:datastore-preferences:1.1.1'
     
     // Material Design Icons
     implementation 'androidx.compose.material:material-icons-extended'

@@ -9,15 +9,16 @@
 - Verified `./gradlew assembleDebug` builds successfully; APK at `app/build/outputs/apk/debug/app-debug.apk`.
 - Note: Device install pending (no emulator connected). Run: `adb connect 127.0.0.1:6555 && adb -s 127.0.0.1:6555 install -r app/build/outputs/apk/debug/app-debug.apk`.
 - Phase 2: Implemented search/indexing improvements (lowercase fields), E.164 phone normalization, chat search cancellation/debounce, Places error handling, and contacts normalization service. Build remains green and changes pushed to main.
+- Phase 3: Observability foundation (Timber + Crashlytics tree + breadcrumbs), Contacts DataStore cache with hash/TTL, Places key/billing verification in `UploadViewModel`, chat empty-state guidance. Build remains green and pushed.
 
 ## Current Phase (Build-Focused – Phase 1)
 - Keep assembleDebug green after each change and push to main
 - Prioritize Immediate Fixes and Short-Term items in this order:
-  1) Places: verify billing/key + robust error handling (in progress)
-  2) Contacts: E.164 normalization and cached hash (in progress)
+  1) Places: verify billing/key + robust error handling (done)
+  2) Contacts: E.164 normalization and cached hash (done)
   3) Search: debounce + cancel in-flight + min length (done)
   4) Auth: anonymous-first + link account + phone primary (in progress)
-  5) Observability: structured logs and breadcrumbs (pending)
+  5) Observability: structured logs and breadcrumbs (phase foundation done)
 
 ## Build, Install, and Test
 - Assemble debug build: `./gradlew assembleDebug`
@@ -36,22 +37,22 @@
   - Seed test users in Firestore for empty datasets (pending)
 - Places Autocomplete
   - Use Google Places REST (done)
-  - Verify key and billing; handle API errors (pending)
+  - Verify key and billing; handle API errors (done)
 - Profile/Business
   - Immediate cache refresh after update/upgrade (done)
   - Snackbars for success/error (done)
 
 ## Short-Term (1–3 days)
 - Contacts
-  - Normalize phone numbers to E.164 using libphonenumber
-  - Cache contacts hash to avoid repeated loads
-  - Show empty-state guidance if zero contacts found
+  - Normalize phone numbers to E.164 using libphonenumber (done)
+  - Cache contacts hash to avoid repeated loads (done)
+  - Show empty-state guidance if zero contacts found (done)
 - Search
-  - Debounce queries; cancel in-flight; min length threshold
-  - Index usernames/displayNames; add lowercase fields for case-insensitive server search
+  - Debounce queries; cancel in-flight; min length threshold (done)
+  - Index usernames/displayNames; add lowercase fields for case-insensitive server search (done)
 - Auth
-  - Make phone auth primary; Google/email secondary
-  - Anonymous-by-default flow; “Link account” in settings
+  - Make phone auth primary; Google/email secondary (in progress)
+  - Anonymous-by-default flow; “Link account” in settings (in progress)
 
 ## Core Features Completion (1–2 weeks)
 - Chat
@@ -78,9 +79,9 @@
 - Avoid full collection scans; add composite indexes where needed
 
 ## Observability
-- Add structured logs for key flows (auth, chat, payments)
-- Crashlytics breadcrumbs for navigation and actions
-- Perf Monitoring for slow traces (chat load, event fetch)
+- Add structured logs for key flows (auth, chat, payments) (foundation done)
+- Crashlytics breadcrumbs for navigation and actions (added Timber tree)
+- Perf Monitoring for slow traces (chat load, event fetch) (pending)
 
 ## Testing
 - Deprioritized per product request; keep only critical smoke checks for builds

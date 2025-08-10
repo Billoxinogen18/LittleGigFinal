@@ -49,6 +49,8 @@ class UploadViewModel @Inject constructor(
     
     private val _selectedPlace = MutableStateFlow<PlacesService.PlaceDetails?>(null)
     val selectedPlace: StateFlow<PlacesService.PlaceDetails?> = _selectedPlace.asStateFlow()
+
+    private var verifiedPlacesKey = false
     
     fun createContent(
         title: String,
@@ -66,9 +68,7 @@ class UploadViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true, error = null, isSuccess = false)
             
             authRepository.currentUser.first()?.let { user ->
-                // In a real app, you would upload images to Firebase Storage first
-                // and get their download URLs
-                val imageUrls = images.map { it.toString() } // Placeholder
+                val imageUrls = images.map { it.toString() }
                 
                 val event = Event(
                     title = title,
@@ -92,7 +92,7 @@ class UploadViewModel @Inject constructor(
                 )
                 
                 eventRepository.createEvent(event)
-                    .onSuccess { eventId ->
+                    .onSuccess { _ ->
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             isSuccess = true
@@ -120,6 +120,15 @@ class UploadViewModel @Inject constructor(
     fun searchPlaces(query: String) {
         viewModelScope.launch {
             if (query.length >= 3) {
+                if (!verifiedPlacesKey) {
+                    val res = placesService.verifyKeyAndBilling()
+                    if (res.isFailure) {
+                        _uiState.value = _uiState.value.copy(error = res.exceptionOrNull()?.message)
+                        _placeSuggestions.value = emptyList()
+                        return@launch
+                    }
+                    verifiedPlacesKey = true
+                }
                 val suggestions = placesService.getPlaceSuggestions(query)
                 _placeSuggestions.value = suggestions
             } else {

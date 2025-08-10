@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import timber.log.Timber
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -26,13 +27,16 @@ class AuthViewModel @Inject constructor(
     // 🔥 ANONYMOUS AUTHENTICATION - TIKTOK STYLE! 🔥
     fun signInAnonymously() {
         viewModelScope.launch {
+            Timber.i("Auth: signInAnonymously start")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             authRepository.signInAnonymously()
                 .onSuccess {
+                    Timber.i("Auth: signInAnonymously success")
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
                 .onFailure { error ->
+                    Timber.w(error, "Auth: signInAnonymously failed")
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         error = error.message
@@ -50,13 +54,16 @@ class AuthViewModel @Inject constructor(
         userType: UserType = UserType.REGULAR
     ) {
         viewModelScope.launch {
+            Timber.i("Auth: linkAnonymousAccount email start")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             authRepository.linkAnonymousAccount(email, password, displayName, phoneNumber, userType)
                 .onSuccess {
+                    Timber.i("Auth: linkAnonymousAccount email success")
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
                 .onFailure { error ->
+                    Timber.w(error, "Auth: linkAnonymousAccount email failed")
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         error = error.message
@@ -72,13 +79,16 @@ class AuthViewModel @Inject constructor(
         userType: UserType = UserType.REGULAR
     ) {
         viewModelScope.launch {
+            Timber.i("Auth: linkAnonymousAccount phone start")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             authRepository.linkAnonymousAccountWithPhone(phoneNumber, displayName, userType)
                 .onSuccess {
+                    Timber.i("Auth: linkAnonymousAccount phone success")
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
                 .onFailure { error ->
+                    Timber.w(error, "Auth: linkAnonymousAccount phone failed")
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         error = error.message
@@ -89,13 +99,16 @@ class AuthViewModel @Inject constructor(
     
     fun signUp(email: String, password: String, userType: UserType, phoneNumber: String? = null) {
         viewModelScope.launch {
+            Timber.i("Auth: signUp start")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             authRepository.signUp(email, password, userType, phoneNumber)
                 .onSuccess {
+                    Timber.i("Auth: signUp success")
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
                 .onFailure { error ->
+                    Timber.w(error, "Auth: signUp failed")
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         error = error.message
@@ -106,13 +119,16 @@ class AuthViewModel @Inject constructor(
     
     fun signUpWithPhone(phoneNumber: String, displayName: String, userType: UserType) {
         viewModelScope.launch {
+            Timber.i("Auth: signUpWithPhone start")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             authRepository.signUpWithPhone(phoneNumber, displayName, userType)
                 .onSuccess {
+                    Timber.i("Auth: signUpWithPhone success")
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
                 .onFailure { error ->
+                    Timber.w(error, "Auth: signUpWithPhone failed")
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         error = error.message
@@ -123,13 +139,16 @@ class AuthViewModel @Inject constructor(
     
     fun signInWithPhone(phoneNumber: String) {
         viewModelScope.launch {
+            Timber.i("Auth: signInWithPhone start")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             authRepository.signInWithPhone(phoneNumber)
                 .onSuccess {
+                    Timber.i("Auth: signInWithPhone success")
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
                 .onFailure { error ->
+                    Timber.w(error, "Auth: signInWithPhone failed")
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         error = error.message
@@ -140,13 +159,16 @@ class AuthViewModel @Inject constructor(
     
     fun signIn(email: String, password: String) {
         viewModelScope.launch {
+            Timber.i("Auth: signIn start")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             authRepository.signIn(email, password)
                 .onSuccess {
+                    Timber.i("Auth: signIn success")
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
                 .onFailure { error ->
+                    Timber.w(error, "Auth: signIn failed")
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         error = error.message
@@ -157,13 +179,16 @@ class AuthViewModel @Inject constructor(
     
     fun signInWithGoogle(googleSignInAccount: GoogleSignInAccount) {
         viewModelScope.launch {
+            Timber.i("Auth: signInWithGoogle start")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             authRepository.signInWithGoogle(googleSignInAccount)
                 .onSuccess {
+                    Timber.i("Auth: signInWithGoogle success")
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
                 .onFailure { error ->
+                    Timber.w(error, "Auth: signInWithGoogle failed")
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         error = error.message
@@ -174,13 +199,16 @@ class AuthViewModel @Inject constructor(
     
     fun linkAnonymousAccountWithGoogle(googleSignInAccount: GoogleSignInAccount) {
         viewModelScope.launch {
+            Timber.i("Auth: linkAnonymousAccountWithGoogle start")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             authRepository.linkAnonymousAccountWithGoogle(googleSignInAccount)
                 .onSuccess {
+                    Timber.i("Auth: linkAnonymousAccountWithGoogle success")
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
                 .onFailure { error ->
+                    Timber.w(error, "Auth: linkAnonymousAccountWithGoogle failed")
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         error = error.message
@@ -191,12 +219,15 @@ class AuthViewModel @Inject constructor(
     
     fun signOut() {
         viewModelScope.launch {
+            Timber.i("Auth: signOut start")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             try {
                 authRepository.signOut()
+                Timber.i("Auth: signOut success")
                 _uiState.value = _uiState.value.copy(isLoading = false)
             } catch (error: Exception) {
+                Timber.w(error, "Auth: signOut failed")
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = error.message
