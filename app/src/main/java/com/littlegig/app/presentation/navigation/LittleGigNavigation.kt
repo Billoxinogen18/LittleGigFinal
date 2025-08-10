@@ -7,24 +7,27 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.littlegig.app.presentation.auth.AuthViewModel
 import com.littlegig.app.presentation.main.MainScreen
+import com.littlegig.app.presentation.auth.AuthScreen
 
 @Composable
 fun LittleGigNavigation() {
     val authViewModel: AuthViewModel = hiltViewModel()
     val currentUser by authViewModel.currentUser.collectAsState(initial = null)
     
-    // 🔥 ANONYMOUS AUTHENTICATION - TIKTOK STYLE! 🔥
-    // Automatically sign in anonymously if no user
-    LaunchedEffect(Unit) {
-        if (currentUser == null) {
-            authViewModel.signInAnonymously()
-        }
+    // Only show main app if user is authenticated
+    if (currentUser != null) {
+        MainScreen(
+            onSignOut = {
+                authViewModel.signOut()
+            }
+        )
+    } else {
+        // Show auth screen for unauthenticated users
+        AuthScreen(
+            onAuthSuccess = { /* Navigation will be handled by AuthStateListener */ },
+            onGoogleSignIn = { 
+                // Handle Google sign-in
+            }
+        )
     }
-    
-    // Show main app directly since we're using anonymous auth
-    MainScreen(
-        onSignOut = {
-            authViewModel.signOut()
-        }
-    )
 }

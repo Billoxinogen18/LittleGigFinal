@@ -24,20 +24,20 @@ class ChatRepository @Inject constructor(
     fun getUserChats(userId: String): Flow<List<Chat>> = callbackFlow {
         val listener = firestore.collection("chats")
             .whereArrayContains("participants", userId)
-            .orderBy("lastMessageTime", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)
                     return@addSnapshotListener
                 }
-                
-                val chats = snapshot?.documents?.mapNotNull { doc ->
-                    doc.toObject(Chat::class.java)?.copy(id = doc.id)
-                } ?: emptyList()
-                
+
+                val chats = snapshot?.documents
+                    ?.mapNotNull { doc -> doc.toObject(Chat::class.java)?.copy(id = doc.id) }
+                    ?.sortedByDescending { it.lastMessageTime }
+                    ?: emptyList()
+
                 trySend(chats)
             }
-            
+
         awaitClose { listener.remove() }
     }
 
@@ -96,6 +96,21 @@ class ChatRepository @Inject constructor(
         awaitClose { listener.remove() }
     }
 
+    fun getTypingIndicators(chatId: String): Flow<List<Map<String, Any>>> = callbackFlow {
+        val listener = firestore.collection("chats")
+            .document(chatId)
+            .collection("typing")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val indicators = snapshot?.documents?.mapNotNull { it.data } ?: emptyList()
+                trySend(indicators)
+            }
+        awaitClose { listener.remove() }
+    }
+
     suspend fun getMessage(chatId: String, messageId: String): Result<Message?> {
         return try {
             val doc = firestore.collection("chats")
@@ -133,6 +148,24 @@ class ChatRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun setTypingStatus(chatId: String, userId: String, isTyping: Boolean): Result<Unit> {
+        return try {
+            val typingDoc = firestore.collection("chats")
+                .document(chatId)
+                .collection("typing")
+                .document(userId)
+            val data = mapOf(
+                "userId" to userId,
+                "isTyping" to isTyping,
+                "timestamp" to System.currentTimeMillis()
+            )
+            typingDoc.set(data).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
     
     suspend fun createChat(
         participants: List<String>,
@@ -152,6 +185,39 @@ class ChatRepository @Inject constructor(
             
             val chatRef = firestore.collection("chats").add(chat).await()
             
+            Result.success(chatRef.id)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun createOrGetDirectChat(userAId: String, userBId: String): Result<String> {
+        return try {
+            // Try to find existing direct chat that contains both users
+            val snapshot = firestore.collection("chats")
+                .whereArrayContains("participants", userAId)
+                .get()
+                .await()
+
+            val existing = snapshot.documents.firstOrNull { doc ->
+                val participants = (doc.get("participants") as? List<*>)?.map { it as String } ?: emptyList()
+                participants.contains(userBId) && participants.size == 2
+            }
+
+            if (existing != null) {
+                return Result.success(existing.id)
+            }
+
+            // Create new direct chat
+            val participants = listOf(userAId, userBId)
+            val chat = Chat(
+                participants = participants,
+                chatType = ChatType.DIRECT,
+                name = null,
+                createdAt = System.currentTimeMillis(),
+                lastMessageTime = System.currentTimeMillis()
+            )
+            val chatRef = firestore.collection("chats").add(chat).await()
             Result.success(chatRef.id)
         } catch (e: Exception) {
             Result.failure(e)

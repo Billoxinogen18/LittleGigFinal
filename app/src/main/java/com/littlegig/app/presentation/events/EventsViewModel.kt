@@ -145,7 +145,7 @@ class EventsViewModel @Inject constructor(
     private suspend fun fetchWeights(): FeedWeights = try { configRepository.getFeedWeights() } catch (_: Exception) { FeedWeights() }
 
     private fun scoreEvent(e: Event, w: FeedWeights): Double {
-        val isFeaturedScore = if (e.isFeatured) 1.0 else 0.0
+        val isFeaturedScore = if (e.featured) 1.0 else 0.0
         val ticketsScore = e.ticketsSold.toDouble()
         val priceScore = e.price
         val recencyScore = kotlin.math.abs(e.dateTime - System.currentTimeMillis()) / (60_000.0)

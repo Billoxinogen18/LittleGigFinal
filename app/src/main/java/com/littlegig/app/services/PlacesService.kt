@@ -7,11 +7,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONObject
+import com.littlegig.app.R
 
 @Singleton
 class PlacesService @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+    private val httpClient = OkHttpClient()
     
     data class PlaceSuggestion(
         val placeId: String,
@@ -29,26 +34,35 @@ class PlacesService @Inject constructor(
     )
     
     suspend fun getPlaceSuggestions(query: String): List<PlaceSuggestion> = withContext(Dispatchers.IO) {
+        if (query.length < 3) return@withContext emptyList()
         try {
-            // Mock implementation for now
-            if (query.length >= 3) {
-                listOf(
+            val key = context.getString(R.string.google_places_key)
+            val url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" +
+                java.net.URLEncoder.encode(query, "UTF-8") + "&key=" + key + "&types=establishment"
+            val request = Request.Builder().url(url).build()
+            val response = httpClient.newCall(request).execute()
+            if (!response.isSuccessful) return@withContext emptyList()
+            val body = response.body?.string() ?: return@withContext emptyList()
+            val json = JSONObject(body)
+            val predictions = json.optJSONArray("predictions") ?: return@withContext emptyList()
+            val list = mutableListOf<PlaceSuggestion>()
+            for (i in 0 until predictions.length()) {
+                val p = predictions.getJSONObject(i)
+                val placeId = p.optString("place_id")
+                val description = p.optString("description")
+                val structured = p.optJSONObject("structured_formatting")
+                val mainText = structured?.optString("main_text") ?: description
+                val secondaryText = structured?.optString("secondary_text") ?: ""
+                list.add(
                     PlaceSuggestion(
-                        placeId = "place1",
-                        description = "$query - Popular venue",
-                        mainText = query,
-                        secondaryText = "123 Main St, City"
-                    ),
-                    PlaceSuggestion(
-                        placeId = "place2", 
-                        description = "$query - Event space",
-                        mainText = query,
-                        secondaryText = "456 Oak Ave, City"
+                        placeId = placeId,
+                        description = description,
+                        mainText = mainText,
+                        secondaryText = secondaryText
                     )
                 )
-            } else {
-                emptyList()
             }
+            list
         } catch (e: Exception) {
             emptyList()
         }
@@ -56,13 +70,28 @@ class PlacesService @Inject constructor(
     
     suspend fun getPlaceDetails(placeId: String): PlaceDetails? = withContext(Dispatchers.IO) {
         try {
-            // Mock implementation for now
+            val key = context.getString(R.string.google_places_key)
+            val url = "https://maps.googleapis.com/maps/api/place/details/json?place_id=" +
+                java.net.URLEncoder.encode(placeId, "UTF-8") +
+                "&key=" + key + "&fields=name,formatted_address,geometry"
+            val request = Request.Builder().url(url).build()
+            val response = httpClient.newCall(request).execute()
+            if (!response.isSuccessful) return@withContext null
+            val body = response.body?.string() ?: return@withContext null
+            val json = JSONObject(body)
+            val result = json.optJSONObject("result") ?: return@withContext null
+            val name = result.optString("name")
+            val formatted = result.optString("formatted_address")
+            val geometry = result.optJSONObject("geometry")
+            val location = geometry?.optJSONObject("location")
+            val lat = location?.optDouble("lat") ?: return@withContext null
+            val lng = location.optDouble("lng")
             PlaceDetails(
                 placeId = placeId,
-                name = "Mock Venue",
-                address = "123 Main St",
-                latLng = LatLng(37.7749, -122.4194),
-                formattedAddress = "123 Main St, San Francisco, CA"
+                name = name,
+                address = formatted,
+                latLng = LatLng(lat, lng),
+                formattedAddress = formatted
             )
         } catch (e: Exception) {
             null

@@ -259,9 +259,12 @@ fun ChatDetailsScreen(
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    OutlinedTextField(
+                OutlinedTextField(
                         value = messageText,
-                        onValueChange = { messageText = it },
+                        onValueChange = { 
+                            messageText = it
+                            viewModel.setTyping(chatId, it.isNotBlank())
+                        },
                         placeholder = { Text("Type a message...") },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(24.dp),
@@ -279,6 +282,7 @@ fun ChatDetailsScreen(
                             if (messageText.isNotBlank()) {
                                 viewModel.sendMessage(chatId, messageText)
                                 messageText = ""
+                                viewModel.setTyping(chatId, false)
                             }
                         },
                         enabled = messageText.isNotBlank()
@@ -469,6 +473,8 @@ class ChatDetailsViewModel @Inject constructor(
         get() = authRepository.currentUser.value?.id
     var showAdminActions by mutableStateOf(false)
     var promptAnnouncement by mutableStateOf(false)
+    private val _typingUsers = MutableStateFlow<List<String>>(emptyList())
+    val typingUsers: StateFlow<List<String>> = _typingUsers.asStateFlow()
     
     fun loadChat(chatId: String) {
         viewModelScope.launch {
@@ -508,6 +514,15 @@ class ChatDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    fun observeTyping(chatId: String) {
+        viewModelScope.launch {
+            chatRepository.getTypingIndicators(chatId).collect { list ->
+                val me = currentUserId
+                _typingUsers.value = list.mapNotNull { it["userId"] as? String }.filter { it != me }
+            }
+        }
+    }
     
     fun sendMessage(chatId: String, content: String) {
         viewModelScope.launch {
@@ -529,6 +544,11 @@ class ChatDetailsViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(error = e.message)
             }
         }
+    }
+
+    fun setTyping(chatId: String, isTyping: Boolean) {
+        val me = currentUserId ?: return
+        viewModelScope.launch { chatRepository.setTypingStatus(chatId, me, isTyping) }
     }
     
     fun clearError() {

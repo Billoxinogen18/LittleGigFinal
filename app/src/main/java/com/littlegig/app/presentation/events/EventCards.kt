@@ -32,6 +32,7 @@ import java.util.*
 fun LiquidGlassEventCard(
     event: Event,
     onClick: () -> Unit,
+    onChatClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val isDark = isSystemInDarkTheme()
@@ -39,7 +40,7 @@ fun LiquidGlassEventCard(
     LiquidGlassCard(
         modifier = modifier,
         onClick = onClick,
-        glowEffect = event.isFeatured
+        glowEffect = event.featured
     ) {
         Column {
             // Event Image with overlay
@@ -96,7 +97,7 @@ fun LiquidGlassEventCard(
                 )
                 
                 // Featured badge
-                if (event.isFeatured) {
+                if (event.featured) {
                     Surface(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -202,26 +203,46 @@ fun LiquidGlassEventCard(
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                // Friends-going and share
+                // Action Buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // Placeholder for friends-going count; injected by parent via overlay row if needed
-                    Text(
-                        text = "Invite friends",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = if (isDark) DarkOnSurfaceVariant else LightOnSurfaceVariant
-                    )
-                    IconButton(onClick = { /* share deep link */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Share,
-                            contentDescription = "Share",
-                            tint = LittleGigPrimary
+                    // Chat Button
+                    OutlinedButton(
+                        onClick = { onChatClick() },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = LittleGigPrimary
                         )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Chat,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Chat")
+                    }
+                    
+                    // Waitlist Button
+                    OutlinedButton(
+                        onClick = { /* Handle waitlist */ },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = LittleGigPrimary
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Waitlist")
                     }
                 }
+                
                 Spacer(modifier = Modifier.height(12.dp))
                 
                 // Tickets availability

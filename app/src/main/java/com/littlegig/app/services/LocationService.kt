@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.CancellationToken
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.littlegig.app.data.repository.AuthRepository
+import com.google.firebase.functions.FirebaseFunctions
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +28,8 @@ import javax.inject.Singleton
 @Singleton
 class LocationService @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val functions: FirebaseFunctions
 ) {
     
     private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
@@ -56,31 +58,78 @@ class LocationService @Inject constructor(
             _locationPermissionGranted.value = true
         }
     }
+
+    fun ensurePermission(activity: Activity?) {
+        if (activity != null) requestLocationPermission(activity)
+    }
     
     suspend fun toggleActiveNow(isActive: Boolean) {
         try {
-            authRepository.currentUser.collect { currentUser ->
-                if (currentUser != null && _locationPermissionGranted.value) {
+            val currentUser = authRepository.currentUser.value
+            if (currentUser != null) {
+                // Always update the local state first
+                _isActiveNow.value = isActive
+                
+                // Check permission status
+                val hasPermission = ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+                _locationPermissionGranted.value = hasPermission
+                
+                if (hasPermission) {
                     // Update backend with active status
                     val location = getCurrentLocation()
                     if (location != null) {
                         // Call Firebase Cloud Function to update active status
-                        val activeStatus = mapOf(
-                            "userId" to currentUser.id,
-                            "isActive" to isActive,
-                            "latitude" to location.latitude,
-                            "longitude" to location.longitude,
-                            "timestamp" to System.currentTimeMillis()
-                        )
-                        
-                        // In a real app, you would call the Firebase Cloud Function here
-                        // For now, we'll just update the local state
-                        _isActiveNow.value = isActive
+                        try {
+                            val uid = authRepository.currentUser.value?.id
+                            functions.getHttpsCallable("updateUserLocation").call(
+                                mapOf(
+                                    "latitude" to location.latitude,
+                                    "longitude" to location.longitude,
+                                    "isActive" to isActive,
+                                    "userId" to (uid ?: "")
+                                )
+                            ).await()
+                        } catch (e: Exception) {
+                            println("🔥 DEBUG: Failed to update location: ${e.message}")
+                        }
+                    } else {
+                        // Still update backend even without precise location
+                        try {
+                            val uid = authRepository.currentUser.value?.id
+                            functions.getHttpsCallable("updateUserLocation").call(
+                                mapOf(
+                                    "latitude" to 0.0,
+                                    "longitude" to 0.0,
+                                    "isActive" to isActive,
+                                    "userId" to (uid ?: "")
+                                )
+                            ).await()
+                        } catch (e: Exception) {
+                            println("🔥 DEBUG: Failed to update active status (no location): ${e.message}")
+                        }
+                    }
+                } else {
+                    // No permission granted: still mark active state in backend (without location)
+                    try {
+                        val uid = authRepository.currentUser.value?.id
+                        functions.getHttpsCallable("updateUserLocation").call(
+                            mapOf(
+                                "latitude" to 0.0,
+                                "longitude" to 0.0,
+                                "isActive" to isActive,
+                                "userId" to (uid ?: "")
+                            )
+                        ).await()
+                    } catch (e: Exception) {
+                        println("🔥 DEBUG: Failed to update active status (permission missing): ${e.message}")
                     }
                 }
             }
         } catch (e: Exception) {
-            // Handle error
+            println("🔥 DEBUG: toggleActiveNow error: ${e.message}")
         }
     }
     

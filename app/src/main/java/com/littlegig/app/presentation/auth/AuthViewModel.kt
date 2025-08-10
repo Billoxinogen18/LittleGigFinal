@@ -193,16 +193,15 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
-            authRepository.signOut()
-                .onSuccess {
-                    _uiState.value = _uiState.value.copy(isLoading = false)
-                }
-                .onFailure { error ->
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        error = error.message
-                    )
-                }
+            try {
+                authRepository.signOut()
+                _uiState.value = _uiState.value.copy(isLoading = false)
+            } catch (error: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = error.message
+                )
+            }
         }
     }
     

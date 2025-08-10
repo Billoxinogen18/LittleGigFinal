@@ -22,10 +22,13 @@ data class Event(
     val organizerImageUrl: String = "",
     val tags: List<String> = emptyList(),
     val active: Boolean = true,
-    val isFeatured: Boolean = false,
-    val featured: Boolean = false, // Alias for isFeatured (for Firestore compatibility)
+    val featured: Boolean = false, // Featured status for events
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
+    val likes: Int = 0,
+    val shares: Int = 0,
+    val views: Int = 0,
+    val metadata: Map<String, String> = emptyMap()
 ) : Parcelable
 
 @Parcelize
@@ -47,3 +50,6 @@ enum class ContentCategory {
     WORKSHOP,
     CONFERENCE
 }
+
+// Alias for compatibility with services
+typealias EventCategory = ContentCategory

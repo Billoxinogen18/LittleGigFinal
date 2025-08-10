@@ -199,7 +199,7 @@ class EventRepository @Inject constructor(
                     capacity = 1000,
                     ticketsSold = 150,
                     active = true,
-                    isFeatured = true,
+                    featured = true,
                     organizerId = "test_organizer",
                     organizerName = "Test Organizer",
                     imageUrls = listOf("https://picsum.photos/400/300"),
@@ -225,7 +225,7 @@ class EventRepository @Inject constructor(
                     capacity = 200,
                     ticketsSold = 75,
                     active = true,
-                    isFeatured = false,
+                    featured = false,
                     organizerId = "test_organizer",
                     organizerName = "Test Organizer",
                     imageUrls = listOf("https://picsum.photos/400/300"),
@@ -251,7 +251,7 @@ class EventRepository @Inject constructor(
                     capacity = 500,
                     ticketsSold = 200,
                     active = true,
-                    isFeatured = true,
+                    featured = true,
                     organizerId = "test_organizer",
                     organizerName = "Test Organizer",
                     imageUrls = listOf("https://picsum.photos/400/300"),
@@ -327,7 +327,7 @@ class EventRepository @Inject constructor(
         }
         
         val listener = firestore.collection("events")
-            .whereEqualTo("isFeatured", true)
+            .whereEqualTo("featured", true)
             .whereEqualTo("active", true)
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .limit(10)

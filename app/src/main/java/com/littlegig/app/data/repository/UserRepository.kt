@@ -3,6 +3,7 @@ package com.littlegig.app.data.repository
 import android.content.Context
 import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.littlegig.app.data.model.User
 import com.littlegig.app.data.model.UserRank
@@ -33,9 +34,46 @@ class UserRepository @Inject constructor(
         }
     }
     
+    suspend fun listAllUsers(limit: Int = 50): Result<List<User>> {
+        return try {
+            val snapshot = firestore.collection("users")
+                .limit(limit.toLong())
+                .get()
+                .await()
+            val users = snapshot.documents.mapNotNull { it.toObject(User::class.java)?.copy(id = it.id) }
+            Result.success(users)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getUsersByPhoneNumbers(phoneNumbers: List<String>): Result<List<User>> {
+        return try {
+            if (phoneNumbers.isEmpty()) return Result.success(emptyList())
+            val normalized = phoneNumbers.map { it.trim() }.filter { it.isNotEmpty() }
+            if (normalized.isEmpty()) return Result.success(emptyList())
+            val batchSize = 10
+            val results = mutableListOf<User>()
+            for (chunk in normalized.chunked(batchSize)) {
+                val snap = firestore.collection("users")
+                    .whereIn("phoneNumber", chunk)
+                    .get()
+                    .await()
+                snap.documents.forEach { doc ->
+                    val u = doc.toObject(User::class.java)?.copy(id = doc.id)
+                    if (u != null) results.add(u)
+                }
+            }
+            Result.success(results.distinctBy { it.id })
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun updateUserProfile(userId: String, updates: Map<String, Any>): Result<Unit> {
         return try {
-            firestore.collection("users").document(userId).update(updates).await()
+            // Use merge to create doc if it doesn't exist (handles anonymous users)
+            firestore.collection("users").document(userId).set(updates, SetOptions.merge()).await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -101,72 +139,62 @@ class UserRepository @Inject constructor(
     suspend fun searchUsers(query: String): List<User> {
         return try {
             val queryLower = query.lowercase()
-            
-            // Search by username, email, displayName, and phoneNumber
             val results = mutableListOf<User>()
-            
-            // Search by username
+
+            // Server-side prefix queries (case-sensitive data); best-effort
             val usernameQuery = firestore.collection("users")
                 .whereGreaterThanOrEqualTo("username", queryLower)
                 .whereLessThanOrEqualTo("username", queryLower + '\uf8ff')
-                .limit(10)
+                .limit(20)
                 .get()
                 .await()
-            
             usernameQuery.documents.forEach { doc ->
-                val user = doc.toObject(User::class.java)?.copy(id = doc.id)
-                if (user != null && user !in results) {
-                    results.add(user)
-                }
+                doc.toObject(User::class.java)?.copy(id = doc.id)?.let { if (it !in results) results.add(it) }
             }
-            
-            // Search by email
+
             val emailQuery = firestore.collection("users")
                 .whereGreaterThanOrEqualTo("email", queryLower)
                 .whereLessThanOrEqualTo("email", queryLower + '\uf8ff')
-                .limit(10)
+                .limit(20)
                 .get()
                 .await()
-            
             emailQuery.documents.forEach { doc ->
-                val user = doc.toObject(User::class.java)?.copy(id = doc.id)
-                if (user != null && user !in results) {
-                    results.add(user)
-                }
+                doc.toObject(User::class.java)?.copy(id = doc.id)?.let { if (it !in results) results.add(it) }
             }
-            
-            // Search by displayName
+
             val nameQuery = firestore.collection("users")
                 .whereGreaterThanOrEqualTo("displayName", queryLower)
                 .whereLessThanOrEqualTo("displayName", queryLower + '\uf8ff')
-                .limit(10)
+                .limit(20)
                 .get()
                 .await()
-            
             nameQuery.documents.forEach { doc ->
-                val user = doc.toObject(User::class.java)?.copy(id = doc.id)
-                if (user != null && user !in results) {
-                    results.add(user)
-                }
+                doc.toObject(User::class.java)?.copy(id = doc.id)?.let { if (it !in results) results.add(it) }
             }
-            
-            // Search by phoneNumber
+
             val phoneQuery = firestore.collection("users")
                 .whereGreaterThanOrEqualTo("phoneNumber", query)
                 .whereLessThanOrEqualTo("phoneNumber", query + '\uf8ff')
-                .limit(10)
+                .limit(20)
                 .get()
                 .await()
-            
             phoneQuery.documents.forEach { doc ->
-                val user = doc.toObject(User::class.java)?.copy(id = doc.id)
-                if (user != null && user !in results) {
-                    results.add(user)
+                doc.toObject(User::class.java)?.copy(id = doc.id)?.let { if (it !in results) results.add(it) }
+            }
+
+            var deduped = results.distinctBy { it.id }
+            if (deduped.isEmpty()) {
+                // Fallback: fetch a page and filter on client, case-insensitive
+                val page = firestore.collection("users").limit(100).get().await()
+                val all = page.documents.mapNotNull { it.toObject(User::class.java)?.copy(id = it.id) }
+                deduped = all.filter { u ->
+                    u.username.contains(query, ignoreCase = true) ||
+                    u.displayName.contains(query, ignoreCase = true) ||
+                    u.email.contains(query, ignoreCase = true) ||
+                    u.phoneNumber.contains(query, ignoreCase = true)
                 }
             }
-            
-            // Remove duplicates and limit results
-            results.distinctBy { it.id }.take(20)
+            deduped.take(20)
         } catch (e: Exception) {
             emptyList()
         }

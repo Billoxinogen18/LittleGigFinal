@@ -19,10 +19,10 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.retry
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -64,89 +64,52 @@ class AuthRepository @Inject constructor(
         return userCache[userId]
     }
     
-    val currentUser: StateFlow<User?> = callbackFlow {
+    private val _currentUserState: MutableStateFlow<User?> = MutableStateFlow(null)
+    val currentUser: StateFlow<User?> = _currentUserState.asStateFlow()
+
+    init {
         val listener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             val firebaseUser = firebaseAuth.currentUser
-            if (firebaseUser != null) {
-                // Try cache first
-                val cachedUser = getCachedUser(firebaseUser.uid)
-                if (cachedUser != null) {
-                    trySend(cachedUser)
-                }
-                
-                // Fetch from Firebase if network available
-                if (isNetworkAvailable()) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        try {
-                            val userDoc = firestore.collection("users")
-                                .document(firebaseUser.uid)
-                                .get()
-                                .await()
-                            
-                            if (userDoc.exists()) {
-                                val user = userDoc.toObject(User::class.java)?.copy(id = userDoc.id)
-                                    ?: return@launch
-                                cacheUser(user)
-                                trySend(user)
-                            } else {
-                                // Create anonymous user if doesn't exist
-                                val anonymousUser = createAnonymousUser(firebaseUser.uid)
-                                cacheUser(anonymousUser)
-                                trySend(anonymousUser)
-                            }
-                        } catch (e: Exception) {
-                            // Return cached user on error
-                            val cachedUser = getCachedUser(firebaseUser.uid)
-                            if (cachedUser != null) {
-                                trySend(cachedUser)
-                            } else {
-                                // Create anonymous user as fallback
-                                val anonymousUser = createAnonymousUser(firebaseUser.uid)
-                                cacheUser(anonymousUser)
-                                trySend(anonymousUser)
-                            }
-                        }
-                    }
-                } else {
-                    // Return cached user if no network
-                    val cachedUser = getCachedUser(firebaseUser.uid)
-                    if (cachedUser != null) {
-                        trySend(cachedUser)
-                    } else {
-                        // Create anonymous user as fallback
-                        val anonymousUser = createAnonymousUser(firebaseUser.uid)
-                        cacheUser(anonymousUser)
-                        trySend(anonymousUser)
-                    }
-                }
-            } else {
-                trySend(null)
+            if (firebaseUser == null) {
+                _currentUserState.value = null
+                return@AuthStateListener
             }
-        }
-        
-        auth.addAuthStateListener(listener)
-        awaitClose { auth.removeAuthStateListener(listener) }
-    }.retry(3) { cause ->
-        cause is Exception && isNetworkAvailable()
-    }.catch { error ->
-        // Return cached user on error
-        val currentFirebaseUser = auth.currentUser
-        if (currentFirebaseUser != null) {
-            val cachedUser = getCachedUser(currentFirebaseUser.uid)
+
+            // Try cache first
+            val cachedUser = getCachedUser(firebaseUser.uid)
             if (cachedUser != null) {
-                emit(cachedUser)
-            } else {
-                // Create anonymous user as fallback
-                val anonymousUser = createAnonymousUser(currentFirebaseUser.uid)
-                cacheUser(anonymousUser)
-                emit(anonymousUser)
+                _currentUserState.value = cachedUser
+            }
+
+            // Fetch from Firestore (or create anonymous)
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val userDoc = firestore.collection("users")
+                        .document(firebaseUser.uid)
+                        .get()
+                        .await()
+
+                    val resolvedUser = if (userDoc.exists()) {
+                        userDoc.toObject(User::class.java)?.copy(id = userDoc.id)
+                    } else {
+                        val anon = createAnonymousUser(firebaseUser.uid)
+                        saveAnonymousUserData(anon)
+                        anon
+                    }
+                    if (resolvedUser != null) {
+                        cacheUser(resolvedUser)
+                        _currentUserState.value = resolvedUser
+                    }
+                } catch (e: Exception) {
+                    // On failure, keep cached or create anon
+                    val fallback = getCachedUser(firebaseUser.uid) ?: createAnonymousUser(firebaseUser.uid)
+                    cacheUser(fallback)
+                    _currentUserState.value = fallback
+                }
             }
         }
-    }.stateIn(
-        scope = CoroutineScope(Dispatchers.IO),
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = null
-    )
+        auth.addAuthStateListener(listener)
+    }
     
     // 🔥 ANONYMOUS AUTHENTICATION - TIKTOK STYLE! 🔥
     suspend fun signInAnonymously(): Result<User> {
@@ -158,13 +121,18 @@ class AuthRepository @Inject constructor(
             val result = auth.signInAnonymously().await()
             val firebaseUser = result.user ?: throw Exception("Failed to create anonymous user")
             
-            // Create anonymous user with smart algorithm data
-            val anonymousUser = createAnonymousUser(firebaseUser.uid)
-            
-            // Save anonymous user data to Firestore
-            saveAnonymousUserData(anonymousUser)
+            // Ensure a Firestore user doc exists for this UID
+            val existing = firestore.collection("users").document(firebaseUser.uid).get().await()
+            val anonymousUser = if (existing.exists()) {
+                existing.toObject(User::class.java)?.copy(id = existing.id) ?: createAnonymousUser(firebaseUser.uid)
+            } else {
+                val created = createAnonymousUser(firebaseUser.uid)
+                saveAnonymousUserData(created)
+                created
+            }
             
             cacheUser(anonymousUser)
+            _currentUserState.value = anonymousUser
             Result.success(anonymousUser)
         } catch (e: Exception) {
             Result.failure(e)
@@ -233,7 +201,8 @@ class AuthRepository @Inject constructor(
                 .set(linkedUserData)
                 .await()
             
-            cacheUser(linkedUserData)
+                cacheUser(linkedUserData)
+                _currentUserState.value = linkedUserData
             Result.success(linkedUserData)
         } catch (e: Exception) {
             Result.failure(e)
@@ -291,6 +260,7 @@ class AuthRepository @Inject constructor(
                     .await()
                 
                 cacheUser(newUser)
+                _currentUserState.value = newUser
                 Result.success(newUser)
             }
         } catch (e: Exception) {
@@ -354,7 +324,8 @@ class AuthRepository @Inject constructor(
                 .set(linkedUserData)
                 .await()
             
-            cacheUser(linkedUserData)
+                cacheUser(linkedUserData)
+                _currentUserState.value = linkedUserData
             Result.success(linkedUserData)
         } catch (e: Exception) {
             Result.failure(e)
@@ -550,12 +521,32 @@ class AuthRepository @Inject constructor(
                     phoneNumber = updates["phoneNumber"] as? String ?: cachedUser.phoneNumber,
                     bio = updates["bio"] as? String ?: cachedUser.bio,
                     profilePictureUrl = updates["profilePictureUrl"] as? String ?: cachedUser.profilePictureUrl,
+                    profileImageUrl = updates["profileImageUrl"] as? String ?: cachedUser.profileImageUrl,
+                    userType = (updates["userType"] as? String)?.let { runCatching { UserType.valueOf(it) }.getOrNull() } ?: cachedUser.userType,
+                    isInfluencer = updates["isInfluencer"] as? Boolean ?: cachedUser.isInfluencer,
                     updatedAt = System.currentTimeMillis()
                 )
                 cacheUser(updatedUser)
             }
             
             Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun refreshCurrentUser(): Result<User> {
+        return try {
+            val firebaseUser = auth.currentUser ?: return Result.failure(Exception("No user signed in"))
+            val userDoc = firestore.collection("users").document(firebaseUser.uid).get().await()
+            if (userDoc.exists()) {
+                val user = userDoc.toObject(User::class.java)?.copy(id = userDoc.id)
+                    ?: return Result.failure(Exception("Failed to parse user data"))
+                cacheUser(user)
+                Result.success(user)
+            } else {
+                Result.failure(Exception("User document not found"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }

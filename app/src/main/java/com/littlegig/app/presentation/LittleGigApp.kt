@@ -44,7 +44,16 @@ fun LittleGigApp() {
             modifier = Modifier.fillMaxSize(),
             color = Color.Transparent
         ) {
-            // 🔥 ANONYMOUS AUTHENTICATION FLOW - TIKTOK STYLE! 🔥
+            // 🔥 Ensure an auth session exists (anonymous by default) 🔥
+            val authViewModel: AuthViewModel = hiltViewModel()
+            val user by authViewModel.currentUser.collectAsState(initial = null)
+
+            LaunchedEffect(user) {
+                if (user == null) {
+                    authViewModel.signInAnonymously()
+                }
+            }
+
             LittleGigNavigation()
         }
     }

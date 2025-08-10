@@ -17,6 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
 import com.littlegig.app.data.model.UserType
 import com.littlegig.app.presentation.account.LiquidGlassAccountScreen
 
@@ -33,7 +36,11 @@ fun AccountScreen(
     // Handle account linking for anonymous users
     LaunchedEffect(uiState.showAccountLinking) {
         if (uiState.showAccountLinking) {
-            navController.navigate("auth")
+            // Navigate to auth screen for account linking
+            navController.navigate("auth") {
+                // Clear the back stack to prevent navigation loops
+                popUpTo("account") { inclusive = true }
+            }
             // Reset the flag to prevent navigation loops
             viewModel.clearAccountLinking()
         }
@@ -61,6 +68,7 @@ fun LegacyAccountScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState(initial = AccountUiState())
     val currentUser by viewModel.currentUser.collectAsState(initial = null)
+    val context = LocalContext.current
     
     Column(
         modifier = Modifier
@@ -303,6 +311,39 @@ fun LegacyAccountScreen(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
+        }
+        
+        // Payment Dialog
+        if (uiState.showPaymentDialog && uiState.paymentUrl != null) {
+            AlertDialog(
+                onDismissRequest = { /* Keep dialog open until payment is completed */ },
+                title = {
+                    Text("Complete Business Upgrade")
+                },
+                text = {
+                    Text("You will be redirected to complete your payment of KSH 5,000. After successful payment, your account will be upgraded to Business.")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            // Open payment URL in browser
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uiState.paymentUrl))
+                            context.startActivity(intent)
+                        }
+                    ) {
+                        Text("Proceed to Payment")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.clearPaymentDialog()
+                        }
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            )
         }
         
         if (uiState.isSuccess) {

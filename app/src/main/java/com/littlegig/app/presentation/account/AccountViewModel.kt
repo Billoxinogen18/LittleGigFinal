@@ -19,7 +19,8 @@ class AccountViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val locationService: LocationService,
     private val eventRepository: com.littlegig.app.data.repository.EventRepository,
-    private val userRepository: com.littlegig.app.data.repository.UserRepository
+    private val userRepository: com.littlegig.app.data.repository.UserRepository,
+    private val paymentRepository: com.littlegig.app.data.repository.PaymentRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AccountUiState())
@@ -69,31 +70,64 @@ class AccountViewModel @Inject constructor(
     private val _locationPermissionGranted = MutableStateFlow(false)
     val locationPermissionGranted: StateFlow<Boolean> = _locationPermissionGranted.asStateFlow()
 
-    fun upgradeToBusinessAccount() {
+        fun upgradeToBusinessAccount() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null, isSuccess = false)
             try {
                 val user = authRepository.currentUser.first()
                 if (user != null) {
-                    // Update user type to business
-                    val result = userRepository.updateUserProfile(user.id, mapOf(
-                        "userType" to "BUSINESS", // Use string instead of enum for Firestore compatibility
+                    println("🔥 DEBUG: Upgrading user ${user.id} to business account")
+                    
+                    // Ensure complete user document exists first (for anonymous users)
+                    val ensureDocResult = userRepository.updateUserProfile(user.id, mapOf(
+                        "id" to user.id,
+                        "email" to user.email,
+                        "displayName" to user.displayName,
+                        "username" to user.username,
+                        "phoneNumber" to user.phoneNumber,
+                        "userType" to user.userType.name,
+                        "rank" to user.rank.name,
+                        "followers" to user.followers,
+                        "following" to user.following,
+                        "bio" to (user.bio ?: ""),
+                        "profilePictureUrl" to user.profilePictureUrl,
+                        "profileImageUrl" to user.profileImageUrl,
+                        "isInfluencer" to user.isInfluencer,
+                        "businessId" to (user.businessId ?: ""),
+                        "createdAt" to user.createdAt,
                         "updatedAt" to System.currentTimeMillis()
                     ))
                     
-                    if (result.isSuccess) {
-                        // Also update the cached user in AuthRepository
-                        val updatedUser = user.copy(
-                            userType = UserType.BUSINESS,
-                            updatedAt = System.currentTimeMillis()
-                        )
-                        authRepository.cacheUser(updatedUser)
-                        
+                    if (ensureDocResult.isFailure) {
+                        println("🔥 DEBUG: Failed to ensure user document: ${ensureDocResult.exceptionOrNull()?.message}")
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
-                            isSuccess = true
+                            error = "Failed to prepare user document: ${ensureDocResult.exceptionOrNull()?.message}"
+                        )
+                        return@launch
+                    }
+                    
+                    // Now upgrade to business account
+                    val result = userRepository.updateUserProfile(
+                        user.id,
+                        mapOf(
+                            "userType" to UserType.BUSINESS.name,
+                            "updatedAt" to System.currentTimeMillis()
+                        )
+                    )
+                    
+                    if (result.isSuccess) {
+                        println("🔥 DEBUG: Business upgrade successful")
+                        // Force refresh of currentUser cache for immediate UI update
+                        authRepository.refreshCurrentUser()
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            isSuccess = true,
+                            showPaymentDialog = false,
+                            paymentUrl = null
                         )
                     } else {
+                        println("🔥 DEBUG: Business upgrade failed: ${result.exceptionOrNull()?.message}")
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             error = result.exceptionOrNull()?.message ?: "Failed to upgrade account"
@@ -106,6 +140,7 @@ class AccountViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
+                println("🔥 DEBUG: Business upgrade exception: ${e.message}")
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = e.message
@@ -152,9 +187,26 @@ class AccountViewModel @Inject constructor(
         }
     }
 
+    fun showAccountLinking() {
+        _uiState.value = _uiState.value.copy(showAccountLinking = true)
+    }
+    
+    fun clearAccountLinking() {
+        _uiState.value = _uiState.value.copy(showAccountLinking = false)
+    }
+    
     fun signOut() {
         viewModelScope.launch {
-            authRepository.signOut()
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            try {
+                authRepository.signOut()
+                _uiState.value = _uiState.value.copy(isLoading = false)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = e.message
+                )
+            }
         }
     }
 
@@ -166,8 +218,11 @@ class AccountViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isSuccess = false)
     }
     
-    fun clearAccountLinking() {
-        _uiState.value = _uiState.value.copy(showAccountLinking = false)
+    fun clearPaymentDialog() {
+        _uiState.value = _uiState.value.copy(
+            showPaymentDialog = false,
+            paymentUrl = null
+        )
     }
     
     // 🔥 LINK ANONYMOUS ACCOUNT - PRESERVE ALGORITHM DATA! 🔥
@@ -236,8 +291,15 @@ class AccountViewModel @Inject constructor(
                 // Upload profile image if selected
                 if (profileImageUri != null) {
                     try {
-                        val imageUrl = userRepository.uploadProfilePicture(currentUser.id, profileImageUri)
-                        updates["profilePictureUrl"] = imageUrl
+                        val uploadResult = userRepository.uploadProfilePicture(currentUser.id, profileImageUri)
+                        if (uploadResult.isSuccess) {
+                            val url = uploadResult.getOrNull()
+                            if (!url.isNullOrBlank()) {
+                                updates["profilePictureUrl"] = url
+                            }
+                        } else {
+                            println("🔥 DEBUG: Failed to upload profile picture: ${uploadResult.exceptionOrNull()?.message}")
+                        }
                     } catch (e: Exception) {
                         println("🔥 DEBUG: Failed to upload profile picture: ${e.message}")
                         // Continue without image upload
@@ -245,7 +307,41 @@ class AccountViewModel @Inject constructor(
                 }
                 
                 // Update the profile in Firestore
-                val result = userRepository.updateUserProfile(currentUser.id, updates)
+                // Ensure complete user document exists first (for anonymous users)
+                println("🔥 DEBUG: Updating profile for user ${currentUser.id}")
+                val ensureDocResult = userRepository.updateUserProfile(currentUser.id, mapOf(
+                    "id" to currentUser.id,
+                    "email" to currentUser.email,
+                    "displayName" to currentUser.displayName,
+                    "username" to currentUser.username,
+                    "phoneNumber" to currentUser.phoneNumber,
+                    "userType" to currentUser.userType.name,
+                    "rank" to currentUser.rank.name,
+                    "followers" to currentUser.followers,
+                    "following" to currentUser.following,
+                    "bio" to (currentUser.bio ?: ""),
+                    "profilePictureUrl" to currentUser.profilePictureUrl,
+                    "profileImageUrl" to currentUser.profileImageUrl,
+                    "isInfluencer" to currentUser.isInfluencer,
+                    "businessId" to (currentUser.businessId ?: ""),
+                    "createdAt" to currentUser.createdAt,
+                    "updatedAt" to System.currentTimeMillis()
+                ))
+                
+                if (ensureDocResult.isFailure) {
+                    println("🔥 DEBUG: Failed to ensure user document: ${ensureDocResult.exceptionOrNull()?.message}")
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = "Failed to prepare user document: ${ensureDocResult.exceptionOrNull()?.message}"
+                    )
+                    return@launch
+                }
+                
+                val result = if (updates.isNotEmpty()) {
+                    userRepository.updateUserProfile(currentUser.id, updates)
+                } else {
+                    Result.success(Unit) // No updates needed
+                }
                 
                 if (result.isSuccess) {
                     // Update the cached user with new data
@@ -258,8 +354,9 @@ class AccountViewModel @Inject constructor(
                         updatedAt = System.currentTimeMillis()
                     )
                     
-                    // Update the cached user
+                    // Update the cached user and refresh from Firestore so UI reflects changes
                     authRepository.cacheUser(updatedUser)
+                    authRepository.refreshCurrentUser()
                     
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
@@ -347,6 +444,8 @@ data class AccountUiState(
     val error: String? = null,
     val isSuccess: Boolean = false,
     val showAccountLinking: Boolean = false,
+    val showPaymentDialog: Boolean = false,
+    val paymentUrl: String? = null,
     val eventsCreated: Int = 0,
     val ticketsBought: Int = 0,
     val recapsShared: Int = 0,

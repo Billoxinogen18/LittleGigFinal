@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -14,6 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -37,340 +40,353 @@ import com.littlegig.app.presentation.theme.*
 @Composable
 fun AuthScreen(
     onAuthSuccess: () -> Unit,
-    onGoogleSignIn: () -> Unit = {},
-    viewModel: AuthViewModel = hiltViewModel()
+    onGoogleSignIn: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState(initial = AuthUiState())
+    val viewModel: AuthViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState(initial = null)
-    val isDark = isSystemInDarkTheme()
     
-    var isSignUp by remember { mutableStateOf(false) }
-    var phoneNumber by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var displayName by remember { mutableStateOf("") }
-    var userType by remember { mutableStateOf(UserType.REGULAR) }
+    var isSignUp by remember { mutableStateOf(true) }
     var passwordVisible by remember { mutableStateOf(false) }
-    var isPhoneAuth by remember { mutableStateOf(true) }
     
-    // Navigate to main screen when user is authenticated
-    LaunchedEffect(currentUser) {
-        if (currentUser != null) {
-            onAuthSuccess()
-        }
-    }
+    val isDark = isSystemInDarkTheme()
     
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                Brush.verticalGradient(
-                    colors = if (isDark) listOf(
-                        Color(0xFF1A1A1A), // Charcoal grey
-                        Color(0xFF2D2D2D), // Lighter charcoal
-                        Color(0xFF404040)  // Even lighter charcoal
-                    ) else listOf(
-                        Color(0xFFF8FAFF),
-                        Color(0xFFE2E8F0),
-                        Color(0xFFCBD5E1)
+                if (isDark) {
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF0B0E1A),
+                            Color(0xFF141B2E)
+                        )
                     )
-                )
+                } else {
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFF8FAFF),
+                            Color(0xFFFFFFFF)
+                        )
+                    )
+                }
             )
     ) {
-        // Animated background orbs
-        FloatingOrbs()
-        
-        // Liquid glass background
-        LiquidGlassBackground()
-        
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(60.dp))
             
-            // Animated logo and branding
-            AnimatedLogoSection()
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            // Auth method selector
-            LiquidGlassCard(
-                modifier = Modifier.fillMaxWidth(),
-                glowEffect = true
-            ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Choose Sign In Method",
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            fontWeight = FontWeight.Bold
+            // App Logo and Branding
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(
+                                LittleGigPrimary,
+                                LittleGigSecondary
+                            )
                         ),
-                        color = if (isDark) Color.White else Color.Black,
-                        textAlign = TextAlign.Center
-                    )
-                    
-                    Spacer(modifier = Modifier.height(16.dp))
-                    
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        NeumorphicButton(
-                            onClick = { isPhoneAuth = true },
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Icon(
-                                Icons.Default.Phone,
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Phone")
-                        }
-                        
-                        NeumorphicButton(
-                            onClick = { isPhoneAuth = false },
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Icon(
-                                Icons.Default.Email,
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Email")
-                        }
-                    }
-                }
+                        CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Event,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(60.dp)
+                )
             }
             
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Auth form
-            LiquidGlassCard(
-                modifier = Modifier.fillMaxWidth(),
-                glowEffect = true
+            Text(
+                text = "LittleGig",
+                style = MaterialTheme.typography.displaySmall.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = Color.White
+            )
+            
+            Text(
+                text = "Where you need to be ✨",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White.copy(alpha = 0.8f)
+            )
+            
+            Spacer(modifier = Modifier.height(48.dp))
+            
+            // Toggle between Sign Up and Sign In
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        Color.White.copy(alpha = 0.1f),
+                        RoundedCornerShape(16.dp)
+                    )
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                Button(
+                    onClick = { isSignUp = true },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isSignUp) LittleGigPrimary else Color.Transparent,
+                        contentColor = if (isSignUp) Color.White else Color.White.copy(alpha = 0.7f)
+                    ),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = if (isSignUp) "Create Your Account" else "Welcome Back! 👋",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                        color = if (isDark) Color.White else Color.Black
-                    )
-                    
-                    if (isPhoneAuth) {
-                        // Phone number input with beautiful neumorphic design
-                        NeumorphicTextField(
-                            value = phoneNumber,
-                            onValueChange = { phoneNumber = it },
-                            label = "Phone Number",
-                            leadingIcon = Icons.Default.Phone,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                            modifier = Modifier.fillMaxWidth()
+                        text = "Sign Up",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.SemiBold
                         )
-                        
-                        if (isSignUp) {
-                            NeumorphicTextField(
-                                value = displayName,
-                                onValueChange = { displayName = it },
-                                label = "Full Name",
-                                leadingIcon = Icons.Default.Person,
-                                modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                
+                Button(
+                    onClick = { isSignUp = false },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (!isSignUp) LittleGigPrimary else Color.Transparent,
+                        contentColor = if (!isSignUp) Color.White else Color.White.copy(alpha = 0.7f)
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = "Sign In",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            // Form Fields
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = null,
+                        tint = Color.White.copy(alpha = 0.7f)
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LittleGigPrimary,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
+                    focusedLabelColor = LittleGigPrimary,
+                    unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    cursorColor = LittleGigPrimary
+                ),
+                shape = RoundedCornerShape(16.dp)
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = null,
+                        tint = Color.White.copy(alpha = 0.7f)
+                    )
+                },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                            tint = Color.White.copy(alpha = 0.7f)
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LittleGigPrimary,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
+                    focusedLabelColor = LittleGigPrimary,
+                    unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    cursorColor = LittleGigPrimary
+                ),
+                shape = RoundedCornerShape(16.dp)
+            )
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            // Primary Action Button
+            Button(
+                onClick = {
+                    if (isSignUp) {
+                        viewModel.signUp(email, password, UserType.REGULAR)
+                    } else {
+                        viewModel.signIn(email, password)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = LittleGigPrimary
+                ),
+                shape = RoundedCornerShape(16.dp),
+                enabled = email.isNotEmpty() && password.isNotEmpty() && !uiState.isLoading
+            ) {
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                } else {
+                    Icon(
+                        imageVector = if (isSignUp) Icons.Default.PersonAdd else Icons.Default.Login,
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = if (isSignUp) "Create Account" else "Sign In",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // Google Sign In
+            OutlinedButton(
+                onClick = onGoogleSignIn,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = Color.White
+                ),
+                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.3f)),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Email,
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Continue with Google",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            // Error Message
+            if (uiState.error != null) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Error,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = uiState.error!!,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.weight(1f))
+            
+            // Anonymous account linking section
+            currentUser?.let { user ->
+                if (user.email.isEmpty()) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White.copy(alpha = 0.1f)
+                        ),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(20.dp)
+                        ) {
+                            Text(
+                                text = "Link Your Anonymous Account",
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = Color.White
                             )
                             
-                            // User Type Selection with neumorphic design
-                            Column {
-                                Text(
-                                    text = "Account Type",
-                                    style = MaterialTheme.typography.titleSmall.copy(
-                                        fontWeight = FontWeight.Medium
-                                    ),
-                                    color = if (isDark) Color.White else Color.Black
-                                )
-                                
-                                Spacer(modifier = Modifier.height(8.dp))
-                                
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    NeumorphicChip(
-                                        onClick = { userType = UserType.REGULAR },
-                                        isSelected = userType == UserType.REGULAR,
-                                        modifier = Modifier.weight(1f)
-                                    ) {
-                                        Text("Regular")
-                                    }
-                                    NeumorphicChip(
-                                        onClick = { userType = UserType.BUSINESS },
-                                        isSelected = userType == UserType.BUSINESS,
-                                        modifier = Modifier.weight(1f)
-                                    ) {
-                                        Text("Business")
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        // Email auth
-                        NeumorphicTextField(
-                            value = email,
-                            onValueChange = { email = it },
-                            label = "Email",
-                            leadingIcon = Icons.Default.Email,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        
-                        NeumorphicTextField(
-                            value = password,
-                            onValueChange = { password = it },
-                            label = "Password",
-                            leadingIcon = Icons.Default.Lock,
-                            trailingIcon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            onTrailingIconClick = { passwordVisible = !passwordVisible },
-                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                    
-                    Spacer(modifier = Modifier.height(8.dp))
-                    
-                    // Primary action button
-                    NeumorphicButton(
-                        onClick = {
-                            if (isPhoneAuth) {
-                                if (isSignUp) {
-                                    viewModel.signUpWithPhone(phoneNumber, displayName, userType)
-                                } else {
-                                    viewModel.signInWithPhone(phoneNumber)
-                                }
-                            } else {
-                                if (isSignUp) {
-                                    viewModel.signUp(email, password, userType, null)
-                                } else {
-                                    viewModel.signIn(email, password)
-                                }
-                            }
-                        },
-                        enabled = !uiState.isLoading && 
-                                ((isPhoneAuth && phoneNumber.isNotBlank()) || 
-                                 (!isPhoneAuth && email.isNotBlank() && password.isNotBlank())) &&
-                                (!isSignUp || displayName.isNotBlank()),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        if (uiState.isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                color = if (isDark) Color.White else Color.Black,
-                                strokeWidth = 2.dp
+                            Spacer(modifier = Modifier.height(8.dp))
+                            
+                            Text(
+                                text = "Link your anonymous account to access all features",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White.copy(alpha = 0.8f)
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
-                        }
-                        
-                        Icon(
-                            imageVector = if (isSignUp) Icons.Default.PersonAdd else Icons.Default.Login,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = if (isSignUp) "Create Account" else "Sign In",
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                    
-                    // Google Sign-In Button
-                    HapticButton(
-                        onClick = onGoogleSignIn,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        AdvancedNeumorphicCard(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                            
+                            Spacer(modifier = Modifier.height(16.dp))
+                            
+                            Button(
+                                onClick = {
+                                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                                        viewModel.linkAnonymousAccount(email, password, user.displayName, null, UserType.REGULAR)
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = LittleGigSecondary
+                                ),
+                                shape = RoundedCornerShape(12.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Email, // Using Email icon as Google icon may not exist
-                                    contentDescription = null,
-                                    tint = Color(0xFF4285F4),
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                
-                                Spacer(modifier = Modifier.width(12.dp))
-                                
-                                Text(
-                                    text = if (isSignUp) "Create Account with Google" else "Continue with Google",
-                                    style = MaterialTheme.typography.bodyLarge.copy(
-                                        fontWeight = FontWeight.Medium
-                                    ),
-                                    color = if (isDark) Color.White else Color.Black
-                                )
-                            }
-                        }
-                    }
-                    
-                    Spacer(modifier = Modifier.height(16.dp))
-                    
-                    TextButton(
-                        onClick = { isSignUp = !isSignUp },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = if (isSignUp) "Already have an account? Sign In" 
-                            else "Don't have an account? Sign Up",
-                            color = if (isDark) Color.White else Color.Black.copy(alpha = 0.7f)
-                        )
-                    }
-                    
-                    // Error display with glass effect
-                    uiState.error?.let { error ->
-                        LiquidGlassCard(
-                            modifier = Modifier.fillMaxWidth(),
-                            glowEffect = false
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Warning,
-                                    contentDescription = null,
-                                    tint = Color(0xFFFF6B6B),
-                                    modifier = Modifier.size(20.dp)
+                                    imageVector = Icons.Default.Link,
+                                    contentDescription = null
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = error,
-                                    color = Color(0xFFFF6B6B),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                                Text("Link Account")
                             }
                         }
                     }
                 }
             }
-            
-            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }

@@ -2,6 +2,7 @@
 package com.littlegig.app.services;
 
 import android.content.Context;
+import com.google.firebase.functions.FirebaseFunctions;
 import com.littlegig.app.data.repository.AuthRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
@@ -23,23 +24,29 @@ public final class LocationService_Factory implements Factory<LocationService> {
 
   private final Provider<AuthRepository> authRepositoryProvider;
 
+  private final Provider<FirebaseFunctions> functionsProvider;
+
   public LocationService_Factory(Provider<Context> contextProvider,
-      Provider<AuthRepository> authRepositoryProvider) {
+      Provider<AuthRepository> authRepositoryProvider,
+      Provider<FirebaseFunctions> functionsProvider) {
     this.contextProvider = contextProvider;
     this.authRepositoryProvider = authRepositoryProvider;
+    this.functionsProvider = functionsProvider;
   }
 
   @Override
   public LocationService get() {
-    return newInstance(contextProvider.get(), authRepositoryProvider.get());
+    return newInstance(contextProvider.get(), authRepositoryProvider.get(), functionsProvider.get());
   }
 
   public static LocationService_Factory create(Provider<Context> contextProvider,
-      Provider<AuthRepository> authRepositoryProvider) {
-    return new LocationService_Factory(contextProvider, authRepositoryProvider);
+      Provider<AuthRepository> authRepositoryProvider,
+      Provider<FirebaseFunctions> functionsProvider) {
+    return new LocationService_Factory(contextProvider, authRepositoryProvider, functionsProvider);
   }
 
-  public static LocationService newInstance(Context context, AuthRepository authRepository) {
-    return new LocationService(context, authRepository);
+  public static LocationService newInstance(Context context, AuthRepository authRepository,
+      FirebaseFunctions functions) {
+    return new LocationService(context, authRepository, functions);
   }
 }

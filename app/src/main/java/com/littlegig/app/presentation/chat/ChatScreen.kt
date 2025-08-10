@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -33,7 +35,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import android.provider.ContactsContract
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
     navController: NavController,
@@ -43,8 +52,24 @@ fun ChatScreen(
     val chats by viewModel.chats.collectAsState()
     val searchResults by viewModel.searchResults.collectAsState()
     val isDark = isSystemInDarkTheme()
+    val contactsUsers by viewModel.contactsUsers.collectAsState()
+    val allUsers by viewModel.allUsers.collectAsState()
+    val context = LocalContext.current
     var showSearch by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    var showContactsOnly by remember { mutableStateOf(true) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            val phones = fetchPhoneNumbersFromContacts(context)
+            viewModel.loadContacts(phones)
+            viewModel.loadAllUsers()
+        } else {
+            viewModel.loadAllUsers()
+        }
+    }
     
     // Proper dark/light mode background
     Box(
@@ -103,7 +128,21 @@ fun ChatScreen(
                             }
                             
                             IconButton(
-                                onClick = { viewModel.startNewChat() }
+                                onClick = { 
+                                    showSearch = true
+                                    viewModel.startNewChat() 
+                                    val hasPermission = ContextCompat.checkSelfPermission(
+                                        context, Manifest.permission.READ_CONTACTS
+                                    ) == PackageManager.PERMISSION_GRANTED
+                                    if (hasPermission) {
+                                        val phones = fetchPhoneNumbersFromContacts(context)
+                                        viewModel.loadContacts(phones)
+                                    } else {
+                                        permissionLauncher.launch(Manifest.permission.READ_CONTACTS)
+                                    }
+                                    // Always load all users in parallel for the toggle
+                                    viewModel.loadAllUsers()
+                                }
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
@@ -116,6 +155,38 @@ fun ChatScreen(
                     
                     if (showSearch) {
                         Spacer(modifier = Modifier.height(16.dp))
+
+                        // Contacts vs All toggle
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            FilterChip(
+                                selected = showContactsOnly,
+                                onClick = {
+                                    showContactsOnly = true
+                                    // Ensure contacts are loaded when switching
+                                    val hasPermission = ContextCompat.checkSelfPermission(
+                                        context, Manifest.permission.READ_CONTACTS
+                                    ) == PackageManager.PERMISSION_GRANTED
+                                    if (hasPermission && contactsUsers.isEmpty()) {
+                                        val phones = fetchPhoneNumbersFromContacts(context)
+                                        viewModel.loadContacts(phones)
+                                    }
+                                },
+                                label = { Text("Contacts on LittleGig") }
+                            )
+                            FilterChip(
+                                selected = !showContactsOnly,
+                                onClick = {
+                                    showContactsOnly = false
+                                    // Load all users list once
+                                    if (allUsers.isEmpty()) viewModel.loadAllUsers()
+                                },
+                                label = { Text("All users") }
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
                         
                         OutlinedTextField(
                             value = searchQuery,
@@ -145,7 +216,18 @@ fun ChatScreen(
             Spacer(modifier = Modifier.height(16.dp))
             
             // Search Results
-            if (showSearch && searchResults.isNotEmpty()) {
+            val displayedUsers = remember(searchResults, contactsUsers, allUsers, showContactsOnly, searchQuery) {
+                val base = if (searchQuery.isBlank()) {
+                    if (showContactsOnly) contactsUsers else allUsers
+                } else {
+                    if (showContactsOnly) {
+                        val ids = contactsUsers.map { it.id }.toSet()
+                        searchResults.filter { ids.contains(it.id) }
+                    } else searchResults
+                }
+                base
+            }
+            if (showSearch && displayedUsers.isNotEmpty()) {
                 AdvancedGlassmorphicCard {
                     Column(
                         modifier = Modifier.padding(16.dp)
@@ -163,7 +245,7 @@ fun ChatScreen(
                         LazyColumn(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            items(searchResults) { user ->
+                            items(displayedUsers) { user ->
                                 HapticButton(
                                     onClick = { 
                                         viewModel.createChatWithUser(user.id)
@@ -499,6 +581,30 @@ fun ChatScreen(
             }
         }
     }
+}
+
+private fun fetchPhoneNumbersFromContacts(context: android.content.Context): List<String> {
+    val phones = mutableSetOf<String>()
+    val resolver = context.contentResolver
+    val projection = arrayOf(
+        ContactsContract.CommonDataKinds.Phone.NUMBER
+    )
+    val cursor = resolver.query(
+        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        projection,
+        null,
+        null,
+        null
+    )
+    cursor?.use {
+        val idx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+        while (it.moveToNext()) {
+            val raw = it.getString(idx) ?: continue
+            val normalized = raw.filter { ch -> ch.isDigit() || ch == '+' }
+            if (normalized.isNotBlank()) phones.add(normalized)
+        }
+    }
+    return phones.toList()
 }
 
  

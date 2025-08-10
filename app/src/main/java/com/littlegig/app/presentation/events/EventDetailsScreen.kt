@@ -35,7 +35,7 @@ fun EventDetailsScreen(
     navController: NavController,
     viewModel: EventDetailsViewModel = hiltViewModel()
 ) {
-    // val context = LocalContext.current // Unused variable removed
+    val context = LocalContext.current
     val isDark = isSystemInDarkTheme()
     
     LaunchedEffect(eventId) {
@@ -305,14 +305,28 @@ fun EventDetailsScreen(
                                 }
                                 
                                 HapticButton(
-                                    onClick = { viewModel.followOrganizer(uiState.organizer?.id) }
+                                    onClick = { viewModel.followOrganizer(uiState.organizer?.id) },
+                                    enabled = !uiState.isFollowProcessing
                                 ) {
                                     AdvancedNeumorphicCard {
-                                        Text(
-                                            text = if (uiState.isFollowingOrganizer) "Following" else "Follow",
+                                        Row(
                                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                                            color = if (uiState.isFollowingOrganizer) LittleGigPrimary else Color.Gray
-                                        )
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            if (uiState.isFollowProcessing) {
+                                                CircularProgressIndicator(
+                                                    modifier = Modifier.size(16.dp),
+                                                    strokeWidth = 2.dp,
+                                                    color = LittleGigPrimary
+                                                )
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                            }
+                                            Text(
+                                                text = if (uiState.isFollowingOrganizer) "Following" else "Follow",
+                                                color = if (uiState.isFollowingOrganizer) LittleGigPrimary else Color.Gray
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -329,7 +343,8 @@ fun EventDetailsScreen(
                         ) {
                             HapticButton(
                                 onClick = { viewModel.toggleEventLike() },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                enabled = !uiState.isLikeProcessing
                             ) {
                                 AdvancedNeumorphicCard {
                                     Row(
@@ -337,12 +352,20 @@ fun EventDetailsScreen(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Center
                                     ) {
-                                        Icon(
-                                            imageVector = if (uiState.isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                            contentDescription = null,
-                                            tint = if (uiState.isLiked) Color.Red else LittleGigPrimary,
-                                            modifier = Modifier.size(20.dp)
-                                        )
+                                        if (uiState.isLikeProcessing) {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier.size(20.dp),
+                                                strokeWidth = 2.dp,
+                                                color = if (uiState.isLiked) Color.Red else LittleGigPrimary
+                                            )
+                                        } else {
+                                            Icon(
+                                                imageVector = if (uiState.isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                                contentDescription = null,
+                                                tint = if (uiState.isLiked) Color.Red else LittleGigPrimary,
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
                                             text = "Like",
@@ -353,7 +376,7 @@ fun EventDetailsScreen(
                             }
                             
                             HapticButton(
-                                onClick = { viewModel.shareEvent() },
+                                onClick = { viewModel.shareEvent(context) },
                                 modifier = Modifier.weight(1f)
                             ) {
                                 AdvancedNeumorphicCard {

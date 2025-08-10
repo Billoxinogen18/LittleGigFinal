@@ -31,12 +31,18 @@ class ChatViewModel @Inject constructor(
 
     private val _searchResults = MutableStateFlow<List<User>>(emptyList())
     val searchResults: StateFlow<List<User>> = _searchResults.asStateFlow()
+    private val _contactsUsers = MutableStateFlow<List<User>>(emptyList())
+    val contactsUsers: StateFlow<List<User>> = _contactsUsers.asStateFlow()
+    private val _allUsers = MutableStateFlow<List<User>>(emptyList())
+    val allUsers: StateFlow<List<User>> = _allUsers.asStateFlow()
 
     fun loadChats() {
         viewModelScope.launch {
             try {
-                // For now, just set empty list since we don't have real data
-                _chats.value = emptyList()
+                val user = authRepository.currentUser.first() ?: return@launch
+                chatRepository.getUserChats(user.id).collect { list ->
+                    _chats.value = list
+                }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     error = "Failed to load chats: ${e.message}"
@@ -49,17 +55,34 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 if (query.isBlank()) {
-                    _searchResults.value = emptyList()
+                    // default to all users if loaded, else contacts
+                    _searchResults.value = if (_allUsers.value.isNotEmpty()) _allUsers.value else _contactsUsers.value
                     return@launch
                 }
-                
-                // For now, return empty list since we don't have real data
-                _searchResults.value = emptyList()
+                _searchResults.value = userRepository.searchUsers(query)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     error = "Failed to search users: ${e.message}"
                 )
             }
+        }
+    }
+
+    fun loadContacts(contactsPhones: List<String>) {
+        viewModelScope.launch {
+            val users = userRepository.getUsersByPhoneNumbers(contactsPhones).getOrElse { emptyList() }
+            _contactsUsers.value = users
+            println("🔥 DEBUG: Contacts on LittleGig loaded: ${users.size}")
+            if (!_uiState.value.isSearching) _searchResults.value = users
+        }
+    }
+
+    fun loadAllUsers(limit: Int = 100) {
+        viewModelScope.launch {
+            val users = userRepository.listAllUsers(limit).getOrElse { emptyList() }
+            _allUsers.value = users
+            println("🔥 DEBUG: All users loaded: ${users.size}")
+            if (!_uiState.value.isSearching) _searchResults.value = users
         }
     }
 
@@ -93,8 +116,9 @@ class ChatViewModel @Inject constructor(
     }
     
     fun startNewChat() {
-        // This will trigger the search UI
-        _searchResults.value = emptyList()
+        // Expose UI signal if needed later; keep clearing results
+        _uiState.value = _uiState.value.copy(isSearching = true)
+        _searchResults.value = if (_allUsers.value.isNotEmpty()) _allUsers.value else _contactsUsers.value
     }
     
     fun createChatWithUser(userId: String) {
@@ -102,11 +126,7 @@ class ChatViewModel @Inject constructor(
             try {
                 val currentUser = authRepository.currentUser.first()
                 if (currentUser != null) {
-                    chatRepository.createChat(
-                        participants = listOf(currentUser.id, userId),
-                        chatType = ChatType.DIRECT,
-                        name = null
-                    )
+                    chatRepository.createOrGetDirectChat(currentUser.id, userId)
                     // Refresh chats list
                     loadChats()
                 }
@@ -117,10 +137,15 @@ class ChatViewModel @Inject constructor(
             }
         }
     }
+
+    init {
+        loadChats()
+    }
 }
 
 data class ChatUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
-    val isSuccess: Boolean = false
+    val isSuccess: Boolean = false,
+    val isSearching: Boolean = false
 ) 

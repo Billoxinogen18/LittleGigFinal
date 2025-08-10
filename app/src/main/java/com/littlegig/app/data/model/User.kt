@@ -16,7 +16,6 @@ data class User(
     val profileImageUrl: String = "",
     val userType: UserType = UserType.REGULAR,
     val isInfluencer: Boolean = false,
-    val influencer: Boolean = false, // Alias for isInfluencer (for Firestore compatibility)
     val businessId: String? = null,
     val rank: UserRank = UserRank.NOVICE,
     val followers: List<String> = emptyList(),

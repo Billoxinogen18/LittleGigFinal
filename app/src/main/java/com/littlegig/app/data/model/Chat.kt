@@ -43,15 +43,41 @@ data class Message(
     val timestamp: Long = System.currentTimeMillis(),
     val isRead: Boolean = false,
     val readBy: List<String> = emptyList(),
-    val sharedTicket: SharedTicket? = null
+    val sharedTicket: SharedTicket? = null,
+    val status: MessageStatus = MessageStatus.SENT,
+    val optimisticId: String = "",
+    val reactions: Map<String, String> = emptyMap(),
+    val mentions: List<String> = emptyList(),
+    val hashtags: List<String> = emptyList(),
+    val deliveredTo: List<String> = emptyList(),
+    val isDeleted: Boolean = false,
+    val deletedAt: Long = 0L,
+    val editedAt: Long = 0L,
+    val replyToMessageId: String? = null,
+    val forwardFromMessageId: String? = null,
+    val fileSize: Long = 0L,
+    val duration: Long = 0L,
+    val width: Int = 0,
+    val height: Int = 0
 ) : Parcelable
 
 enum class MessageType {
     TEXT,
     IMAGE,
     VIDEO,
+    AUDIO,
+    FILE,
     TICKET_SHARE,
-    LOCATION
+    LOCATION,
+    EVENT_SHARE,
+    SYSTEM
+}
+
+enum class MessageStatus {
+    SENT,
+    DELIVERED,
+    READ,
+    FAILED
 }
 
 @Parcelize

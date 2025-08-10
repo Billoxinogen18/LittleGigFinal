@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createDynamicLink = exports.sendEventReminders = exports.notifyPriceDrop = exports.notifyWaitlistOnCapacity = exports.cleanupOldData = exports.sendPushNotification = exports.getActiveUsersNearby = exports.updateUserLocation = exports.calculateUserRanks = exports.getPaymentHistory = exports.verifyPayment = exports.processTicketPurchase = void 0;
+exports.createDynamicLink = exports.sendEventReminders = exports.notifyPriceDrop = exports.notifyWaitlistOnCapacity = exports.cleanupOldData = exports.sendPushNotification = exports.getActiveUsersNearby = exports.updateUserLocation = exports.calculateUserRanks = exports.getPaymentHistory = exports.upgradeToBusinessAccount = exports.verifyPayment = exports.processTicketPurchase = void 0;
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const axios_1 = require("axios");
@@ -81,6 +81,41 @@ exports.verifyPayment = functions.region('us-central1').runWith({ memory: '512MB
     catch (error) {
         console.error('Payment verification error:', error);
         throw new functions.https.HttpsError('internal', 'Payment verification failed');
+    }
+});
+// Business Account Upgrade
+exports.upgradeToBusinessAccount = functions.region('us-central1').runWith({ memory: '512MB', timeoutSeconds: 60, minInstances: 1 }).https.onCall(async (data, context) => {
+    try {
+        const { userId, amount, type, currency = 'KES' } = data;
+        if (!context.auth) {
+            throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+        }
+        // Generate unique payment reference
+        const paymentReference = `LG_BUS_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        // Create payment record for business upgrade
+        const paymentData = {
+            userId,
+            amount,
+            currency,
+            type,
+            status: 'pending',
+            paymentReference,
+            description: 'Business Account Upgrade',
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        };
+        await db.collection('payments').add(paymentData);
+        // Generate Flutterwave payment URL
+        const flutterwaveUrl = `https://checkout.flutterwave.com/v3/hosted/pay/${paymentReference}?amount=${amount}&currency=${currency}&tx_ref=${paymentReference}&redirect_url=${encodeURIComponent('https://littlegig.app/payment/callback')}&meta[userId]=${userId}&meta[type]=${type}`;
+        return {
+            success: true,
+            paymentUrl: flutterwaveUrl,
+            paymentReference
+        };
+    }
+    catch (error) {
+        console.error('Business upgrade payment error:', error);
+        throw new functions.https.HttpsError('internal', 'Business upgrade payment failed');
     }
 });
 // Create Ticket
@@ -217,20 +252,21 @@ function determineUserRank(engagementScore) {
 }
 // Active Now System - Update User Location
 exports.updateUserLocation = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 30 }).https.onCall(async (data, context) => {
+    var _a;
     try {
-        const { latitude, longitude, isActive } = data;
-        if (!context.auth) {
-            throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+        const { latitude, longitude, isActive, userId: explicitUserId } = data;
+        const userId = ((_a = context.auth) === null || _a === void 0 ? void 0 : _a.uid) || explicitUserId;
+        if (!userId) {
+            throw new functions.https.HttpsError('unauthenticated', 'Missing userId');
         }
-        const userId = context.auth.uid;
-        await db.collection('users').doc(userId).update({
+        await db.collection('users').doc(userId).set({
             location: {
                 latitude,
                 longitude,
                 updatedAt: admin.firestore.FieldValue.serverTimestamp()
             },
             isActiveNow: isActive
-        });
+        }, { merge: true });
         return { success: true };
     }
     catch (error) {

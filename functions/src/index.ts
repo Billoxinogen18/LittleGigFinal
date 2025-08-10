@@ -94,6 +94,47 @@ export const verifyPayment = functions.region('us-central1').runWith({ memory: '
   }
 });
 
+// Business Account Upgrade
+export const upgradeToBusinessAccount = functions.region('us-central1').runWith({ memory: '512MB', timeoutSeconds: 60, minInstances: 1 }).https.onCall(async (data, context) => {
+  try {
+    const { userId, amount, type, currency = 'KES' } = data;
+    
+    if (!context.auth) {
+      throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    }
+
+    // Generate unique payment reference
+    const paymentReference = `LG_BUS_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Create payment record for business upgrade
+    const paymentData = {
+      userId,
+      amount,
+      currency,
+      type,
+      status: 'pending',
+      paymentReference,
+      description: 'Business Account Upgrade',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    };
+
+    await db.collection('payments').add(paymentData);
+
+    // Generate Flutterwave payment URL
+    const flutterwaveUrl = `https://checkout.flutterwave.com/v3/hosted/pay/${paymentReference}?amount=${amount}&currency=${currency}&tx_ref=${paymentReference}&redirect_url=${encodeURIComponent('https://littlegig.app/payment/callback')}&meta[userId]=${userId}&meta[type]=${type}`;
+
+    return {
+      success: true,
+      paymentUrl: flutterwaveUrl,
+      paymentReference
+    };
+  } catch (error) {
+    console.error('Business upgrade payment error:', error);
+    throw new functions.https.HttpsError('internal', 'Business upgrade payment failed');
+  }
+});
+
 // Create Ticket
 async function createTicket(eventId: string, userId: string, amount: number) {
   const ticketData = {
@@ -255,22 +296,20 @@ function determineUserRank(engagementScore: number): string {
 // Active Now System - Update User Location
 export const updateUserLocation = functions.region('us-central1').runWith({ memory: '256MB', timeoutSeconds: 30 }).https.onCall(async (data, context) => {
   try {
-    const { latitude, longitude, isActive } = data;
-    
-    if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    const { latitude, longitude, isActive, userId: explicitUserId } = data as { latitude: number; longitude: number; isActive: boolean; userId?: string };
+    const userId = context.auth?.uid || explicitUserId;
+    if (!userId) {
+      throw new functions.https.HttpsError('unauthenticated', 'Missing userId');
     }
-
-    const userId = context.auth.uid;
     
-    await db.collection('users').doc(userId).update({
+    await db.collection('users').doc(userId).set({
       location: {
         latitude,
         longitude,
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       },
       isActiveNow: isActive
-    });
+    }, { merge: true });
 
     return { success: true };
   } catch (error) {

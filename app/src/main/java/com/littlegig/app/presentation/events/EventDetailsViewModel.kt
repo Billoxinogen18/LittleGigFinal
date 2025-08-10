@@ -81,24 +81,37 @@ class EventDetailsViewModel @Inject constructor(
     }
     
     fun toggleEventLike() {
-        viewModelScope.launch {
-            val currentUser = authRepository.currentUser.value
-            val event = _uiState.value.event
+        val currentUser = authRepository.currentUser.value
+        val event = _uiState.value.event
+        
+        if (currentUser != null && event != null) {
+            // Optimistic update for immediate UI feedback
+            val newLikeState = !_uiState.value.isLiked
+            _uiState.value = _uiState.value.copy(
+                isLiked = newLikeState,
+                isLikeProcessing = true
+            )
             
-            if (currentUser != null && event != null) {
+            viewModelScope.launch {
                 try {
                     val result = eventRepository.toggleEventLike(event.id, currentUser.id)
                     result.onSuccess {
                         _uiState.value = _uiState.value.copy(
-                            isLiked = !_uiState.value.isLiked
+                            isLikeProcessing = false
                         )
                     }.onFailure { error ->
+                        // Revert optimistic update on failure
                         _uiState.value = _uiState.value.copy(
+                            isLiked = !newLikeState,
+                            isLikeProcessing = false,
                             error = error.message
                         )
                     }
                 } catch (e: Exception) {
+                    // Revert optimistic update on exception
                     _uiState.value = _uiState.value.copy(
+                        isLiked = !newLikeState,
+                        isLikeProcessing = false,
                         error = e.message
                     )
                 }
@@ -107,23 +120,36 @@ class EventDetailsViewModel @Inject constructor(
     }
     
     fun followOrganizer(organizerId: String?) {
-        viewModelScope.launch {
-            val currentUser = authRepository.currentUser.value
+        val currentUser = authRepository.currentUser.value
+        
+        if (currentUser != null && organizerId != null) {
+            // Optimistic update for immediate UI feedback
+            val newFollowState = !_uiState.value.isFollowingOrganizer
+            _uiState.value = _uiState.value.copy(
+                isFollowingOrganizer = newFollowState,
+                isFollowProcessing = true
+            )
             
-            if (currentUser != null && organizerId != null) {
+            viewModelScope.launch {
                 try {
                     val result = userRepository.toggleFollow(currentUser.id, organizerId)
                     result.onSuccess {
                         _uiState.value = _uiState.value.copy(
-                            isFollowingOrganizer = !_uiState.value.isFollowingOrganizer
+                            isFollowProcessing = false
                         )
                     }.onFailure { error ->
+                        // Revert optimistic update on failure
                         _uiState.value = _uiState.value.copy(
+                            isFollowingOrganizer = !newFollowState,
+                            isFollowProcessing = false,
                             error = error.message
                         )
                     }
                 } catch (e: Exception) {
+                    // Revert optimistic update on exception
                     _uiState.value = _uiState.value.copy(
+                        isFollowingOrganizer = !newFollowState,
+                        isFollowProcessing = false,
                         error = e.message
                     )
                 }
@@ -131,7 +157,7 @@ class EventDetailsViewModel @Inject constructor(
         }
     }
     
-    fun shareEvent() {
+    fun shareEvent(context: Context) {
         val event = _uiState.value.event
         if (event != null) {
             val shareText = """
@@ -144,8 +170,17 @@ class EventDetailsViewModel @Inject constructor(
                 Download LittleGig to join the party! 🎉
             """.trimIndent()
             
-            // This would typically use Android's share intent
-            // For now, we'll just update the UI state
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, shareText)
+                putExtra(Intent.EXTRA_SUBJECT, "Check out this event on LittleGig!")
+            }
+            
+            val chooser = Intent.createChooser(shareIntent, "Share via")
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(chooser)
+            
             _uiState.value = _uiState.value.copy(
                 shareText = shareText
             )
@@ -201,6 +236,8 @@ data class EventDetailsUiState(
     val isLiked: Boolean = false,
     val isLoading: Boolean = false,
     val isProcessingPayment: Boolean = false,
+    val isLikeProcessing: Boolean = false,
+    val isFollowProcessing: Boolean = false,
     val error: String? = null,
     val shareText: String? = null,
     val paymentUrl: String? = null

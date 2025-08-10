@@ -51,7 +51,7 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "isFeatured",
+          "fieldPath": "featured",
           "order": "ASCENDING"
         },
         {

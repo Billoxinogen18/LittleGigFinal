@@ -94,6 +94,33 @@ class PaymentRepository @Inject constructor(
             Result.failure(e)
         }
     }
+    
+    suspend fun upgradeToBusinessAccount(userId: String, amount: Double = 5000.0): Result<String> {
+        return try {
+            val data = mapOf(
+                "userId" to userId,
+                "amount" to amount,
+                "type" to "business_upgrade",
+                "currency" to "KES"
+            )
+            
+            val result = functions
+                .getHttpsCallable("upgradeToBusinessAccount")
+                .call(data)
+                .await()
+            
+            val response = result.data as? Map<*, *>
+            val paymentUrl = response?.get("paymentUrl") as? String
+            
+            if (paymentUrl != null) {
+                Result.success(paymentUrl)
+            } else {
+                Result.failure(Exception("Failed to get payment URL for business upgrade"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
 
 data class PaymentRecord(

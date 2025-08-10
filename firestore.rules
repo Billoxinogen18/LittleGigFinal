@@ -1,61 +1,9 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow read access to config collection for all authenticated users
-    match /config/{document=**} {
-      allow read: if request.auth != null;
-    }
-    
-    // Events collection - allow read for all, write for authenticated users
-    match /events/{eventId} {
-      allow read: if true; // Public read access
-      allow write: if request.auth != null;
-    }
-    
-    // Users collection - allow read/write for authenticated users
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-    
-    // Tickets collection - allow read/write for authenticated users
-    match /tickets/{ticketId} {
-      allow read, write: if request.auth != null;
-    }
-    
-    // Chats collection - allow read/write for authenticated users
-    match /chats/{chatId} {
-      allow read, write: if request.auth != null;
-    }
-    
-    // Messages collection - allow read/write for authenticated users
-    match /messages/{messageId} {
-      allow read, write: if request.auth != null;
-    }
-    
-    // Recaps collection - allow read for all, write for authenticated users
-    match /recaps/{recapId} {
-      allow read: if true; // Public read access
-      allow write: if request.auth != null;
-    }
-    
-    // Payments collection - allow read/write for authenticated users
-    match /payments/{paymentId} {
-      allow read, write: if request.auth != null;
-    }
-    
-    // Notifications collection - allow read/write for authenticated users
-    match /notifications/{notificationId} {
-      allow read, write: if request.auth != null;
-    }
-    
-    // Waitlist collection - allow read/write for authenticated users
-    match /waitlist/{waitlistId} {
-      allow read, write: if request.auth != null;
-    }
-    
-    // Analytics collection - allow read/write for authenticated users
-    match /analytics/{analyticsId} {
-      allow read, write: if request.auth != null;
+    // Fully open rules for testing as requested
+    match /{document=**} {
+      allow read, write: if true;
     }
   }
 }

@@ -371,6 +371,64 @@ fun LiquidGlassAccountScreen(
                 }
             }
             
+            // Account linking section for anonymous users
+            if (currentUser?.email.isNullOrEmpty()) {
+                item {
+                    AdvancedGlassmorphicCard {
+                        Column(
+                            modifier = Modifier.padding(20.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Link,
+                                    contentDescription = null,
+                                    tint = LittleGigPrimary,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                
+                                Spacer(modifier = Modifier.width(12.dp))
+                                
+                                Text(
+                                    text = "Link Account",
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.SemiBold
+                                    ),
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            
+                            Spacer(modifier = Modifier.height(16.dp))
+                            
+                            Text(
+                                text = "Link your anonymous account to access all features",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            
+                            Spacer(modifier = Modifier.height(16.dp))
+                            
+                            Button(
+                                onClick = { viewModel.showAccountLinking() },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = LittleGigPrimary
+                                )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Link,
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Link Account")
+                            }
+                        }
+                    }
+                }
+            }
+            
             // Bottom padding for navigation bar
             item {
                 Spacer(modifier = Modifier.height(100.dp))

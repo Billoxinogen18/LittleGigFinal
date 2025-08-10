@@ -46,13 +46,67 @@ fun AccountDashboard(
     
     val context = LocalContext.current
     val shareScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    // Visual success/error toasts
+    LaunchedEffect(uiState.isSuccess) {
+        if (uiState.isSuccess) {
+            scope.launch { snackbarHostState.showSnackbar("Success") }
+            viewModel.clearSuccess()
+        }
+    }
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { msg ->
+            scope.launch { snackbarHostState.showSnackbar(msg) }
+            viewModel.clearError()
+        }
+    }
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { pad ->
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp),
+            .padding(pad).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        item {
+            // Active Now toggle with permission prompt
+            AdvancedGlassmorphicCard {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Text(
+                        text = "Active Now",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        val isActiveNow by viewModel.isActiveNow.collectAsState()
+                        Switch(
+                            checked = isActiveNow,
+                            onCheckedChange = { value ->
+                                viewModel.toggleActiveNow(value)
+                            }
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Text(
+                            text = if (isActiveNow) "Sharing activity and location" else "Inactive",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = "We’ll ask for location permission when needed.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+
         item {
             // Profile Header
             AdvancedGlassmorphicCard {
@@ -343,6 +397,7 @@ fun AccountDashboard(
                 }
             }
         }
+    }
     }
 }
 

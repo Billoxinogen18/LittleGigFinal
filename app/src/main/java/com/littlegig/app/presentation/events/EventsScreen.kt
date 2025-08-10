@@ -306,7 +306,14 @@ fun EventsScreen(
                 ) {
                     items(uiState.events) { event ->
                         HapticButton(onClick = { navController.navigate("event_details/${event.id}") }) {
-                            LiquidGlassEventCard(event = event, onClick = { navController.navigate("event_details/${event.id}") })
+                            LiquidGlassEventCard(
+                            event = event, 
+                            onClick = { navController.navigate("event_details/${event.id}") },
+                            onChatClick = { 
+                                // Navigate to chat tab to start conversation via search
+                                navController.navigate("chat")
+                            }
+                        )
                             // Friends-going chip and actions beneath each card
                             val friends = uiState.eventIdToFriendsGoing[event.id] ?: 0
                             if (friends > 0) {
@@ -320,6 +327,14 @@ fun EventsScreen(
                                             style = MaterialTheme.typography.bodyMedium
                                         )
                                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                            OutlinedButton(onClick = {
+                                                // Navigate to chat with event organizer
+                                                navController.navigate("chat_details/${event.organizerId}")
+                                            }, shape = RoundedCornerShape(12.dp)) {
+                                                Icon(Icons.Default.Chat, contentDescription = null)
+                                                Spacer(Modifier.width(6.dp))
+                                                Text("Chat")
+                                            }
                                             OutlinedButton(onClick = {
                                                 shareScope.launch {
                                                     val link = viewModel.createEventShareLink(event)
@@ -374,7 +389,8 @@ fun EventsScreen(
                 onClick = {
                     // Navigate to upload tab
                     navController.navigate("upload")
-                }
+                },
+                modifier = Modifier.padding(bottom = 80.dp) // Add padding to avoid overlap with bottom navigation
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
