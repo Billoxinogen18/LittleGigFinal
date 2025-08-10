@@ -169,7 +169,7 @@ fun ChatDetailsScreen(
                         NeumorphicChatBubble(
                             message = message,
                             isFromCurrentUser = message.senderId == viewModel.currentUserId,
-                            onLikeMessage = { /* TODO */ _ -> },
+                            onLikeMessage = { msgId -> viewModel.toggleReaction(chatId, msgId, "♥") },
                             onShareTicket = { /* no-op */ },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -366,6 +366,7 @@ class ChatDetailsViewModel @Inject constructor(
             try {
                 val currentUser = authRepository.currentUser.value
                 if (currentUser != null) {
+                    val mentions = extractMentions(content)
                     val message = com.littlegig.app.data.model.Message(
                         content = content,
                         senderId = currentUser.id,
@@ -374,12 +375,27 @@ class ChatDetailsViewModel @Inject constructor(
                         messageType = com.littlegig.app.data.model.MessageType.TEXT,
                         timestamp = System.currentTimeMillis(),
                         readBy = emptyList(),
+                        mentions = mentions,
                         replyToMessageId = replyTarget?.id
                     )
                     chatRepository.sendMessage(chatId, message)
                     replyTarget = null
                 }
             } catch (e: Exception) { _uiState.value = _uiState.value.copy(error = e.message) }
+        }
+    }
+
+    private fun extractMentions(text: String): List<String> {
+        val regex = Regex("@([A-Za-z0-9_]{2,30})")
+        return regex.findAll(text).map { it.groupValues[1] }.toList()
+    }
+
+    fun toggleReaction(chatId: String, messageId: String, reaction: String) {
+        val me = currentUserId ?: return
+        viewModelScope.launch {
+            try { chatRepository.toggleReaction(chatId, messageId, me, reaction) } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = e.message)
+            }
         }
     }
 

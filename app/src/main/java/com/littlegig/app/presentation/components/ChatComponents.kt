@@ -170,6 +170,12 @@ fun NeumorphicChatBubble(
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    if (message.reactions.isNotEmpty()) {
+                        val grouped = message.reactions.values.groupingBy { it }.eachCount()
+                        grouped.entries.sortedByDescending { it.value }.take(3).forEach { (emoji, count) ->
+                            AssistChip(onClick = {}, label = { Text("$emoji $count") })
+                        }
+                    }
                     
                     if (isFromCurrentUser) {
                         val delivered = message.deliveredTo.isNotEmpty()

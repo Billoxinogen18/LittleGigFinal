@@ -445,4 +445,20 @@ class ChatRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun toggleReaction(chatId: String, messageId: String, userId: String, reaction: String): Result<Unit> {
+        return try {
+            val docRef = firestore.collection("chats")
+                .document(chatId)
+                .collection("messages")
+                .document(messageId)
+            firestore.runTransaction { tx ->
+                val snap = tx.get(docRef)
+                val current = (snap.get("reactions") as? Map<String, String>) ?: emptyMap()
+                val updated = if (current[userId] == reaction) current - userId else current + (userId to reaction)
+                tx.update(docRef, "reactions", updated)
+            }.await()
+            Result.success(Unit)
+        } catch (e: Exception) { Result.failure(e) }
+    }
 } 

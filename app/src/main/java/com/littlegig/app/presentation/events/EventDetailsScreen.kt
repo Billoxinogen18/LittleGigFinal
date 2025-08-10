@@ -408,7 +408,7 @@ fun EventDetailsScreen(
                                     Text("Recaps", color = if (isDark) Color.White else Color.Black)
                                 } }
                             }
-                            HapticButton(onClick = { /* TODO: open upload recap screen */ }, modifier = Modifier.weight(1f)) {
+                            HapticButton(onClick = { navController.navigate("recaps_upload/${uiState.event!!.id}") }, modifier = Modifier.weight(1f)) {
                                 AdvancedNeumorphicCard { Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                                     Icon(Icons.Default.VideoLibrary, contentDescription = null, tint = LittleGigPrimary, modifier = Modifier.size(20.dp))
                                     Spacer(Modifier.width(8.dp))

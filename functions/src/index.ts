@@ -34,7 +34,7 @@ export const processTicketPurchase = functions.region('us-central1').runWith({ m
     await db.collection('payments').add(paymentData);
 
     // Generate Flutterwave payment URL
-    const flutterwaveUrl = `https://checkout.flutterwave.com/v3/hosted/pay/${paymentReference}?amount=${amount}&currency=${currency}&tx_ref=${paymentReference}&redirect_url=${encodeURIComponent('https://littlegig.app/payment/callback')}&meta[eventId]=${eventId}&meta[userId]=${userId}`;
+    const flutterwaveUrl = `https://checkout.flutterwave.com/v3/hosted/pay/${paymentReference}?amount=${amount}&currency=${currency}&tx_ref=${paymentReference}&redirect_url=${encodeURIComponent('littlegig://payment/verify?ref=' + paymentReference)}&meta[eventId]=${eventId}&meta[userId]=${userId}`;
 
     return {
       success: true,
@@ -122,7 +122,7 @@ export const upgradeToBusinessAccount = functions.region('us-central1').runWith(
     await db.collection('payments').add(paymentData);
 
     // Generate Flutterwave payment URL
-    const flutterwaveUrl = `https://checkout.flutterwave.com/v3/hosted/pay/${paymentReference}?amount=${amount}&currency=${currency}&tx_ref=${paymentReference}&redirect_url=${encodeURIComponent('https://littlegig.app/payment/callback')}&meta[userId]=${userId}&meta[type]=${type}`;
+    const flutterwaveUrl = `https://checkout.flutterwave.com/v3/hosted/pay/${paymentReference}?amount=${amount}&currency=${currency}&tx_ref=${paymentReference}&redirect_url=${encodeURIComponent('littlegig://payment/verify?ref=' + paymentReference)}&meta[userId]=${userId}&meta[type]=${type}`;
 
     return {
       success: true,
