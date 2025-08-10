@@ -310,13 +310,26 @@ fun ChatScreen(
                                                 )
                                             }
                                             
-                                            Icon(
-                                                imageVector = Icons.Default.Chat,
-                                                contentDescription = "Start Chat",
-                                                tint = LittleGigPrimary,
-                                                modifier = Modifier.size(20.dp)
-                                            )
+                                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                                IconButton(onClick = { viewModel.blockUser(user.id) }) {
+                                                    Icon(Icons.Default.Block, contentDescription = "Block", tint = MaterialTheme.colorScheme.error)
+                                                }
+                                                IconButton(onClick = { viewModel.reportUser(user.id, "abuse") }) {
+                                                    Icon(Icons.Default.Report, contentDescription = "Report", tint = MaterialTheme.colorScheme.tertiary)
+                                                }
+                                            }
                                         }
+                                    }
+                                }
+                            }
+                            // Load more users footer when browsing All users
+                            item {
+                                if (!showContactsOnly) {
+                                    Spacer(Modifier.height(8.dp))
+                                    OutlinedButton(onClick = { viewModel.loadMoreAllUsers() }, modifier = Modifier.fillMaxWidth()) {
+                                        Icon(Icons.Default.ExpandMore, contentDescription = null)
+                                        Spacer(Modifier.width(8.dp))
+                                        Text("Load more users")
                                     }
                                 }
                             }
@@ -469,6 +482,14 @@ fun ChatScreen(
                                     }
                                 }
                             }
+                        }
+                    }
+                    item {
+                        Spacer(Modifier.height(4.dp))
+                        OutlinedButton(onClick = { viewModel.loadMoreChats() }, modifier = Modifier.fillMaxWidth()) {
+                            Icon(Icons.Default.ExpandMore, contentDescription = null)
+                            Spacer(Modifier.width(8.dp))
+                            Text("Load more chats")
                         }
                     }
                 }

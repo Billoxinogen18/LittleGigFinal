@@ -18,7 +18,7 @@
 - Upgraded build stack (AGP/Kotlin/Compose), configured local Android SDK, accepted licenses
 - Phase 2: E.164 normalization, lowercase index fields and queries, chat search debounce/cancel, contacts normalization, improved Places error handling
 - Phase 3: Observability (Timber + Crashlytics breadcrumbs), Contacts DataStore cache with hash/TTL, Places key/billing verification in Upload flow, chat empty-state UX
-- Phase 4 (in progress): Modern chat UI (neumorphic input/bubbles), ticket share hooks, chat callable functions exported; upcoming: media uploads, replies, redeem UI
+- Phase 4 (in progress): Modern chat UI (neumorphic input/bubbles), ticket share hooks, chat callable functions exported; media uploads, replies, redeem UI; delivery/read ticks, chat topic subscriptions, Inbox tab w/ badge, Google link polish; Firebase Perf traces
 
 ## Current Phase (Build-Focused – Phase 1)
 - Auth: anonymous-first + linking flows (phone primary), Google/email secondary

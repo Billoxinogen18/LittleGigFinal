@@ -322,11 +322,24 @@ fun LiquidGlassBottomNavigation(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 items.forEach { item ->
-                    LiquidGlassNavItem(
-                        item = item,
-                        isSelected = currentRoute == item.route,
-                        onClick = { onNavigate(item.route) }
-                    )
+                    Box {
+                        LiquidGlassNavItem(
+                            item = item,
+                            isSelected = currentRoute == item.route,
+                            onClick = { onNavigate(item.route) }
+                        )
+                        if (item.route == "inbox") {
+                            // simple badge dot; later can be replaced with count from ViewModel ambient
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .offset(x = 10.dp, y = (-2).dp)
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(LittleGigPrimary)
+                            )
+                        }
+                    }
                 }
             }
         }

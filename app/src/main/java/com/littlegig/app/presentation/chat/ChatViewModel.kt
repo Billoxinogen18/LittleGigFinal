@@ -36,12 +36,23 @@ class ChatViewModel @Inject constructor(
     private val _allUsers = MutableStateFlow<List<User>>(emptyList())
     val allUsers: StateFlow<List<User>> = _allUsers.asStateFlow()
 
+    // Paging state
+    private var lastAllUsersId: String? = null
+    private var hasMoreAllUsers: Boolean = true
+    private var isLoadingUsersPage: Boolean = false
+
+    private var lastChatsTime: Long? = null
+    private var hasMoreChats: Boolean = true
+    private var isLoadingChatsPage: Boolean = false
+
     fun loadChats() {
         viewModelScope.launch {
             try {
                 val user = authRepository.currentUser.first() ?: return@launch
                 chatRepository.getUserChats(user.id).collect { list ->
                     _chats.value = list
+                    // track last timestamp for pagination
+                    lastChatsTime = list.lastOrNull()?.lastMessageTime
                 }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
@@ -77,12 +88,32 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun loadAllUsers(limit: Int = 100) {
+    fun loadAllUsers(limit: Int = 50) {
         viewModelScope.launch {
-            val users = userRepository.listAllUsers(limit).getOrElse { emptyList() }
+            if (isLoadingUsersPage) return@launch
+            isLoadingUsersPage = true
+            val users = userRepository.listUsersPage(limit, null).getOrElse { emptyList() }
             _allUsers.value = users
-            println("🔥 DEBUG: All users loaded: ${users.size}")
+            lastAllUsersId = users.lastOrNull()?.id
+            hasMoreAllUsers = users.size >= limit
+            println("🔥 DEBUG: All users first page loaded: ${users.size}")
             if (!_uiState.value.isSearching) _searchResults.value = users
+            isLoadingUsersPage = false
+        }
+    }
+
+    fun loadMoreAllUsers(limit: Int = 50) {
+        viewModelScope.launch {
+            if (isLoadingUsersPage || !hasMoreAllUsers) return@launch
+            isLoadingUsersPage = true
+            val next = userRepository.listUsersPage(limit, lastAllUsersId).getOrElse { emptyList() }
+            val combined = (_allUsers.value + next).distinctBy { it.id }
+            _allUsers.value = combined
+            if (!_uiState.value.isSearching) _searchResults.value = combined
+            lastAllUsersId = next.lastOrNull()?.id
+            hasMoreAllUsers = next.size >= limit
+            println("🔥 DEBUG: Loaded more users: ${next.size}, total=${combined.size}")
+            isLoadingUsersPage = false
         }
     }
 
@@ -103,6 +134,49 @@ class ChatViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     error = "Failed to create chat: ${e.message}"
                 )
+            }
+        }
+    }
+
+    fun loadMoreChats(limit: Int = 30) {
+        viewModelScope.launch {
+            try {
+                if (isLoadingChatsPage || !hasMoreChats) return@launch
+                isLoadingChatsPage = true
+                val user = authRepository.currentUser.first() ?: return@launch
+                val page = chatRepository.getUserChatsPage(user.id, limit, lastChatsTime).getOrElse { emptyList() }
+                val combined = (_chats.value + page).distinctBy { it.id }
+                _chats.value = combined.sortedByDescending { it.lastMessageTime }
+                lastChatsTime = page.lastOrNull()?.lastMessageTime ?: lastChatsTime
+                hasMoreChats = page.size >= limit
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    error = "Failed to load more chats: ${e.message}"
+                )
+            } finally {
+                isLoadingChatsPage = false
+            }
+        }
+    }
+
+    fun blockUser(targetUserId: String) {
+        viewModelScope.launch {
+            try {
+                val me = authRepository.currentUser.first() ?: return@launch
+                userRepository.blockUser(me.id, targetUserId)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = "Failed to block user: ${e.message}")
+            }
+        }
+    }
+
+    fun reportUser(targetUserId: String, reason: String) {
+        viewModelScope.launch {
+            try {
+                val me = authRepository.currentUser.first() ?: return@launch
+                userRepository.reportUser(me.id, targetUserId, reason)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = "Failed to report user: ${e.message}")
             }
         }
     }

@@ -76,7 +76,7 @@
 
 ## Performance
 - Image pipeline: memory/disk cache; placeholders; downsampling
-- Paging for lists (events, users, chats)
+- Paging for lists (events, users, chats) — in progress (users/chats wired in UI & repos; events pending)
 - Avoid full collection scans; add composite indexes where needed
 
 ## Observability
@@ -154,9 +154,8 @@
 - Sharing to external platforms (IG/TikTok/Twitter) with attribution
 
 ## Notifications & Inbox
-- Push categories: chat, tickets, event changes, recommendations
-- Smart delivery (quiet hours, batching); rich actions (Reply, View Ticket)
-- In-app inbox with read states and bulk actions
+- In-app inbox foundation — done (screen + VM)
+- Bottom navigation Inbox tab with badge — done (simple badge; count hookup pending)
 
 ## Profiles & Social
 - Public profiles with badges, rank, attended events, media
