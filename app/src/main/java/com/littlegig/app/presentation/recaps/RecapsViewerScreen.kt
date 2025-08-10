@@ -22,6 +22,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.lifecycle.viewModelScope
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
 
 @Composable
 fun RecapsViewerScreen(eventId: String, viewModel: RecapsViewerViewModel = hiltViewModel()) {
@@ -35,11 +36,27 @@ fun RecapsViewerScreen(eventId: String, viewModel: RecapsViewerViewModel = hiltV
         if (recaps.isNotEmpty()) {
             val recap = recaps.getOrNull(index)
             recap?.let {
-                AsyncImage(
-                    model = it.mediaUrls.firstOrNull(),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
-                )
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .pointerInput(index) {
+                            detectTapGestures(
+                                onPress = {
+                                    viewModel.setPlaying(false)
+                                    tryAwaitRelease()
+                                    viewModel.setPlaying(true)
+                                },
+                                onDoubleTap = { viewModel.likeCurrent() },
+                                onTap = { viewModel.next() }
+                            )
+                        }
+                ) {
+                    AsyncImage(
+                        model = it.mediaUrls.firstOrNull(),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
             Row(Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 repeat(recaps.size) { i ->
@@ -120,4 +137,9 @@ class RecapsViewerViewModel @Inject constructor(
     }
 
     fun setPlaying(playing: Boolean) { _isPlaying.value = playing }
+
+    fun likeCurrent() {
+        val recap = _recaps.value.getOrNull(_currentIndex.value) ?: return
+        viewModelScope.launch { recapRepository.likeRecap(recap.id, "me") }
+    }
 }

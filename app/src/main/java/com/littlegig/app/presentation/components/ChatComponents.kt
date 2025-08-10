@@ -135,6 +135,18 @@ fun NeumorphicChatBubble(
                                 }
                             }
                         }
+                        // Lightweight link preview container (URL detection only; preview fetched in ViewModel for now)
+                        val url = remember(message.content) { Regex("https?://\\S+").find(message.content)?.value }
+                        if (!url.isNullOrBlank()) {
+                            Spacer(Modifier.height(8.dp))
+                            AdvancedNeumorphicCard {
+                                Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(Icons.Default.Link, contentDescription = null, tint = LittleGigPrimary)
+                                    Spacer(Modifier.width(8.dp))
+                                    Text(url, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                }
+                            }
+                        }
                     }
                     MessageType.IMAGE -> {
                         AsyncImage(

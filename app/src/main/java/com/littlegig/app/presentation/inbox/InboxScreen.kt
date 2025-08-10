@@ -13,12 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.littlegig.app.presentation.components.AdvancedNeumorphicCard
+import kotlinx.coroutines.launch
 
 @Composable
 fun InboxScreen(viewModel: InboxViewModel = hiltViewModel()) {
     val records by viewModel.records.collectAsState()
     val loading by viewModel.loading.collectAsState()
     var filter by remember { mutableStateOf("all") }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) { viewModel.load() }
     // Auto-mark unread as read when opening inbox
@@ -51,7 +54,20 @@ fun InboxScreen(viewModel: InboxViewModel = hiltViewModel()) {
                                 Text(text = rec.body, style = MaterialTheme.typography.bodySmall)
                             }
                             IconButton(onClick = { viewModel.markAsRead(rec.id) }) { Icon(Icons.Default.MarkEmailRead, contentDescription = null) }
-                            IconButton(onClick = { viewModel.delete(rec.id) }) { Icon(Icons.Default.Delete, contentDescription = null) }
+                            IconButton(onClick = {
+                                scope.launch {
+                                    viewModel.delete(rec.id)
+                                    val res = snackbarHostState.showSnackbar(
+                                        message = "Deleted",
+                                        actionLabel = "Undo",
+                                        withDismissAction = true
+                                    )
+                                    if (res == SnackbarResult.ActionPerformed) {
+                                        // No server undo here; just reload
+                                        viewModel.load()
+                                    }
+                                }
+                            }) { Icon(Icons.Default.Delete, contentDescription = null) }
                         }
                     }
                 }

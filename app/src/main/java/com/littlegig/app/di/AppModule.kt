@@ -89,4 +89,8 @@ object AppModule {
     @Singleton
     fun provideChatMediaService(@ApplicationContext context: Context, storage: FirebaseStorage): ChatMediaService =
         ChatMediaService(storage, context.contentResolver)
+
+    @Provides
+    @Singleton
+    fun provideLinkPreviewService(): com.littlegig.app.services.LinkPreviewService = com.littlegig.app.services.LinkPreviewService()
 }

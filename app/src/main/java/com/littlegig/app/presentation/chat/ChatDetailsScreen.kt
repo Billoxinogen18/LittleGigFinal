@@ -98,6 +98,11 @@ fun ChatDetailsScreen(
         }
     }
 
+    val showScrollToBottom by remember {
+        derivedStateOf { (listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) < messages.lastIndex }
+    }
+    val uiScope = rememberCoroutineScope()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -172,7 +177,6 @@ fun ChatDetailsScreen(
                 }
             }
             if (searchOpen) {
-                val uiScope = rememberCoroutineScope()
                 Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                     OutlinedTextField(
                         value = searchQuery,
@@ -300,11 +304,26 @@ fun ChatDetailsScreen(
                     Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         TextButton(onClick = { viewModel.chooseReplyTarget(m); actionSheetFor = null }) { Text("Reply") }
                         TextButton(onClick = { clipboard.setText(AnnotatedString(m.content)); actionSheetFor = null }) { Text("Copy") }
+                        if (m.senderId == viewModel.currentUserId) {
+                            TextButton(onClick = {
+                                messageText = m.content
+                                actionSheetFor = null
+                            }) { Text("Edit") }
+                        }
                         TextButton(onClick = { /* forward placeholder: navigate to chat picker */ actionSheetFor = null }) { Text("Forward") }
                         if (m.senderId == viewModel.currentUserId) {
                             TextButton(onClick = { viewModel.deleteMessage(chatId, m.id); actionSheetFor = null }) { Text("Delete", color = MaterialTheme.colorScheme.error) }
                         }
                     }
+                }
+            }
+
+            if (showScrollToBottom) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    FloatingActionButton(
+                        onClick = { uiScope.launch { listState.animateScrollToItem(messages.lastIndex) } },
+                        modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+                    ) { Icon(Icons.Default.ArrowDownward, contentDescription = null) }
                 }
             }
 

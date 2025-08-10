@@ -19,9 +19,31 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalContext
+import android.app.Activity
+import android.view.WindowManager
 
 @Composable
 fun TicketDetailsScreen(ticketId: String, ticketCode: String) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+    // Boost screen brightness while on QR screen
+    DisposableEffect(Unit) {
+        val original = activity?.window?.attributes?.screenBrightness ?: WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+        if (activity != null) {
+            val lp = activity.window.attributes
+            lp.screenBrightness = 1f
+            activity.window.attributes = lp
+        }
+        onDispose {
+            if (activity != null) {
+                val lp = activity.window.attributes
+                lp.screenBrightness = original
+                activity.window.attributes = lp
+            }
+        }
+    }
     val infinite = rememberInfiniteTransition(label = "qr_pulse")
     val scaleState = infinite.animateFloat(
         initialValue = 0.95f,
