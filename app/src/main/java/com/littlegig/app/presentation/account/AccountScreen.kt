@@ -241,6 +241,24 @@ fun LegacyAccountScreen(
                 )
             }
             
+            // Link Phone Number (if not linked)
+            if (currentUser?.phoneNumber.isNullOrEmpty()) {
+                AccountMenuItem(
+                    icon = Icons.Default.Phone,
+                    title = "Link Phone Number",
+                    subtitle = "Secure your account with phone verification",
+                    onClick = { viewModel.linkAnonymousAccount() }
+                )
+            }
+            
+            // Demo users for testing (development only)
+            AccountMenuItem(
+                icon = Icons.Default.Group,
+                title = "Create Demo Users",
+                subtitle = "Add test users for chat functionality",
+                onClick = { viewModel.createDemoUsers() }
+            )
+            
             Divider(modifier = Modifier.padding(vertical = 8.dp))
             
             // Settings

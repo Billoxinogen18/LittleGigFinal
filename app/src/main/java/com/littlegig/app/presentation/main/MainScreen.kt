@@ -21,6 +21,7 @@ import com.littlegig.app.presentation.chat.ChatDetailsScreen
 import com.littlegig.app.presentation.chat.ChatScreen
 import com.littlegig.app.presentation.components.*
 import com.littlegig.app.presentation.events.EventsScreen
+import com.littlegig.app.presentation.events.ModernEventsScreen
 import com.littlegig.app.presentation.events.EventDetailsScreen
 import com.littlegig.app.presentation.map.MapScreen
 import com.littlegig.app.presentation.settings.SettingsScreen
@@ -94,7 +95,7 @@ fun MainScreen(
                     startDestination = "events"
                 ) {
                     composable("events") {
-                        EventsScreen(navController = navController)
+                        ModernEventsScreen(navController = navController)
                     }
                     composable("tickets") {
                         TicketsScreen(navController = navController)

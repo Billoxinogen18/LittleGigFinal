@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cleanupOldData = exports.sendPushNotification = exports.getActiveUsersNearby = exports.updateUserLocation = exports.calculateUserRanks = exports.getPaymentHistory = exports.upgradeToBusinessAccount = exports.verifyPayment = exports.processTicketPurchase = void 0;
+exports.seedDemoUsers = exports.cleanupOldData = exports.sendPushNotification = exports.getActiveUsersNearby = exports.updateUserLocation = exports.calculateUserRanks = exports.getPaymentHistory = exports.upgradeToBusinessAccount = exports.verifyPayment = exports.processTicketPurchase = void 0;
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const axios_1 = require("axios");
@@ -383,4 +383,27 @@ exports.cleanupOldData = functions.region('us-central1').runWith({ memory: '256M
 });
 // Export chat-related callable functions
 __exportStar(require("./chat"), exports);
+exports.seedDemoUsers = functions.region('us-central1').https.onCall(async (data, context) => {
+    const count = Math.max(1, Math.min(20, (data && data.count) || 10));
+    const batch = db.batch();
+    for (let i = 0; i < count; i++) {
+        const id = `demo_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+        const userRef = db.collection('users').doc(id);
+        batch.set(userRef, {
+            displayName: `Demo User ${i + 1}`,
+            username: `demo${i + 1}`,
+            email: `demo${i + 1}@example.com`,
+            profileImageUrl: '',
+            userType: 'REGULAR',
+            rank: 'NOVICE',
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            username_lower: `demo${i + 1}`,
+            email_lower: `demo${i + 1}@example.com`,
+            displayName_lower: `demo user ${i + 1}`
+        });
+    }
+    await batch.commit();
+    return { success: true, created: count };
+});
 //# sourceMappingURL=index.js.map

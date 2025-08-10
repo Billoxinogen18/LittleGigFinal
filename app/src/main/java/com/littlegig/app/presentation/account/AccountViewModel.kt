@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import android.net.Uri
+import com.google.firebase.functions.FirebaseFunctions
+import kotlinx.coroutines.tasks.await
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
@@ -20,7 +22,8 @@ class AccountViewModel @Inject constructor(
     private val locationService: LocationService,
     private val eventRepository: com.littlegig.app.data.repository.EventRepository,
     private val userRepository: com.littlegig.app.data.repository.UserRepository,
-    private val paymentRepository: com.littlegig.app.data.repository.PaymentRepository
+    private val paymentRepository: com.littlegig.app.data.repository.PaymentRepository,
+    private val functions: FirebaseFunctions
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AccountUiState())
@@ -433,6 +436,29 @@ class AccountViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = e.message
+                )
+            }
+        }
+    }
+    
+    fun createDemoUsers() {
+        viewModelScope.launch {
+            try {
+                _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+                
+                val result = functions.getHttpsCallable("seedDemoUsers")
+                    .call(mapOf("count" to 10))
+                    .await()
+                
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    isSuccess = true,
+                    error = null
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = "Failed to create demo users: ${e.message}"
                 )
             }
         }
