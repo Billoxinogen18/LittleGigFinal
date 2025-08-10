@@ -46,8 +46,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.snapshotFlow
 
 @Composable
 fun EventsScreen(
@@ -80,13 +78,7 @@ fun EventsScreen(
                 )
             )
     ) {
-        SwipeRefresh(
-            state = swipeRefreshState,
-            onRefresh = {
-                println("🔥 DEBUG: Pull-to-refresh triggered")
-                viewModel.loadEvents()
-            }
-        ) {
+        SwipeRefresh(state = swipeRefreshState, onRefresh = { viewModel.loadEvents() }) {
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -388,7 +380,6 @@ fun EventsScreen(
                     }
                 }
             }
-            } // End of SwipeRefresh Column
         }
         
         // Floating action button for quick upload
