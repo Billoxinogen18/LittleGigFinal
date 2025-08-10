@@ -16,6 +16,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import com.littlegig.app.services.PhoneNumberService
+import com.littlegig.app.services.ContactsService
+import com.littlegig.app.services.PhoneAuthService
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -65,4 +68,19 @@ object AppModule {
     fun provideNetworkMonitor(@ApplicationContext context: Context): NetworkMonitor {
         return NetworkMonitor(context)
     }
+
+    @Provides
+    @Singleton
+    fun providePhoneNumberService(): PhoneNumberService = PhoneNumberService()
+
+    @Provides
+    @Singleton
+    fun provideContactsService(
+        @ApplicationContext context: Context,
+        phoneNumberService: PhoneNumberService
+    ): ContactsService = ContactsService(context, phoneNumberService)
+
+    @Provides
+    @Singleton
+    fun providePhoneAuthService(auth: FirebaseAuth): PhoneAuthService = PhoneAuthService(auth)
 }
