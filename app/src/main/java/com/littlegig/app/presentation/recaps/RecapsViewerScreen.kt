@@ -94,9 +94,11 @@ class RecapsViewerViewModel @Inject constructor(
             if (_recaps.value.isEmpty()) { delay(250); continue }
             if (_isPlaying.value) {
                 _progress.value = 0f
+                var stopped = false
                 repeat(100) {
+                    if (!_isPlaying.value) { stopped = true; return@repeat }
                     delay(50)
-                    if (_isPlaying.value) _progress.value += 0.01f else break
+                    _progress.value += 0.01f
                 }
                 if (_progress.value >= 0.99f) next()
             } else {
