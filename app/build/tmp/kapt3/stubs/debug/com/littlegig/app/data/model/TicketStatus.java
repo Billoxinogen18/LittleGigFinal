@@ -10,7 +10,7 @@ public enum TicketStatus {
     TicketStatus() {
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public static kotlin.enums.EnumEntries<com.littlegig.app.data.model.TicketStatus> getEntries() {
         return null;
     }

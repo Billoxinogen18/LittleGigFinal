@@ -4,27 +4,27 @@ package com.littlegig.app.presentation.account;
 public final class AccountScreenKt {
     
     @kotlin.OptIn(markerClass = {androidx.compose.material3.ExperimentalMaterial3Api.class})
-    @androidx.compose.runtime.Composable
-    public static final void AccountScreen(@org.jetbrains.annotations.NotNull
-    androidx.navigation.NavController navController, @org.jetbrains.annotations.NotNull
-    kotlin.jvm.functions.Function0<kotlin.Unit> onSignOut, @org.jetbrains.annotations.NotNull
+    @androidx.compose.runtime.Composable()
+    public static final void AccountScreen(@org.jetbrains.annotations.NotNull()
+    androidx.navigation.NavController navController, @org.jetbrains.annotations.NotNull()
+    kotlin.jvm.functions.Function0<kotlin.Unit> onSignOut, @org.jetbrains.annotations.NotNull()
     com.littlegig.app.presentation.account.AccountViewModel viewModel) {
     }
     
-    @androidx.compose.runtime.Composable
-    public static final void LegacyAccountScreen(@org.jetbrains.annotations.NotNull
-    androidx.navigation.NavController navController, @org.jetbrains.annotations.NotNull
-    kotlin.jvm.functions.Function0<kotlin.Unit> onSignOut, @org.jetbrains.annotations.NotNull
+    @androidx.compose.runtime.Composable()
+    public static final void LegacyAccountScreen(@org.jetbrains.annotations.NotNull()
+    androidx.navigation.NavController navController, @org.jetbrains.annotations.NotNull()
+    kotlin.jvm.functions.Function0<kotlin.Unit> onSignOut, @org.jetbrains.annotations.NotNull()
     com.littlegig.app.presentation.account.AccountViewModel viewModel) {
     }
     
     @kotlin.OptIn(markerClass = {androidx.compose.material3.ExperimentalMaterial3Api.class})
-    @androidx.compose.runtime.Composable
-    public static final void AccountMenuItem(@org.jetbrains.annotations.NotNull
-    androidx.compose.ui.graphics.vector.ImageVector icon, @org.jetbrains.annotations.NotNull
-    java.lang.String title, @org.jetbrains.annotations.NotNull
-    java.lang.String subtitle, @org.jetbrains.annotations.NotNull
-    kotlin.jvm.functions.Function0<kotlin.Unit> onClick, @org.jetbrains.annotations.NotNull
+    @androidx.compose.runtime.Composable()
+    public static final void AccountMenuItem(@org.jetbrains.annotations.NotNull()
+    androidx.compose.ui.graphics.vector.ImageVector icon, @org.jetbrains.annotations.NotNull()
+    java.lang.String title, @org.jetbrains.annotations.NotNull()
+    java.lang.String subtitle, @org.jetbrains.annotations.NotNull()
+    kotlin.jvm.functions.Function0<kotlin.Unit> onClick, @org.jetbrains.annotations.NotNull()
     androidx.compose.ui.Modifier modifier) {
     }
 }

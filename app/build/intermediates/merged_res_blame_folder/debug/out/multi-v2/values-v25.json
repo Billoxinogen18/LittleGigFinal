@@ -4,7 +4,7 @@
             "outputFile": "com.littlegig.app-mergeDebugResources-87:/values-v25/values-v25.xml",
             "map": [
                 {
-                    "source": "/Users/israelbill/.gradle/caches/8.14/transforms/6cd355f18205fa2424ed7ee1af41afee/transformed/appcompat-1.6.1/res/values-v25/values-v25.xml",
+                    "source": "/home/ubuntu/.gradle/caches/8.14/transforms/6cd355f18205fa2424ed7ee1af41afee/transformed/appcompat-1.6.1/res/values-v25/values-v25.xml",
                     "from": {
                         "startLines": "2,3,4,6",
                         "startColumns": "4,4,4,4",

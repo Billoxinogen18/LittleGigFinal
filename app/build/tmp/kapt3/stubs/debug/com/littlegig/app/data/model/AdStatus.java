@@ -11,7 +11,7 @@ public enum AdStatus {
     AdStatus() {
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public static kotlin.enums.EnumEntries<com.littlegig.app.data.model.AdStatus> getEntries() {
         return null;
     }

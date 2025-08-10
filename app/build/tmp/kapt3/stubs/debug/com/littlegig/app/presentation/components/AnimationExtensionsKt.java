@@ -6,8 +6,8 @@ public final class AnimationExtensionsKt {
     /**
      * Adds a smooth bounce animation when the component is tapped
      */
-    @org.jetbrains.annotations.NotNull
-    public static final androidx.compose.ui.Modifier bounceClick(@org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
+    public static final androidx.compose.ui.Modifier bounceClick(@org.jetbrains.annotations.NotNull()
     androidx.compose.ui.Modifier $this$bounceClick, float scaleDown) {
         return null;
     }
@@ -15,8 +15,8 @@ public final class AnimationExtensionsKt {
     /**
      * Adds a floating animation effect
      */
-    @org.jetbrains.annotations.NotNull
-    public static final androidx.compose.ui.Modifier floatingEffect(@org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
+    public static final androidx.compose.ui.Modifier floatingEffect(@org.jetbrains.annotations.NotNull()
     androidx.compose.ui.Modifier $this$floatingEffect, float strength, int duration) {
         return null;
     }
@@ -24,8 +24,8 @@ public final class AnimationExtensionsKt {
     /**
      * Adds a subtle rotation animation
      */
-    @org.jetbrains.annotations.NotNull
-    public static final androidx.compose.ui.Modifier gentleRotation(@org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
+    public static final androidx.compose.ui.Modifier gentleRotation(@org.jetbrains.annotations.NotNull()
     androidx.compose.ui.Modifier $this$gentleRotation, float degrees, int duration) {
         return null;
     }
@@ -33,8 +33,8 @@ public final class AnimationExtensionsKt {
     /**
      * Adds a breathing/pulsing animation
      */
-    @org.jetbrains.annotations.NotNull
-    public static final androidx.compose.ui.Modifier breathingEffect(@org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
+    public static final androidx.compose.ui.Modifier breathingEffect(@org.jetbrains.annotations.NotNull()
     androidx.compose.ui.Modifier $this$breathingEffect, float minScale, float maxScale, int duration) {
         return null;
     }
@@ -42,8 +42,8 @@ public final class AnimationExtensionsKt {
     /**
      * Adds a shimmer loading effect
      */
-    @org.jetbrains.annotations.NotNull
-    public static final androidx.compose.ui.Modifier shimmerEffect(@org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
+    public static final androidx.compose.ui.Modifier shimmerEffect(@org.jetbrains.annotations.NotNull()
     androidx.compose.ui.Modifier $this$shimmerEffect, int duration) {
         return null;
     }
@@ -51,8 +51,8 @@ public final class AnimationExtensionsKt {
     /**
      * Adds a delayed entrance animation
      */
-    @org.jetbrains.annotations.NotNull
-    public static final androidx.compose.ui.Modifier slideInAnimation(@org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
+    public static final androidx.compose.ui.Modifier slideInAnimation(@org.jetbrains.annotations.NotNull()
     androidx.compose.ui.Modifier $this$slideInAnimation, int delay, int duration) {
         return null;
     }
@@ -60,7 +60,7 @@ public final class AnimationExtensionsKt {
     /**
      * Creates a staggered animation delay based on index
      */
-    @androidx.compose.runtime.Composable
+    @androidx.compose.runtime.Composable()
     public static final int rememberStaggeredAnimationDelay(int index, int baseDelay) {
         return 0;
     }
@@ -68,7 +68,7 @@ public final class AnimationExtensionsKt {
     /**
      * Creates a smooth transition between states
      */
-    @androidx.compose.runtime.Composable
+    @androidx.compose.runtime.Composable()
     public static final float rememberSmoothTransition(boolean targetState, int duration) {
         return 0.0F;
     }

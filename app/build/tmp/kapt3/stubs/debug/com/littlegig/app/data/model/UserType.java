@@ -9,7 +9,7 @@ public enum UserType {
     UserType() {
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public static kotlin.enums.EnumEntries<com.littlegig.app.data.model.UserType> getEntries() {
         return null;
     }

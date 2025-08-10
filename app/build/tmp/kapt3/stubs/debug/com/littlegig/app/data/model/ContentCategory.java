@@ -13,7 +13,7 @@ public enum ContentCategory {
     ContentCategory() {
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public static kotlin.enums.EnumEntries<com.littlegig.app.data.model.ContentCategory> getEntries() {
         return null;
     }

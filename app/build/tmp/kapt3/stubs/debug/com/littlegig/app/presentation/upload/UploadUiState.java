@@ -4,10 +4,10 @@ package com.littlegig.app.presentation.upload;
 public final class UploadUiState {
     private final boolean isLoading = false;
     private final boolean isSuccess = false;
-    @org.jetbrains.annotations.Nullable
+    @org.jetbrains.annotations.Nullable()
     private final java.lang.String error = null;
     
-    public UploadUiState(boolean isLoading, boolean isSuccess, @org.jetbrains.annotations.Nullable
+    public UploadUiState(boolean isLoading, boolean isSuccess, @org.jetbrains.annotations.Nullable()
     java.lang.String error) {
         super();
     }
@@ -20,7 +20,7 @@ public final class UploadUiState {
         return false;
     }
     
-    @org.jetbrains.annotations.Nullable
+    @org.jetbrains.annotations.Nullable()
     public final java.lang.String getError() {
         return null;
     }
@@ -37,30 +37,30 @@ public final class UploadUiState {
         return false;
     }
     
-    @org.jetbrains.annotations.Nullable
+    @org.jetbrains.annotations.Nullable()
     public final java.lang.String component3() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
-    public final com.littlegig.app.presentation.upload.UploadUiState copy(boolean isLoading, boolean isSuccess, @org.jetbrains.annotations.Nullable
+    @org.jetbrains.annotations.NotNull()
+    public final com.littlegig.app.presentation.upload.UploadUiState copy(boolean isLoading, boolean isSuccess, @org.jetbrains.annotations.Nullable()
     java.lang.String error) {
         return null;
     }
     
-    @java.lang.Override
-    public boolean equals(@org.jetbrains.annotations.Nullable
+    @java.lang.Override()
+    public boolean equals(@org.jetbrains.annotations.Nullable()
     java.lang.Object other) {
         return false;
     }
     
-    @java.lang.Override
+    @java.lang.Override()
     public int hashCode() {
         return 0;
     }
     
-    @java.lang.Override
-    @org.jetbrains.annotations.NotNull
+    @java.lang.Override()
+    @org.jetbrains.annotations.NotNull()
     public java.lang.String toString() {
         return null;
     }

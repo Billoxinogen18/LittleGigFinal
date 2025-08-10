@@ -4,7 +4,7 @@
             "outputFile": "com.littlegig.app-mergeDebugResources-87:/values-watch-v20/values-watch-v20.xml",
             "map": [
                 {
-                    "source": "/Users/israelbill/.gradle/caches/8.14/transforms/6cd355f18205fa2424ed7ee1af41afee/transformed/appcompat-1.6.1/res/values-watch-v20/values-watch-v20.xml",
+                    "source": "/home/ubuntu/.gradle/caches/8.14/transforms/6cd355f18205fa2424ed7ee1af41afee/transformed/appcompat-1.6.1/res/values-watch-v20/values-watch-v20.xml",
                     "from": {
                         "startLines": "2,5,8",
                         "startColumns": "4,4,4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "/Users/israelbill/.gradle/caches/8.14/transforms/9fad59b6e8e811913077227041bfe25e/transformed/jetified-play-services-auth-20.7.0/res/values-watch-v20/values.xml",
+                    "source": "/home/ubuntu/.gradle/caches/8.14/transforms/79db9947a7c3d3d3599d73b8bbfb7e27/transformed/play-services-auth-20.7.0/res/values-watch-v20/values.xml",
                     "from": {
                         "startLines": "4,5,6,7,8,9,10,11",
                         "startColumns": "0,0,0,0,0,0,0,0",

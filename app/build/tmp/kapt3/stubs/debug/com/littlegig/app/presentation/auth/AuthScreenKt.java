@@ -4,41 +4,41 @@ package com.littlegig.app.presentation.auth;
 public final class AuthScreenKt {
     
     @kotlin.OptIn(markerClass = {androidx.compose.material3.ExperimentalMaterial3Api.class})
-    @androidx.compose.runtime.Composable
-    public static final void AuthScreen(@org.jetbrains.annotations.NotNull
-    kotlin.jvm.functions.Function0<kotlin.Unit> onAuthSuccess, @org.jetbrains.annotations.NotNull
+    @androidx.compose.runtime.Composable()
+    public static final void AuthScreen(@org.jetbrains.annotations.NotNull()
+    kotlin.jvm.functions.Function0<kotlin.Unit> onAuthSuccess, @org.jetbrains.annotations.NotNull()
     kotlin.jvm.functions.Function0<kotlin.Unit> onGoogleSignIn) {
     }
     
-    @androidx.compose.runtime.Composable
+    @androidx.compose.runtime.Composable()
     public static final void AnimatedLogoSection() {
     }
     
-    @androidx.compose.runtime.Composable
+    @androidx.compose.runtime.Composable()
     public static final void FloatingOrbs() {
     }
     
-    @androidx.compose.runtime.Composable
+    @androidx.compose.runtime.Composable()
     public static final void LiquidGlassBackground() {
     }
     
-    @androidx.compose.runtime.Composable
-    public static final void NeumorphicTextField(@org.jetbrains.annotations.NotNull
-    java.lang.String value, @org.jetbrains.annotations.NotNull
-    kotlin.jvm.functions.Function1<? super java.lang.String, kotlin.Unit> onValueChange, @org.jetbrains.annotations.NotNull
-    java.lang.String label, @org.jetbrains.annotations.NotNull
-    androidx.compose.ui.graphics.vector.ImageVector leadingIcon, @org.jetbrains.annotations.Nullable
-    androidx.compose.ui.graphics.vector.ImageVector trailingIcon, @org.jetbrains.annotations.Nullable
-    kotlin.jvm.functions.Function0<kotlin.Unit> onTrailingIconClick, @org.jetbrains.annotations.NotNull
-    androidx.compose.foundation.text.KeyboardOptions keyboardOptions, @org.jetbrains.annotations.NotNull
-    androidx.compose.ui.text.input.VisualTransformation visualTransformation, @org.jetbrains.annotations.NotNull
+    @androidx.compose.runtime.Composable()
+    public static final void NeumorphicTextField(@org.jetbrains.annotations.NotNull()
+    java.lang.String value, @org.jetbrains.annotations.NotNull()
+    kotlin.jvm.functions.Function1<? super java.lang.String, kotlin.Unit> onValueChange, @org.jetbrains.annotations.NotNull()
+    java.lang.String label, @org.jetbrains.annotations.NotNull()
+    androidx.compose.ui.graphics.vector.ImageVector leadingIcon, @org.jetbrains.annotations.Nullable()
+    androidx.compose.ui.graphics.vector.ImageVector trailingIcon, @org.jetbrains.annotations.Nullable()
+    kotlin.jvm.functions.Function0<kotlin.Unit> onTrailingIconClick, @org.jetbrains.annotations.NotNull()
+    androidx.compose.foundation.text.KeyboardOptions keyboardOptions, @org.jetbrains.annotations.NotNull()
+    androidx.compose.ui.text.input.VisualTransformation visualTransformation, @org.jetbrains.annotations.NotNull()
     androidx.compose.ui.Modifier modifier) {
     }
     
-    @androidx.compose.runtime.Composable
-    public static final void NeumorphicChip(@org.jetbrains.annotations.NotNull
-    kotlin.jvm.functions.Function0<kotlin.Unit> onClick, boolean isSelected, @org.jetbrains.annotations.NotNull
-    androidx.compose.ui.Modifier modifier, @org.jetbrains.annotations.NotNull
+    @androidx.compose.runtime.Composable()
+    public static final void NeumorphicChip(@org.jetbrains.annotations.NotNull()
+    kotlin.jvm.functions.Function0<kotlin.Unit> onClick, boolean isSelected, @org.jetbrains.annotations.NotNull()
+    androidx.compose.ui.Modifier modifier, @org.jetbrains.annotations.NotNull()
     kotlin.jvm.functions.Function0<kotlin.Unit> content) {
     }
 }

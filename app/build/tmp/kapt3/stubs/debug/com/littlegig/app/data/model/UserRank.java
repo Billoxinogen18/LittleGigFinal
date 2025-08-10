@@ -14,7 +14,7 @@ public enum UserRank {
     UserRank() {
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public static kotlin.enums.EnumEntries<com.littlegig.app.data.model.UserRank> getEntries() {
         return null;
     }

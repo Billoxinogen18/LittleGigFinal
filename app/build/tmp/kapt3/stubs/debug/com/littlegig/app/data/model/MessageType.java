@@ -15,7 +15,7 @@ public enum MessageType {
     MessageType() {
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public static kotlin.enums.EnumEntries<com.littlegig.app.data.model.MessageType> getEntries() {
         return null;
     }

@@ -6,7 +6,7 @@ public final class RankingAlgorithm {
     private static final double RECAP_ENGAGEMENT_WEIGHT = 0.35;
     private static final double EVENTS_ATTENDED_WEIGHT = 0.15;
     private static final double PLATFORM_ACTIVITY_WEIGHT = 0.1;
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public static final com.littlegig.app.data.model.RankingAlgorithm.Companion Companion = null;
     
     public RankingAlgorithm() {
@@ -20,7 +20,7 @@ public final class RankingAlgorithm {
             super();
         }
         
-        @org.jetbrains.annotations.NotNull
+        @org.jetbrains.annotations.NotNull()
         public final com.littlegig.app.data.model.UserEngagement calculateUserEngagement(double eventEngagement, double recapEngagement, int eventsAttended, double platformActivity) {
             return null;
         }

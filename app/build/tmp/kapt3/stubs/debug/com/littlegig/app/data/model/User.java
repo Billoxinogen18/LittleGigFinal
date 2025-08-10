@@ -1,100 +1,115 @@
 package com.littlegig.app.data.model;
 
-@kotlin.Metadata(mv = {1, 9, 0}, k = 1, xi = 48, d1 = {"\u0000T\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0000\n\u0002\u0010\u000e\n\u0002\b\b\n\u0002\u0018\u0002\n\u0000\n\u0002\u0010\u000b\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0000\n\u0002\u0010 \n\u0002\b\u0003\n\u0002\u0010\t\n\u0002\b+\n\u0002\u0010\b\n\u0002\b\u0002\n\u0002\u0010\u0000\n\u0002\b\u0003\n\u0002\u0010\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0002\b\u0087\b\u0018\u00002\u00020\u0001B\u00bf\u0001\u0012\b\b\u0002\u0010\u0002\u001a\u00020\u0003\u0012\b\b\u0002\u0010\u0004\u001a\u00020\u0003\u0012\b\b\u0002\u0010\u0005\u001a\u00020\u0003\u0012\b\b\u0002\u0010\u0006\u001a\u00020\u0003\u0012\b\b\u0002\u0010\u0007\u001a\u00020\u0003\u0012\b\b\u0002\u0010\b\u001a\u00020\u0003\u0012\b\b\u0002\u0010\t\u001a\u00020\u0003\u0012\b\b\u0002\u0010\n\u001a\u00020\u0003\u0012\b\b\u0002\u0010\u000b\u001a\u00020\f\u0012\b\b\u0002\u0010\r\u001a\u00020\u000e\u0012\n\b\u0002\u0010\u000f\u001a\u0004\u0018\u00010\u0003\u0012\b\b\u0002\u0010\u0010\u001a\u00020\u0011\u0012\u000e\b\u0002\u0010\u0012\u001a\b\u0012\u0004\u0012\u00020\u00030\u0013\u0012\u000e\b\u0002\u0010\u0014\u001a\b\u0012\u0004\u0012\u00020\u00030\u0013\u0012\n\b\u0002\u0010\u0015\u001a\u0004\u0018\u00010\u0003\u0012\b\b\u0002\u0010\u0016\u001a\u00020\u0017\u0012\b\b\u0002\u0010\u0018\u001a\u00020\u0017\u00a2\u0006\u0002\u0010\u0019J\t\u00100\u001a\u00020\u0003H\u00c6\u0003J\t\u00101\u001a\u00020\u000eH\u00c6\u0003J\u000b\u00102\u001a\u0004\u0018\u00010\u0003H\u00c6\u0003J\t\u00103\u001a\u00020\u0011H\u00c6\u0003J\u000f\u00104\u001a\b\u0012\u0004\u0012\u00020\u00030\u0013H\u00c6\u0003J\u000f\u00105\u001a\b\u0012\u0004\u0012\u00020\u00030\u0013H\u00c6\u0003J\u000b\u00106\u001a\u0004\u0018\u00010\u0003H\u00c6\u0003J\t\u00107\u001a\u00020\u0017H\u00c6\u0003J\t\u00108\u001a\u00020\u0017H\u00c6\u0003J\t\u00109\u001a\u00020\u0003H\u00c6\u0003J\t\u0010:\u001a\u00020\u0003H\u00c6\u0003J\t\u0010;\u001a\u00020\u0003H\u00c6\u0003J\t\u0010<\u001a\u00020\u0003H\u00c6\u0003J\t\u0010=\u001a\u00020\u0003H\u00c6\u0003J\t\u0010>\u001a\u00020\u0003H\u00c6\u0003J\t\u0010?\u001a\u00020\u0003H\u00c6\u0003J\t\u0010@\u001a\u00020\fH\u00c6\u0003J\u00c3\u0001\u0010A\u001a\u00020\u00002\b\b\u0002\u0010\u0002\u001a\u00020\u00032\b\b\u0002\u0010\u0004\u001a\u00020\u00032\b\b\u0002\u0010\u0005\u001a\u00020\u00032\b\b\u0002\u0010\u0006\u001a\u00020\u00032\b\b\u0002\u0010\u0007\u001a\u00020\u00032\b\b\u0002\u0010\b\u001a\u00020\u00032\b\b\u0002\u0010\t\u001a\u00020\u00032\b\b\u0002\u0010\n\u001a\u00020\u00032\b\b\u0002\u0010\u000b\u001a\u00020\f2\b\b\u0002\u0010\r\u001a\u00020\u000e2\n\b\u0002\u0010\u000f\u001a\u0004\u0018\u00010\u00032\b\b\u0002\u0010\u0010\u001a\u00020\u00112\u000e\b\u0002\u0010\u0012\u001a\b\u0012\u0004\u0012\u00020\u00030\u00132\u000e\b\u0002\u0010\u0014\u001a\b\u0012\u0004\u0012\u00020\u00030\u00132\n\b\u0002\u0010\u0015\u001a\u0004\u0018\u00010\u00032\b\b\u0002\u0010\u0016\u001a\u00020\u00172\b\b\u0002\u0010\u0018\u001a\u00020\u0017H\u00c6\u0001J\t\u0010B\u001a\u00020CH\u00d6\u0001J\u0013\u0010D\u001a\u00020\u000e2\b\u0010E\u001a\u0004\u0018\u00010FH\u00d6\u0003J\t\u0010G\u001a\u00020CH\u00d6\u0001J\t\u0010H\u001a\u00020\u0003H\u00d6\u0001J\u0019\u0010I\u001a\u00020J2\u0006\u0010K\u001a\u00020L2\u0006\u0010M\u001a\u00020CH\u00d6\u0001R\u0013\u0010\u0015\u001a\u0004\u0018\u00010\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b\u001a\u0010\u001bR\u0013\u0010\u000f\u001a\u0004\u0018\u00010\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b\u001c\u0010\u001bR\u0011\u0010\u0016\u001a\u00020\u0017\u00a2\u0006\b\n\u0000\u001a\u0004\b\u001d\u0010\u001eR\u0011\u0010\u0006\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b\u001f\u0010\u001bR\u0011\u0010\u0004\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b \u0010\u001bR\u0017\u0010\u0012\u001a\b\u0012\u0004\u0012\u00020\u00030\u0013\u00a2\u0006\b\n\u0000\u001a\u0004\b!\u0010\"R\u0017\u0010\u0014\u001a\b\u0012\u0004\u0012\u00020\u00030\u0013\u00a2\u0006\b\n\u0000\u001a\u0004\b#\u0010\"R\u0011\u0010\u0002\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b$\u0010\u001bR\u0011\u0010\r\u001a\u00020\u000e\u00a2\u0006\b\n\u0000\u001a\u0004\b\r\u0010%R\u0011\u0010\u0005\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b&\u0010\u001bR\u0011\u0010\b\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b\'\u0010\u001bR\u0011\u0010\n\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b(\u0010\u001bR\u0011\u0010\t\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b)\u0010\u001bR\u0011\u0010\u0010\u001a\u00020\u0011\u00a2\u0006\b\n\u0000\u001a\u0004\b*\u0010+R\u0011\u0010\u0018\u001a\u00020\u0017\u00a2\u0006\b\n\u0000\u001a\u0004\b,\u0010\u001eR\u0011\u0010\u000b\u001a\u00020\f\u00a2\u0006\b\n\u0000\u001a\u0004\b-\u0010.R\u0011\u0010\u0007\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b/\u0010\u001b\u00a8\u0006N"}, d2 = {"Lcom/littlegig/app/data/model/User;", "Landroid/os/Parcelable;", "id", "", "email", "name", "displayName", "username", "phoneNumber", "profilePictureUrl", "profileImageUrl", "userType", "Lcom/littlegig/app/data/model/UserType;", "isInfluencer", "", "businessId", "rank", "Lcom/littlegig/app/data/model/UserRank;", "followers", "", "following", "bio", "createdAt", "", "updatedAt", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/littlegig/app/data/model/UserType;ZLjava/lang/String;Lcom/littlegig/app/data/model/UserRank;Ljava/util/List;Ljava/util/List;Ljava/lang/String;JJ)V", "getBio", "()Ljava/lang/String;", "getBusinessId", "getCreatedAt", "()J", "getDisplayName", "getEmail", "getFollowers", "()Ljava/util/List;", "getFollowing", "getId", "()Z", "getName", "getPhoneNumber", "getProfileImageUrl", "getProfilePictureUrl", "getRank", "()Lcom/littlegig/app/data/model/UserRank;", "getUpdatedAt", "getUserType", "()Lcom/littlegig/app/data/model/UserType;", "getUsername", "component1", "component10", "component11", "component12", "component13", "component14", "component15", "component16", "component17", "component2", "component3", "component4", "component5", "component6", "component7", "component8", "component9", "copy", "describeContents", "", "equals", "other", "", "hashCode", "toString", "writeToParcel", "", "parcel", "Landroid/os/Parcel;", "flags", "app_debug"})
-@kotlinx.parcelize.Parcelize
+@kotlin.Metadata(mv = {1, 9, 0}, k = 1, xi = 48, d1 = {"\u0000b\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0000\n\u0002\u0010\u000e\n\u0002\b\b\n\u0002\u0018\u0002\n\u0000\n\u0002\u0010\u000b\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0000\n\u0002\u0010 \n\u0002\b\u0003\n\u0002\u0010\u0006\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0002\n\u0002\u0010\t\n\u0002\b8\n\u0002\u0010\b\n\u0002\b\u0002\n\u0002\u0010\u0000\n\u0002\b\u0003\n\u0002\u0010\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0002\b\u0087\b\u0018\u00002\u00020\u0001B\u00f1\u0001\u0012\b\b\u0002\u0010\u0002\u001a\u00020\u0003\u0012\b\b\u0002\u0010\u0004\u001a\u00020\u0003\u0012\b\b\u0002\u0010\u0005\u001a\u00020\u0003\u0012\b\b\u0002\u0010\u0006\u001a\u00020\u0003\u0012\b\b\u0002\u0010\u0007\u001a\u00020\u0003\u0012\b\b\u0002\u0010\b\u001a\u00020\u0003\u0012\b\b\u0002\u0010\t\u001a\u00020\u0003\u0012\b\b\u0002\u0010\n\u001a\u00020\u0003\u0012\b\b\u0002\u0010\u000b\u001a\u00020\f\u0012\n\b\u0002\u0010\r\u001a\u0004\u0018\u00010\u000e\u0012\b\b\u0002\u0010\u000f\u001a\u00020\u000e\u0012\n\b\u0002\u0010\u0010\u001a\u0004\u0018\u00010\u0003\u0012\b\b\u0002\u0010\u0011\u001a\u00020\u0012\u0012\u000e\b\u0002\u0010\u0013\u001a\b\u0012\u0004\u0012\u00020\u00030\u0014\u0012\u000e\b\u0002\u0010\u0015\u001a\b\u0012\u0004\u0012\u00020\u00030\u0014\u0012\u000e\b\u0002\u0010\u0016\u001a\b\u0012\u0004\u0012\u00020\u00030\u0014\u0012\b\b\u0002\u0010\u0017\u001a\u00020\u0018\u0012\n\b\u0002\u0010\u0019\u001a\u0004\u0018\u00010\u001a\u0012\n\b\u0002\u0010\u001b\u001a\u0004\u0018\u00010\u0003\u0012\b\b\u0002\u0010\u001c\u001a\u00020\u001d\u0012\b\b\u0002\u0010\u001e\u001a\u00020\u001d\u00a2\u0006\u0002\u0010\u001fJ\t\u0010>\u001a\u00020\u0003H\u00c6\u0003J\u0010\u0010?\u001a\u0004\u0018\u00010\u000eH\u00c6\u0003\u00a2\u0006\u0002\u0010.J\t\u0010@\u001a\u00020\u000eH\u00c6\u0003J\u000b\u0010A\u001a\u0004\u0018\u00010\u0003H\u00c6\u0003J\t\u0010B\u001a\u00020\u0012H\u00c6\u0003J\u000f\u0010C\u001a\b\u0012\u0004\u0012\u00020\u00030\u0014H\u00c6\u0003J\u000f\u0010D\u001a\b\u0012\u0004\u0012\u00020\u00030\u0014H\u00c6\u0003J\u000f\u0010E\u001a\b\u0012\u0004\u0012\u00020\u00030\u0014H\u00c6\u0003J\t\u0010F\u001a\u00020\u0018H\u00c6\u0003J\u000b\u0010G\u001a\u0004\u0018\u00010\u001aH\u00c6\u0003J\u000b\u0010H\u001a\u0004\u0018\u00010\u0003H\u00c6\u0003J\t\u0010I\u001a\u00020\u0003H\u00c6\u0003J\t\u0010J\u001a\u00020\u001dH\u00c6\u0003J\t\u0010K\u001a\u00020\u001dH\u00c6\u0003J\t\u0010L\u001a\u00020\u0003H\u00c6\u0003J\t\u0010M\u001a\u00020\u0003H\u00c6\u0003J\t\u0010N\u001a\u00020\u0003H\u00c6\u0003J\t\u0010O\u001a\u00020\u0003H\u00c6\u0003J\t\u0010P\u001a\u00020\u0003H\u00c6\u0003J\t\u0010Q\u001a\u00020\u0003H\u00c6\u0003J\t\u0010R\u001a\u00020\fH\u00c6\u0003J\u00fa\u0001\u0010S\u001a\u00020\u00002\b\b\u0002\u0010\u0002\u001a\u00020\u00032\b\b\u0002\u0010\u0004\u001a\u00020\u00032\b\b\u0002\u0010\u0005\u001a\u00020\u00032\b\b\u0002\u0010\u0006\u001a\u00020\u00032\b\b\u0002\u0010\u0007\u001a\u00020\u00032\b\b\u0002\u0010\b\u001a\u00020\u00032\b\b\u0002\u0010\t\u001a\u00020\u00032\b\b\u0002\u0010\n\u001a\u00020\u00032\b\b\u0002\u0010\u000b\u001a\u00020\f2\n\b\u0002\u0010\r\u001a\u0004\u0018\u00010\u000e2\b\b\u0002\u0010\u000f\u001a\u00020\u000e2\n\b\u0002\u0010\u0010\u001a\u0004\u0018\u00010\u00032\b\b\u0002\u0010\u0011\u001a\u00020\u00122\u000e\b\u0002\u0010\u0013\u001a\b\u0012\u0004\u0012\u00020\u00030\u00142\u000e\b\u0002\u0010\u0015\u001a\b\u0012\u0004\u0012\u00020\u00030\u00142\u000e\b\u0002\u0010\u0016\u001a\b\u0012\u0004\u0012\u00020\u00030\u00142\b\b\u0002\u0010\u0017\u001a\u00020\u00182\n\b\u0002\u0010\u0019\u001a\u0004\u0018\u00010\u001a2\n\b\u0002\u0010\u001b\u001a\u0004\u0018\u00010\u00032\b\b\u0002\u0010\u001c\u001a\u00020\u001d2\b\b\u0002\u0010\u001e\u001a\u00020\u001dH\u00c6\u0001\u00a2\u0006\u0002\u0010TJ\t\u0010U\u001a\u00020VH\u00d6\u0001J\u0013\u0010W\u001a\u00020\u000e2\b\u0010X\u001a\u0004\u0018\u00010YH\u00d6\u0003J\t\u0010Z\u001a\u00020VH\u00d6\u0001J\t\u0010[\u001a\u00020\u0003H\u00d6\u0001J\u0019\u0010\\\u001a\u00020]2\u0006\u0010^\u001a\u00020_2\u0006\u0010`\u001a\u00020VH\u00d6\u0001R\u0013\u0010\u001b\u001a\u0004\u0018\u00010\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b \u0010!R\u0013\u0010\u0010\u001a\u0004\u0018\u00010\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b\"\u0010!R\u0011\u0010\u001c\u001a\u00020\u001d\u00a2\u0006\b\n\u0000\u001a\u0004\b#\u0010$R\u0011\u0010\u0006\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b%\u0010!R\u0011\u0010\u0004\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b&\u0010!R\u0011\u0010\u0017\u001a\u00020\u0018\u00a2\u0006\b\n\u0000\u001a\u0004\b\'\u0010(R\u0017\u0010\u0013\u001a\b\u0012\u0004\u0012\u00020\u00030\u0014\u00a2\u0006\b\n\u0000\u001a\u0004\b)\u0010*R\u0017\u0010\u0015\u001a\b\u0012\u0004\u0012\u00020\u00030\u0014\u00a2\u0006\b\n\u0000\u001a\u0004\b+\u0010*R\u0011\u0010\u0002\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b,\u0010!R\u0015\u0010\r\u001a\u0004\u0018\u00010\u000e\u00a2\u0006\n\n\u0002\u0010/\u001a\u0004\b-\u0010.R\u0011\u0010\u000f\u001a\u00020\u000e\u00a2\u0006\b\n\u0000\u001a\u0004\b\u000f\u00100R\u0013\u0010\u0019\u001a\u0004\u0018\u00010\u001a\u00a2\u0006\b\n\u0000\u001a\u0004\b1\u00102R\u0017\u0010\u0016\u001a\b\u0012\u0004\u0012\u00020\u00030\u0014\u00a2\u0006\b\n\u0000\u001a\u0004\b3\u0010*R\u0011\u0010\u0005\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b4\u0010!R\u0011\u0010\b\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b5\u0010!R\u0011\u0010\n\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b6\u0010!R\u0011\u0010\t\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b7\u0010!R\u0011\u0010\u0011\u001a\u00020\u0012\u00a2\u0006\b\n\u0000\u001a\u0004\b8\u00109R\u0011\u0010\u001e\u001a\u00020\u001d\u00a2\u0006\b\n\u0000\u001a\u0004\b:\u0010$R\u0011\u0010\u000b\u001a\u00020\f\u00a2\u0006\b\n\u0000\u001a\u0004\b;\u0010<R\u0011\u0010\u0007\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b=\u0010!\u00a8\u0006a"}, d2 = {"Lcom/littlegig/app/data/model/User;", "Landroid/os/Parcelable;", "id", "", "email", "name", "displayName", "username", "phoneNumber", "profilePictureUrl", "profileImageUrl", "userType", "Lcom/littlegig/app/data/model/UserType;", "influencer", "", "isInfluencer", "businessId", "rank", "Lcom/littlegig/app/data/model/UserRank;", "followers", "", "following", "likedEvents", "engagementScore", "", "lastRankUpdate", "Ljava/util/Date;", "bio", "createdAt", "", "updatedAt", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/littlegig/app/data/model/UserType;Ljava/lang/Boolean;ZLjava/lang/String;Lcom/littlegig/app/data/model/UserRank;Ljava/util/List;Ljava/util/List;Ljava/util/List;DLjava/util/Date;Ljava/lang/String;JJ)V", "getBio", "()Ljava/lang/String;", "getBusinessId", "getCreatedAt", "()J", "getDisplayName", "getEmail", "getEngagementScore", "()D", "getFollowers", "()Ljava/util/List;", "getFollowing", "getId", "getInfluencer", "()Ljava/lang/Boolean;", "Ljava/lang/Boolean;", "()Z", "getLastRankUpdate", "()Ljava/util/Date;", "getLikedEvents", "getName", "getPhoneNumber", "getProfileImageUrl", "getProfilePictureUrl", "getRank", "()Lcom/littlegig/app/data/model/UserRank;", "getUpdatedAt", "getUserType", "()Lcom/littlegig/app/data/model/UserType;", "getUsername", "component1", "component10", "component11", "component12", "component13", "component14", "component15", "component16", "component17", "component18", "component19", "component2", "component20", "component21", "component3", "component4", "component5", "component6", "component7", "component8", "component9", "copy", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/littlegig/app/data/model/UserType;Ljava/lang/Boolean;ZLjava/lang/String;Lcom/littlegig/app/data/model/UserRank;Ljava/util/List;Ljava/util/List;Ljava/util/List;DLjava/util/Date;Ljava/lang/String;JJ)Lcom/littlegig/app/data/model/User;", "describeContents", "", "equals", "other", "", "hashCode", "toString", "writeToParcel", "", "parcel", "Landroid/os/Parcel;", "flags", "app_debug"})
+@kotlinx.parcelize.Parcelize()
 public final class User implements android.os.Parcelable {
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     private final java.lang.String id = null;
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     private final java.lang.String email = null;
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     private final java.lang.String name = null;
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     private final java.lang.String displayName = null;
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     private final java.lang.String username = null;
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     private final java.lang.String phoneNumber = null;
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     private final java.lang.String profilePictureUrl = null;
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     private final java.lang.String profileImageUrl = null;
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     private final com.littlegig.app.data.model.UserType userType = null;
+    @org.jetbrains.annotations.Nullable()
+    private final java.lang.Boolean influencer = null;
     private final boolean isInfluencer = false;
-    @org.jetbrains.annotations.Nullable
+    @org.jetbrains.annotations.Nullable()
     private final java.lang.String businessId = null;
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     private final com.littlegig.app.data.model.UserRank rank = null;
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     private final java.util.List<java.lang.String> followers = null;
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     private final java.util.List<java.lang.String> following = null;
-    @org.jetbrains.annotations.Nullable
+    @org.jetbrains.annotations.NotNull()
+    private final java.util.List<java.lang.String> likedEvents = null;
+    private final double engagementScore = 0.0;
+    @org.jetbrains.annotations.Nullable()
+    private final java.util.Date lastRankUpdate = null;
+    @org.jetbrains.annotations.Nullable()
     private final java.lang.String bio = null;
     private final long createdAt = 0L;
     private final long updatedAt = 0L;
     
-    public User(@org.jetbrains.annotations.NotNull
-    java.lang.String id, @org.jetbrains.annotations.NotNull
-    java.lang.String email, @org.jetbrains.annotations.NotNull
-    java.lang.String name, @org.jetbrains.annotations.NotNull
-    java.lang.String displayName, @org.jetbrains.annotations.NotNull
-    java.lang.String username, @org.jetbrains.annotations.NotNull
-    java.lang.String phoneNumber, @org.jetbrains.annotations.NotNull
-    java.lang.String profilePictureUrl, @org.jetbrains.annotations.NotNull
-    java.lang.String profileImageUrl, @org.jetbrains.annotations.NotNull
-    com.littlegig.app.data.model.UserType userType, boolean isInfluencer, @org.jetbrains.annotations.Nullable
-    java.lang.String businessId, @org.jetbrains.annotations.NotNull
-    com.littlegig.app.data.model.UserRank rank, @org.jetbrains.annotations.NotNull
-    java.util.List<java.lang.String> followers, @org.jetbrains.annotations.NotNull
-    java.util.List<java.lang.String> following, @org.jetbrains.annotations.Nullable
+    public User(@org.jetbrains.annotations.NotNull()
+    java.lang.String id, @org.jetbrains.annotations.NotNull()
+    java.lang.String email, @org.jetbrains.annotations.NotNull()
+    java.lang.String name, @org.jetbrains.annotations.NotNull()
+    java.lang.String displayName, @org.jetbrains.annotations.NotNull()
+    java.lang.String username, @org.jetbrains.annotations.NotNull()
+    java.lang.String phoneNumber, @org.jetbrains.annotations.NotNull()
+    java.lang.String profilePictureUrl, @org.jetbrains.annotations.NotNull()
+    java.lang.String profileImageUrl, @org.jetbrains.annotations.NotNull()
+    com.littlegig.app.data.model.UserType userType, @org.jetbrains.annotations.Nullable()
+    java.lang.Boolean influencer, boolean isInfluencer, @org.jetbrains.annotations.Nullable()
+    java.lang.String businessId, @org.jetbrains.annotations.NotNull()
+    com.littlegig.app.data.model.UserRank rank, @org.jetbrains.annotations.NotNull()
+    java.util.List<java.lang.String> followers, @org.jetbrains.annotations.NotNull()
+    java.util.List<java.lang.String> following, @org.jetbrains.annotations.NotNull()
+    java.util.List<java.lang.String> likedEvents, double engagementScore, @org.jetbrains.annotations.Nullable()
+    java.util.Date lastRankUpdate, @org.jetbrains.annotations.Nullable()
     java.lang.String bio, long createdAt, long updatedAt) {
         super();
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String getId() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String getEmail() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String getName() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String getDisplayName() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String getUsername() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String getPhoneNumber() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String getProfilePictureUrl() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String getProfileImageUrl() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final com.littlegig.app.data.model.UserType getUserType() {
+        return null;
+    }
+    
+    @org.jetbrains.annotations.Nullable()
+    public final java.lang.Boolean getInfluencer() {
         return null;
     }
     
@@ -102,27 +117,41 @@ public final class User implements android.os.Parcelable {
         return false;
     }
     
-    @org.jetbrains.annotations.Nullable
+    @org.jetbrains.annotations.Nullable()
     public final java.lang.String getBusinessId() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final com.littlegig.app.data.model.UserRank getRank() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.util.List<java.lang.String> getFollowers() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.util.List<java.lang.String> getFollowing() {
         return null;
     }
     
-    @org.jetbrains.annotations.Nullable
+    @org.jetbrains.annotations.NotNull()
+    public final java.util.List<java.lang.String> getLikedEvents() {
+        return null;
+    }
+    
+    public final double getEngagementScore() {
+        return 0.0;
+    }
+    
+    @org.jetbrains.annotations.Nullable()
+    public final java.util.Date getLastRankUpdate() {
+        return null;
+    }
+    
+    @org.jetbrains.annotations.Nullable()
     public final java.lang.String getBio() {
         return null;
     }
@@ -139,131 +168,153 @@ public final class User implements android.os.Parcelable {
         super();
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String component1() {
         return null;
     }
     
-    public final boolean component10() {
+    @org.jetbrains.annotations.Nullable()
+    public final java.lang.Boolean component10() {
+        return null;
+    }
+    
+    public final boolean component11() {
         return false;
     }
     
-    @org.jetbrains.annotations.Nullable
-    public final java.lang.String component11() {
+    @org.jetbrains.annotations.Nullable()
+    public final java.lang.String component12() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
-    public final com.littlegig.app.data.model.UserRank component12() {
+    @org.jetbrains.annotations.NotNull()
+    public final com.littlegig.app.data.model.UserRank component13() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
-    public final java.util.List<java.lang.String> component13() {
-        return null;
-    }
-    
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.util.List<java.lang.String> component14() {
         return null;
     }
     
-    @org.jetbrains.annotations.Nullable
-    public final java.lang.String component15() {
+    @org.jetbrains.annotations.NotNull()
+    public final java.util.List<java.lang.String> component15() {
         return null;
     }
     
-    public final long component16() {
-        return 0L;
+    @org.jetbrains.annotations.NotNull()
+    public final java.util.List<java.lang.String> component16() {
+        return null;
     }
     
-    public final long component17() {
-        return 0L;
+    public final double component17() {
+        return 0.0;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.Nullable()
+    public final java.util.Date component18() {
+        return null;
+    }
+    
+    @org.jetbrains.annotations.Nullable()
+    public final java.lang.String component19() {
+        return null;
+    }
+    
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String component2() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    public final long component20() {
+        return 0L;
+    }
+    
+    public final long component21() {
+        return 0L;
+    }
+    
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String component3() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String component4() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String component5() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String component6() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String component7() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final java.lang.String component8() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public final com.littlegig.app.data.model.UserType component9() {
         return null;
     }
     
-    @org.jetbrains.annotations.NotNull
-    public final com.littlegig.app.data.model.User copy(@org.jetbrains.annotations.NotNull
-    java.lang.String id, @org.jetbrains.annotations.NotNull
-    java.lang.String email, @org.jetbrains.annotations.NotNull
-    java.lang.String name, @org.jetbrains.annotations.NotNull
-    java.lang.String displayName, @org.jetbrains.annotations.NotNull
-    java.lang.String username, @org.jetbrains.annotations.NotNull
-    java.lang.String phoneNumber, @org.jetbrains.annotations.NotNull
-    java.lang.String profilePictureUrl, @org.jetbrains.annotations.NotNull
-    java.lang.String profileImageUrl, @org.jetbrains.annotations.NotNull
-    com.littlegig.app.data.model.UserType userType, boolean isInfluencer, @org.jetbrains.annotations.Nullable
-    java.lang.String businessId, @org.jetbrains.annotations.NotNull
-    com.littlegig.app.data.model.UserRank rank, @org.jetbrains.annotations.NotNull
-    java.util.List<java.lang.String> followers, @org.jetbrains.annotations.NotNull
-    java.util.List<java.lang.String> following, @org.jetbrains.annotations.Nullable
+    @org.jetbrains.annotations.NotNull()
+    public final com.littlegig.app.data.model.User copy(@org.jetbrains.annotations.NotNull()
+    java.lang.String id, @org.jetbrains.annotations.NotNull()
+    java.lang.String email, @org.jetbrains.annotations.NotNull()
+    java.lang.String name, @org.jetbrains.annotations.NotNull()
+    java.lang.String displayName, @org.jetbrains.annotations.NotNull()
+    java.lang.String username, @org.jetbrains.annotations.NotNull()
+    java.lang.String phoneNumber, @org.jetbrains.annotations.NotNull()
+    java.lang.String profilePictureUrl, @org.jetbrains.annotations.NotNull()
+    java.lang.String profileImageUrl, @org.jetbrains.annotations.NotNull()
+    com.littlegig.app.data.model.UserType userType, @org.jetbrains.annotations.Nullable()
+    java.lang.Boolean influencer, boolean isInfluencer, @org.jetbrains.annotations.Nullable()
+    java.lang.String businessId, @org.jetbrains.annotations.NotNull()
+    com.littlegig.app.data.model.UserRank rank, @org.jetbrains.annotations.NotNull()
+    java.util.List<java.lang.String> followers, @org.jetbrains.annotations.NotNull()
+    java.util.List<java.lang.String> following, @org.jetbrains.annotations.NotNull()
+    java.util.List<java.lang.String> likedEvents, double engagementScore, @org.jetbrains.annotations.Nullable()
+    java.util.Date lastRankUpdate, @org.jetbrains.annotations.Nullable()
     java.lang.String bio, long createdAt, long updatedAt) {
         return null;
     }
     
-    @java.lang.Override
+    @java.lang.Override()
     public int describeContents() {
         return 0;
     }
     
-    @java.lang.Override
-    public boolean equals(@org.jetbrains.annotations.Nullable
+    @java.lang.Override()
+    public boolean equals(@org.jetbrains.annotations.Nullable()
     java.lang.Object other) {
         return false;
     }
     
-    @java.lang.Override
+    @java.lang.Override()
     public int hashCode() {
         return 0;
     }
     
-    @java.lang.Override
-    @org.jetbrains.annotations.NotNull
+    @java.lang.Override()
+    @org.jetbrains.annotations.NotNull()
     public java.lang.String toString() {
         return null;
     }
     
-    @java.lang.Override
-    public void writeToParcel(@org.jetbrains.annotations.NotNull
+    @java.lang.Override()
+    public void writeToParcel(@org.jetbrains.annotations.NotNull()
     android.os.Parcel parcel, int flags) {
     }
 }

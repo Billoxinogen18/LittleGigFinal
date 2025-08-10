@@ -4,8 +4,8 @@ package com.littlegig.app.presentation.main;
 public final class MainScreenKt {
     
     @kotlin.OptIn(markerClass = {androidx.compose.material3.ExperimentalMaterial3Api.class})
-    @androidx.compose.runtime.Composable
-    public static final void MainScreen(@org.jetbrains.annotations.NotNull
+    @androidx.compose.runtime.Composable()
+    public static final void MainScreen(@org.jetbrains.annotations.NotNull()
     kotlin.jvm.functions.Function0<kotlin.Unit> onSignOut) {
     }
 }

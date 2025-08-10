@@ -28,6 +28,10 @@ data class Event(
     val likes: Int = 0,
     val shares: Int = 0,
     val views: Int = 0,
+    // Users who liked this event (for quick membership checks and counts)
+    val likedBy: List<String> = emptyList(),
+    // Per-user rating map (userId -> rating)
+    val ratings: Map<String, Float> = emptyMap(),
     val metadata: Map<String, String> = emptyMap()
 ) : Parcelable
 

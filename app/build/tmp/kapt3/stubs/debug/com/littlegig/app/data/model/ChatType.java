@@ -9,7 +9,7 @@ public enum ChatType {
     ChatType() {
     }
     
-    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.NotNull()
     public static kotlin.enums.EnumEntries<com.littlegig.app.data.model.ChatType> getEntries() {
         return null;
     }

@@ -10,10 +10,10 @@ import dagger.hilt.android.components.ViewModelComponent;
 import dagger.hilt.android.internal.lifecycle.HiltViewModelMap;
 import dagger.hilt.codegen.OriginatingElement;
 import dagger.multibindings.IntoMap;
-import dagger.multibindings.IntoSet;
-import dagger.multibindings.StringKey;
-import java.lang.String;
+import dagger.multibindings.LazyClassKey;
+import javax.annotation.processing.Generated;
 
+@Generated("dagger.hilt.android.processor.internal.viewmodel.ViewModelProcessor")
 @OriginatingElement(
     topLevelClass = RecapsUploadViewModel.class
 )
@@ -29,7 +29,7 @@ public final class RecapsUploadViewModel_HiltModules {
 
     @Binds
     @IntoMap
-    @StringKey("com.littlegig.app.presentation.recaps.RecapsUploadViewModel")
+    @LazyClassKey(RecapsUploadViewModel.class)
     @HiltViewModelMap
     public abstract ViewModel binds(RecapsUploadViewModel vm);
   }
@@ -41,10 +41,11 @@ public final class RecapsUploadViewModel_HiltModules {
     }
 
     @Provides
-    @IntoSet
+    @IntoMap
+    @LazyClassKey(RecapsUploadViewModel.class)
     @HiltViewModelMap.KeySet
-    public static String provide() {
-      return "com.littlegig.app.presentation.recaps.RecapsUploadViewModel";
+    public static boolean provide() {
+      return true;
     }
   }
 }
