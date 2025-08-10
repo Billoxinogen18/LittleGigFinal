@@ -353,6 +353,23 @@ class EventRepository @Inject constructor(
         val cachedData = getCachedEvents("featured_events") ?: emptyList()
         emit(cachedData)
     }
+
+    suspend fun getEventsPage(limit: Int = 20, startAfterCreatedAt: Long? = null): Result<List<Event>> {
+        return try {
+            var query = firestore.collection("events")
+                .whereEqualTo("active", true)
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .limit(limit.toLong())
+            if (startAfterCreatedAt != null) {
+                query = query.startAfter(startAfterCreatedAt)
+            }
+            val snapshot = query.get().await()
+            val events = snapshot.documents.mapNotNull { it.toObject(Event::class.java)?.copy(id = it.id) }
+            Result.success(events)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
     
     suspend fun getEventById(eventId: String): Result<Event> {
         val cacheKey = "event_$eventId"

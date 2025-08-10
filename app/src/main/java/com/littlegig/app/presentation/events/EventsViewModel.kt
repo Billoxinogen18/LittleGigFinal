@@ -37,7 +37,12 @@ class EventsViewModel @Inject constructor(
     
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
-    
+ 
+    // Paging state
+    private var lastEventCreatedAt: Long? = null
+    private var hasMoreEvents: Boolean = true
+    private var isLoadingEventsPage: Boolean = false
+
     // Throttling for like/rate actions to reduce write bursts
     private val likeEvents = MutableSharedFlow<Pair<String, Boolean>>()
     private val rateEvents = MutableSharedFlow<Pair<String, Float>>()
@@ -88,51 +93,55 @@ class EventsViewModel @Inject constructor(
             com.littlegig.app.utils.PerfMonitor.startTrace("events_load")
             
             try {
-                eventRepository.getAllEvents()
-                    .retry(3) { cause ->
-                        cause is Exception
+                // First page via paging API
+                val page = eventRepository.getEventsPage(limit = 20, startAfterCreatedAt = null).getOrElse { emptyList() }
+                val filteredEvents = personalizeAndFilterEvents(page)
+                val currentUser = authRepository.currentUser.value
+                var friendsGoingMap: Map<String, Int> = emptyMap()
+                if (currentUser != null) {
+                    val followingIds = currentUser.following
+                    val mutable = mutableMapOf<String, Int>()
+                    for (event in filteredEvents) {
+                        val count = eventRepository.getFriendsGoingCount(event.id, followingIds)
+                        mutable[event.id] = count
                     }
-                    .catch { error ->
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            error = "Failed to load events: ${error.message}"
-                        )
-                        com.littlegig.app.utils.PerfMonitor.stopTrace("events_load")
-                    }
-                    .collect { events ->
-                        println("🔥 DEBUG: EventsViewModel received ${events.size} events")
-                        events.forEach { event ->
-                            println("🔥 DEBUG: Event: ${event.title} - ${event.id}")
-                        }
-                        val filteredEvents = personalizeAndFilterEvents(events)
-                        println("🔥 DEBUG: After filtering: ${filteredEvents.size} events")
-                        val currentUser = authRepository.currentUser.value
-                        var friendsGoingMap: Map<String, Int> = emptyMap()
-                        if (currentUser != null) {
-                            val followingIds = currentUser.following
-                            val mutable = mutableMapOf<String, Int>()
-                            for (event in filteredEvents) {
-                                val count = eventRepository.getFriendsGoingCount(event.id, followingIds)
-                                mutable[event.id] = count
-                            }
-                            friendsGoingMap = mutable
-                        }
-                        _uiState.value = _uiState.value.copy(
-                            events = filteredEvents,
-                            isLoading = false,
-                            error = null,
-                            eventIdToFriendsGoing = friendsGoingMap
-                        )
-                        com.littlegig.app.utils.PerfMonitor.putMetric("events_load", "count", events.size.toLong())
-                        com.littlegig.app.utils.PerfMonitor.stopTrace("events_load")
-                        println("🔥 DEBUG: UI state updated with ${filteredEvents.size} events")
-                    }
+                    friendsGoingMap = mutable
+                }
+                _uiState.value = _uiState.value.copy(
+                    events = filteredEvents,
+                    isLoading = false,
+                    error = null,
+                    eventIdToFriendsGoing = friendsGoingMap
+                )
+                lastEventCreatedAt = page.lastOrNull()?.createdAt
+                hasMoreEvents = page.size >= 20
+                com.littlegig.app.utils.PerfMonitor.putMetric("events_load", "count", page.size.toLong())
+                com.littlegig.app.utils.PerfMonitor.stopTrace("events_load")
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = "Network error: ${e.message}"
                 )
                 com.littlegig.app.utils.PerfMonitor.stopTrace("events_load")
+            }
+        }
+    }
+
+    fun loadMoreEvents() {
+        viewModelScope.launch {
+            try {
+                if (isLoadingEventsPage || !hasMoreEvents) return@launch
+                isLoadingEventsPage = true
+                val page = eventRepository.getEventsPage(limit = 20, startAfterCreatedAt = lastEventCreatedAt).getOrElse { emptyList() }
+                val combined = (_uiState.value.events + page).distinctBy { it.id }
+                val personalized = personalizeAndFilterEvents(combined)
+                _uiState.value = _uiState.value.copy(events = personalized)
+                lastEventCreatedAt = page.lastOrNull()?.createdAt ?: lastEventCreatedAt
+                hasMoreEvents = page.size >= 20
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = "Failed to load more events: ${e.message}")
+            } finally {
+                isLoadingEventsPage = false
             }
         }
     }

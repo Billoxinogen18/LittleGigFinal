@@ -246,7 +246,8 @@ fun FloatingActionButton(
 @Composable
 fun LiquidGlassBottomNavigation(
     currentRoute: String?,
-    onNavigate: (String) -> Unit
+    onNavigate: (String) -> Unit,
+    inboxUnreadCount: Int = 0
 ) {
     val isDark = isSystemInDarkTheme()
     
@@ -328,16 +329,21 @@ fun LiquidGlassBottomNavigation(
                             isSelected = currentRoute == item.route,
                             onClick = { onNavigate(item.route) }
                         )
-                        if (item.route == "inbox") {
-                            // simple badge dot; later can be replaced with count from ViewModel ambient
+                        if (item.route == "inbox" && inboxUnreadCount > 0) {
                             Box(
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
-                                    .offset(x = 10.dp, y = (-2).dp)
-                                    .size(8.dp)
-                                    .clip(CircleShape)
+                                    .offset(x = 8.dp, y = (-4).dp)
+                                    .clip(RoundedCornerShape(8.dp))
                                     .background(LittleGigPrimary)
-                            )
+                            ) {
+                                Text(
+                                    text = inboxUnreadCount.coerceAtMost(99).toString(),
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp)
+                                )
+                            }
                         }
                     }
                 }

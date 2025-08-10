@@ -38,6 +38,9 @@ fun MainScreen(
     val navController = rememberNavController()
     var currentRoute by remember { mutableStateOf("events") }
     val isDark = isSystemInDarkTheme()
+    val inboxViewModel: com.littlegig.app.presentation.inbox.InboxViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+    val unreadCount by inboxViewModel.unreadCount.collectAsState(initial = 0)
+    LaunchedEffect(Unit) { inboxViewModel.load() }
     
     // Proper dark/light mode background
     Box(
@@ -76,7 +79,8 @@ fun MainScreen(
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
+                    inboxUnreadCount = unreadCount
                 )
             }
         ) { paddingValues ->

@@ -24,12 +24,16 @@ class InboxViewModel @Inject constructor(
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
 
+    private val _unreadCount = MutableStateFlow(0)
+    val unreadCount: StateFlow<Int> = _unreadCount.asStateFlow()
+
     fun load() {
         viewModelScope.launch {
             val user = authRepository.currentUser.value ?: return@launch
             _loading.value = true
             notificationRepository.getNotificationHistory(user.id).collectLatest {
                 _records.value = it
+                _unreadCount.value = it.count { rec -> !rec.isRead }
                 _loading.value = false
             }
         }

@@ -373,6 +373,14 @@ fun EventsScreen(
                             }
                         }
                     }
+                    item {
+                        Spacer(Modifier.height(8.dp))
+                        OutlinedButton(onClick = { viewModel.loadMoreEvents() }, modifier = Modifier.fillMaxWidth()) {
+                            Icon(Icons.Default.ExpandMore, contentDescription = null)
+                            Spacer(Modifier.width(8.dp))
+                            Text("Load more events")
+                        }
+                    }
                 }
             }
             } // End of SwipeRefresh Column
