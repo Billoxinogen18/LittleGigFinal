@@ -18,6 +18,7 @@ import com.littlegig.app.presentation.components.AdvancedNeumorphicCard
 fun InboxScreen(viewModel: InboxViewModel = hiltViewModel()) {
     val records by viewModel.records.collectAsState()
     val loading by viewModel.loading.collectAsState()
+    var filter by remember { mutableStateOf("all") }
 
     LaunchedEffect(Unit) { viewModel.load() }
     // Auto-mark unread as read when opening inbox
@@ -28,12 +29,21 @@ fun InboxScreen(viewModel: InboxViewModel = hiltViewModel()) {
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(text = "Inbox", style = MaterialTheme.typography.headlineMedium)
+        Spacer(Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(selected = filter=="all", onClick = { filter="all" }, label = { Text("All") })
+            FilterChip(selected = filter=="unread", onClick = { filter="unread" }, label = { Text("Unread") })
+        }
         Spacer(Modifier.height(12.dp))
+        val visible = when(filter){
+            "unread" -> records.filter { !it.isRead }
+            else -> records
+        }
         if (loading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
         } else {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(records) { rec ->
+                items(visible, key = { it.id }) { rec ->
                     AdvancedNeumorphicCard {
                         Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                             Column(Modifier.weight(1f)) {

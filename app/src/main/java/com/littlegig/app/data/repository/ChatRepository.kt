@@ -126,6 +126,20 @@ class ChatRepository @Inject constructor(
         }
     }
     
+    suspend fun deleteMessage(chatId: String, messageId: String): Result<Unit> {
+        return try {
+            firestore.collection("chats")
+                .document(chatId)
+                .collection("messages")
+                .document(messageId)
+                .delete()
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun sendMessage(chatId: String, message: Message): Result<Unit> {
         return try {
             val messageRef = firestore.collection("chats")

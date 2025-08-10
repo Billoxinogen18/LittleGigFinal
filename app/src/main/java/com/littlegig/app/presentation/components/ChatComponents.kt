@@ -30,6 +30,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.draw.alpha
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.tween
 
 // Unique LittleGig Chat Bubble with Neumorphic Design
 @Composable
@@ -400,6 +404,33 @@ fun TicketShareBubble(
     onRedeem: (messageId: String, ticketId: String) -> Unit
 ) {
     NeumorphicTicketShareCard(ticket = ticket, onRedeem = { onRedeem(messageId, ticket.ticketId) })
+}
+
+@Composable
+fun ChatDateHeader(dateText: String, modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        AdvancedNeumorphicCard {
+            Text(
+                text = dateText,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun SendingShimmerBubble(modifier: Modifier = Modifier) {
+    val alphaAnim = rememberInfiniteTransition(label = "sending_transition").animateFloat(
+        initialValue = 0.3f,
+        targetValue = 0.9f,
+        animationSpec = infiniteRepeatable(animation = tween(800), repeatMode = RepeatMode.Reverse),
+        label = "sending_alpha"
+    )
+    AdvancedGlassmorphicCard(modifier = modifier) {
+        Box(Modifier.size(width = 140.dp, height = 20.dp).alpha(alphaAnim.value)) {}
+    }
 }
 
 // Unique Typing Indicator with Multi-colored Dots

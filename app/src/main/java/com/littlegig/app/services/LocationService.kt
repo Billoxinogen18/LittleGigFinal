@@ -22,6 +22,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,7 +41,8 @@ class LocationService @Inject constructor(
     
     private val _locationPermissionGranted = MutableStateFlow(false)
     val locationPermissionGranted: StateFlow<Boolean> = _locationPermissionGranted.asStateFlow()
-    
+    private var pingsJob: kotlinx.coroutines.Job? = null
+
     fun requestLocationPermission(activity: Activity) {
         if (ContextCompat.checkSelfPermission(
                 activity,
@@ -69,6 +72,7 @@ class LocationService @Inject constructor(
             if (currentUser != null) {
                 // Always update the local state first
                 _isActiveNow.value = isActive
+                if (isActive && pingsJob == null) startPings() else if (!isActive) stopPings()
                 
                 // Check permission status
                 val hasPermission = ContextCompat.checkSelfPermission(
@@ -149,6 +153,33 @@ class LocationService @Inject constructor(
         } catch (e: Exception) {
             null
         }
+    }
+    
+    private fun startPings() {
+        stopPings()
+        pingsJob = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            while (_isActiveNow.value) {
+                try {
+                    // reuse toggle to send heartbeat without changing state
+                    val location = getCurrentLocation()
+                    val uid = authRepository.currentUser.value?.id
+                    functions.getHttpsCallable("updateUserLocation").call(
+                        mapOf(
+                            "latitude" to (location?.latitude ?: 0.0),
+                            "longitude" to (location?.longitude ?: 0.0),
+                            "isActive" to true,
+                            "userId" to (uid ?: "")
+                        )
+                    ).await()
+                } catch (_: Exception) {}
+                kotlinx.coroutines.delay(15000)
+            }
+        }
+    }
+    
+    private fun stopPings() {
+        pingsJob?.cancel()
+        pingsJob = null
     }
     
     companion object {

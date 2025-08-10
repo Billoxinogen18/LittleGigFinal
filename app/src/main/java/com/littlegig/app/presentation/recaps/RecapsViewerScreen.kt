@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.lifecycle.viewModelScope
+import androidx.compose.foundation.gestures.detectTapGestures
 
 @Composable
 fun RecapsViewerScreen(eventId: String, viewModel: RecapsViewerViewModel = hiltViewModel()) {
@@ -42,12 +43,13 @@ fun RecapsViewerScreen(eventId: String, viewModel: RecapsViewerViewModel = hiltV
             }
             Row(Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 repeat(recaps.size) { i ->
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(3.dp)
-                            .background(if (i <= index) Color.White else Color.White.copy(alpha = 0.3f))
-                    )
+                    val filled = when {
+                        i < index -> 1f
+                        i == index -> progress
+                        else -> 0f
+                    }
+                    Box(Modifier.weight(1f).height(3.dp).background(Color.White.copy(alpha = 0.3f)))
+                    Box(Modifier.weight(filled).height(3.dp).background(Color.White))
                 }
             }
             Box(Modifier.fillMaxSize()) {
@@ -75,6 +77,7 @@ class RecapsViewerViewModel @Inject constructor(
 
     private val _progress = mutableStateOf(0f)
     val progress: State<Float> = _progress
+    private val _isPlaying = mutableStateOf(true)
 
     fun load(eventId: String) {
         viewModelScope.launch {
@@ -89,12 +92,16 @@ class RecapsViewerViewModel @Inject constructor(
     private suspend fun autoAdvance() {
         while (true) {
             if (_recaps.value.isEmpty()) { delay(250); continue }
-            _progress.value = 0f
-            repeat(100) {
+            if (_isPlaying.value) {
+                _progress.value = 0f
+                repeat(100) {
+                    delay(50)
+                    if (_isPlaying.value) _progress.value += 0.01f else break
+                }
+                if (_progress.value >= 0.99f) next()
+            } else {
                 delay(50)
-                _progress.value += 0.01f
             }
-            next()
         }
     }
 
@@ -109,4 +116,6 @@ class RecapsViewerViewModel @Inject constructor(
         if (size == 0) return
         _currentIndex.value = if (_currentIndex.value == 0) size - 1 else _currentIndex.value - 1
     }
+
+    fun setPlaying(playing: Boolean) { _isPlaying.value = playing }
 }

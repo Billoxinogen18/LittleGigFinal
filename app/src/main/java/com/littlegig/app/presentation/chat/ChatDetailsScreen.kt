@@ -21,11 +21,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.littlegig.app.presentation.components.*
+import com.littlegig.app.presentation.components.ChatDateHeader
+import com.littlegig.app.presentation.components.SendingShimmerBubble
 import com.littlegig.app.presentation.theme.*
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,6 +51,7 @@ import com.littlegig.app.services.ChatMediaService
 import androidx.compose.ui.platform.LocalContext
 import com.littlegig.app.data.model.TypingIndicator as ModelTypingIndicator
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatDetailsScreen(
     chatId: String,
@@ -58,6 +65,8 @@ fun ChatDetailsScreen(
     var messageText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
     val context = LocalContext.current
+    val clipboard: ClipboardManager = LocalClipboardManager.current
+    var actionSheetFor by remember { mutableStateOf<com.littlegig.app.data.model.Message?>(null) }
     val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let { viewModel.uploadAndSendMedia(chatId, it, "image/*") }
     }
@@ -148,14 +157,18 @@ fun ChatDetailsScreen(
 
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(horizontal = 16.dp),
+                    .fillMaxSize()
+                    .padding(bottom = 96.dp),
                 state = listState,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
+                var lastDate: String? = null
                 items(messages) { message ->
+                    val dateText = java.text.SimpleDateFormat("MMM d, yyyy").format(java.util.Date(message.timestamp))
+                    if (dateText != lastDate) {
+                        lastDate = dateText
+                        ChatDateHeader(dateText = dateText, modifier = Modifier.padding(vertical = 8.dp))
+                    }
                     // mark last incoming as read
                     if (message.senderId != viewModel.currentUserId) viewModel.markAsReadIfNeeded(chatId, message)
                     if (message.senderId != viewModel.currentUserId) viewModel.markAsDeliveredIfNeeded(chatId, message)
@@ -176,10 +189,14 @@ fun ChatDetailsScreen(
                                 .fillMaxWidth()
                                 .pointerInput(Unit) {
                                     detectTapGestures(onLongPress = {
-                                        viewModel.chooseReplyTarget(message)
+                                        actionSheetFor = message
                                     })
                                 }
                         )
+                        if (message.senderId == viewModel.currentUserId && message.deliveredTo.isEmpty() && message.readBy.isEmpty()) {
+                            SendingShimmerBubble(modifier = Modifier
+                                .padding(start = 48.dp, end = 8.dp, top = 0.dp, bottom = 4.dp))
+                        }
                     }
                 }
             }
@@ -208,6 +225,20 @@ fun ChatDetailsScreen(
                     }
                 }
                 Spacer(Modifier.height(8.dp))
+            }
+
+            if (actionSheetFor != null) {
+                val m = actionSheetFor!!
+                ModalBottomSheet(onDismissRequest = { actionSheetFor = null }) {
+                    Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(onClick = { viewModel.chooseReplyTarget(m); actionSheetFor = null }) { Text("Reply") }
+                        TextButton(onClick = { clipboard.setText(AnnotatedString(m.content)); actionSheetFor = null }) { Text("Copy") }
+                        TextButton(onClick = { /* forward placeholder: navigate to chat picker */ actionSheetFor = null }) { Text("Forward") }
+                        if (m.senderId == viewModel.currentUserId) {
+                            TextButton(onClick = { viewModel.deleteMessage(chatId, m.id); actionSheetFor = null }) { Text("Delete", color = MaterialTheme.colorScheme.error) }
+                        }
+                    }
+                }
             }
 
             NeumorphicChatInput(
@@ -296,7 +327,10 @@ class ChatDetailsViewModel @Inject constructor(
     private val authRepository: com.littlegig.app.data.repository.AuthRepository,
     private val chatMediaService: ChatMediaService,
     private val notificationRepository: com.littlegig.app.data.repository.NotificationRepository
-) : ViewModel() {
+) : ViewModel() { 
+    fun deleteMessage(chatId: String, messageId: String) {
+        viewModelScope.launch { chatRepository.deleteMessage(chatId, messageId) }
+    }
 
     private val _uiState = MutableStateFlow(ChatDetailsUiState())
     val uiState: StateFlow<ChatDetailsUiState> = _uiState.asStateFlow()
