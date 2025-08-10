@@ -8,6 +8,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -299,95 +302,34 @@ fun EventsScreen(
                     }
                 }
             } else {
-                // Events list with enhanced interactions
+                // Full-screen snapping feed (TikTok-style)
+                @OptIn(ExperimentalFoundationApi::class)
                 val context = LocalContext.current
-                val shareScope = rememberCoroutineScope()
-                val eventsListState = rememberLazyListState()
-                LaunchedEffect(eventsListState) {
-                    snapshotFlow { eventsListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index to eventsListState.layoutInfo.totalItemsCount }
-                        .collect { (last, total) ->
-                            if (last != null && total > 0 && last >= total - 3) {
-                                viewModel.loadMoreEvents()
-                            }
-                        }
-                }
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    state = eventsListState,
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(uiState.events) { event ->
-                        HapticButton(onClick = { navController.navigate("event_details/${event.id}") }) {
-                            LiquidGlassEventCard(
-                            event = event, 
-                            onClick = { navController.navigate("event_details/${event.id}") },
-                            onChatClick = { 
-                                // Navigate to chat tab to start conversation via search
-                                navController.navigate("chat")
-                            }
-                        )
-                            // Friends-going chip and actions beneath each card
-                            val friends = uiState.eventIdToFriendsGoing[event.id] ?: 0
-                            if (friends > 0) {
-                                Spacer(Modifier.height(8.dp))
-                                AdvancedGlassmorphicCard(
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                        Text(
-                                            text = "$friends friends going",
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                            OutlinedButton(onClick = {
-                                                // Navigate to chat with event organizer
-                                                navController.navigate("chat_details/${event.organizerId}")
-                                            }, shape = RoundedCornerShape(12.dp)) {
-                                                Icon(Icons.Default.Chat, contentDescription = null)
-                                                Spacer(Modifier.width(6.dp))
-                                                Text("Chat")
-                                            }
-                                            OutlinedButton(onClick = {
-                                                shareScope.launch {
-                                                    val link = viewModel.createEventShareLink(event)
-                                                    link?.let {
-                                                        val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                                                            type = "text/plain"
-                                                            putExtra(Intent.EXTRA_TEXT, it)
-                                                        }
-                                                        val shareIntent = Intent.createChooser(sendIntent, "Share Event")
-                                                        context.startActivity(shareIntent)
-                                                    }
-                                                }
-                                            }, shape = RoundedCornerShape(12.dp)) {
-                                                Icon(Icons.Default.Share, contentDescription = null)
-                                                Spacer(Modifier.width(6.dp))
-                                                Text("Share")
-                                            }
-                                            OutlinedButton(onClick = { viewModel.joinWaitlist(event.id) }, shape = RoundedCornerShape(12.dp)) {
-                                                Icon(Icons.Default.NotificationsActive, contentDescription = null)
-                                                Spacer(Modifier.width(6.dp))
-                                                Text("Waitlist")
-                                            }
-                                            OutlinedButton(onClick = { viewModel.subscribePriceDrop(event.id) }, shape = RoundedCornerShape(12.dp)) {
-                                                Icon(Icons.Default.PriceChange, contentDescription = null)
-                                                Spacer(Modifier.width(6.dp))
-                                                Text("Price drop")
-                                            }
-                                            OutlinedButton(onClick = { viewModel.rsvp(event.id) }, shape = RoundedCornerShape(12.dp)) {
-                                                Icon(Icons.Default.EventAvailable, contentDescription = null)
-                                                Spacer(Modifier.width(6.dp))
-                                                Text("RSVP")
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                val pagerState = rememberPagerState(pageCount = { uiState.events.size })
+                LaunchedEffect(pagerState.currentPage, uiState.events.size) {
+                    if (uiState.events.isNotEmpty() && pagerState.currentPage >= uiState.events.size - 3) {
+                        viewModel.loadMoreEvents()
                     }
                 }
+                VerticalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize()
+                ) { page ->
+                    val event = uiState.events[page]
+                    Box(Modifier.fillMaxSize()) {
+                        TikTokStyleEventCard(
+                            event = event,
+                            onEventClick = { navController.navigate("event_details/${event.id}") },
+                            onLikeClick = { viewModel.toggleEventLike(event.id) },
+                            onRateClick = { /* no-op */ },
+                            onAttendeesClick = { /* no-op */ },
+                            onShareClick = {
+                                val link = viewModel.createEventShareLink(event)
+                                // fire and forget; ignore errors here
                             }
+                        )
+                    }
+                }
             }
         }
         
