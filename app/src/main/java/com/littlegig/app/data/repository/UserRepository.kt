@@ -231,6 +231,7 @@ class UserRepository @Inject constructor(
             }
             deduped.take(20)
         } catch (e: Exception) {
+            println("🔥 DEBUG: Search error: ${e.message}")
             emptyList()
         }
     }

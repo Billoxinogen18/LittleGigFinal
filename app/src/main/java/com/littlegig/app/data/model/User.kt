@@ -2,6 +2,7 @@ package com.littlegig.app.data.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 import java.util.Date
 
 @Parcelize
@@ -15,11 +16,9 @@ data class User(
     val profilePictureUrl: String = "",
     val profileImageUrl: String = "",
     val userType: UserType = UserType.REGULAR,
-    // Map legacy Firestore field "influencer" without creating conflicting getters
-    @com.google.firebase.firestore.PropertyName("influencer")
+    // Legacy field for backward compatibility
     val influencerLegacy: Boolean? = null,
-    // Primary field used by the app - map to both "influencer" and "isInfluencer" for compatibility
-    @com.google.firebase.firestore.PropertyName("influencer")
+    // Primary field used by the app
     val isInfluencer: Boolean = false,
     val businessId: String? = null,
     val rank: UserRank = UserRank.NOVICE,
@@ -30,16 +29,17 @@ data class User(
     val likedEvents: List<String> = emptyList(),
     // Product analytics field populated by Cloud Functions
     val engagementScore: Double = 0.0,
-    // Last time the user rank or engagement was updated server-side
-    val lastRankUpdate: java.util.Date? = null,
+    // Last time the user rank or engagement was updated server-side - make it flexible
+    val lastRankUpdate: @RawValue Any? = null, // Accept any type (Date, Long, Timestamp)
     val bio: String? = null,
-    val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis(),
+    // Make timestamp fields flexible to handle both Long and Timestamp
+    val createdAt: @RawValue Any = System.currentTimeMillis(), // Accept any type (Long, Timestamp)
+    val updatedAt: @RawValue Any = System.currentTimeMillis(), // Accept any type (Long, Timestamp)
     // Additional fields created by Cloud Functions
     val username_lower: String? = null,
     val email_lower: String? = null,
     val displayName_lower: String? = null,
-    val lastSeen: Long? = null,
+    val lastSeen: @RawValue Any? = null, // Accept any type (Long, Timestamp)
     val online: Boolean = false
 ) : Parcelable
 

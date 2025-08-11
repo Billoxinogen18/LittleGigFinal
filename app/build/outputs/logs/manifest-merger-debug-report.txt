@@ -38,6 +38,7 @@ MERGED from [com.google.android.libraries.places:places:4.0.0] /Users/israelbill
 MERGED from [com.google.maps.android:maps-ktx:3.4.0] /Users/israelbill/.gradle/caches/8.14/transforms/4d236d3f5f9c6b3f2f1dfc896d8fd309/transformed/maps-ktx-3.4.0/AndroidManifest.xml:18:1-25:12
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/7f159acc536affca3f42c1608e370ffc/transformed/play-services-maps-18.2.0/AndroidManifest.xml:17:1-44:12
 MERGED from [com.google.android.gms:play-services-location:21.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/f45c336199fddcaae63a91d8bb963a41/transformed/play-services-location-21.3.0/AndroidManifest.xml:2:1-8:12
+MERGED from [com.google.firebase:firebase-appcheck-playintegrity:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/cc0a29394ccfd3f73264af1e3d037412/transformed/firebase-appcheck-playintegrity-18.0.0/AndroidManifest.xml:15:1-31:12
 MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.2] /Users/israelbill/.gradle/caches/8.14/transforms/60153a968383dfac938ea0adf9ab6880/transformed/play-services-auth-api-phone-18.0.2/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.gms:play-services-auth-base:18.0.10] /Users/israelbill/.gradle/caches/8.14/transforms/2eb440193e1b4412d9e2a5d2239e7390/transformed/play-services-auth-base-18.0.10/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.firebase:firebase-functions-ktx:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/51070e1c3598eb22fff0471171dff731/transformed/firebase-functions-ktx-21.0.0/AndroidManifest.xml:2:1-18:12
@@ -46,9 +47,9 @@ MERGED from [com.google.firebase:firebase-storage-ktx:21.0.0] /Users/israelbill/
 MERGED from [com.google.firebase:firebase-storage:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/6e947521c6fa7149bb6edf88152db7b5/transformed/firebase-storage-21.0.0/AndroidManifest.xml:15:1-39:12
 MERGED from [com.google.firebase:firebase-firestore-ktx:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/9cecd4f6c6eb60ba70ae30226988b2ae/transformed/firebase-firestore-ktx-25.0.0/AndroidManifest.xml:2:1-18:12
 MERGED from [com.google.firebase:firebase-firestore:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/c5b78ca6394d7f958f37d4bac4d2611c/transformed/firebase-firestore-25.0.0/AndroidManifest.xml:2:1-26:12
+MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:15:1-34:12
 MERGED from [com.google.firebase:firebase-messaging-ktx:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0f67e2aa1f68a15af1b96004b3c37ce1/transformed/firebase-messaging-ktx-24.0.0/AndroidManifest.xml:17:1-32:12
 MERGED from [com.google.firebase:firebase-messaging:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/738a1e47490f767990214839aa9c2ea7/transformed/firebase-messaging-24.0.0/AndroidManifest.xml:17:1-66:12
-MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:15:1-34:12
 MERGED from [com.google.firebase:firebase-appcheck-interop:17.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/93a02d2345c18f8d30de7e92729de2d0/transformed/firebase-appcheck-interop-17.1.0/AndroidManifest.xml:15:1-23:12
 MERGED from [com.google.firebase:firebase-database-collection:18.0.1] /Users/israelbill/.gradle/caches/8.14/transforms/9962a105b6b363dc593b1df450989cde/transformed/firebase-database-collection-18.0.1/AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.android.gms:play-services-fido:20.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/1ed1b0161906e1cbe2b16d217af44902/transformed/play-services-fido-20.1.0/AndroidManifest.xml:2:1-10:12
@@ -125,9 +126,9 @@ MERGED from [com.google.firebase:firebase-installations:18.0.0] /Users/israelbil
 MERGED from [com.google.firebase:firebase-common-ktx:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f9b65c0360b1a7f73f7757c0ed20799d/transformed/firebase-common-ktx-21.0.0/AndroidManifest.xml:2:1-18:12
 MERGED from [com.google.firebase:firebase-auth-interop:20.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f32295257fbe600095da991fcff64fc4/transformed/firebase-auth-interop-20.0.0/AndroidManifest.xml:2:1-10:12
 MERGED from [com.google.firebase:firebase-common:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f1858c784c8b334655698381547f02d7/transformed/firebase-common-21.0.0/AndroidManifest.xml:15:1-41:12
+MERGED from [com.google.android.play:integrity:1.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/5d083a483d7f1ef71d933500203de81a/transformed/integrity-1.2.0/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/858daff51fec44ea6dc0dc9fed0808c2/transformed/firebase-iid-interop-17.1.0/AndroidManifest.xml:2:1-10:12
 MERGED from [com.google.firebase:firebase-installations-interop:17.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/859252e335c255bd8bc7bec1217110b3/transformed/firebase-installations-interop-17.2.0/AndroidManifest.xml:15:1-19:12
-MERGED from [com.google.android.play:integrity:1.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/5d083a483d7f1ef71d933500203de81a/transformed/integrity-1.2.0/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.gms:play-services-cloud-messaging:17.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/9d9fc1b2f021734f37b029a7c2ba894f/transformed/play-services-cloud-messaging-17.2.0/AndroidManifest.xml:2:1-13:12
 MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/a9cbeaa5c5f56f17a6be555bd518c649/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:2:1-5:12
 MERGED from [com.google.firebase:firebase-abt:21.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/aace9191d8c5ed27b4c18f7149e8f281/transformed/firebase-abt-21.1.1/AndroidManifest.xml:2:1-18:12
@@ -331,6 +332,8 @@ MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/israelbill
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/7f159acc536affca3f42c1608e370ffc/transformed/play-services-maps-18.2.0/AndroidManifest.xml:36:5-42:19
 MERGED from [com.google.android.gms:play-services-location:21.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/f45c336199fddcaae63a91d8bb963a41/transformed/play-services-location-21.3.0/AndroidManifest.xml:6:5-20
 MERGED from [com.google.android.gms:play-services-location:21.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/f45c336199fddcaae63a91d8bb963a41/transformed/play-services-location-21.3.0/AndroidManifest.xml:6:5-20
+MERGED from [com.google.firebase:firebase-appcheck-playintegrity:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/cc0a29394ccfd3f73264af1e3d037412/transformed/firebase-appcheck-playintegrity-18.0.0/AndroidManifest.xml:21:5-29:19
+MERGED from [com.google.firebase:firebase-appcheck-playintegrity:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/cc0a29394ccfd3f73264af1e3d037412/transformed/firebase-appcheck-playintegrity-18.0.0/AndroidManifest.xml:21:5-29:19
 MERGED from [com.google.firebase:firebase-functions-ktx:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/51070e1c3598eb22fff0471171dff731/transformed/firebase-functions-ktx-21.0.0/AndroidManifest.xml:8:5-16:19
 MERGED from [com.google.firebase:firebase-functions-ktx:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/51070e1c3598eb22fff0471171dff731/transformed/firebase-functions-ktx-21.0.0/AndroidManifest.xml:8:5-16:19
 MERGED from [com.google.firebase:firebase-functions:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/3b273e1d4909d6b53fe4d8c0a4f85c73/transformed/firebase-functions-21.0.0/AndroidManifest.xml:11:5-22:19
@@ -343,12 +346,12 @@ MERGED from [com.google.firebase:firebase-firestore-ktx:25.0.0] /Users/israelbil
 MERGED from [com.google.firebase:firebase-firestore-ktx:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/9cecd4f6c6eb60ba70ae30226988b2ae/transformed/firebase-firestore-ktx-25.0.0/AndroidManifest.xml:8:5-16:19
 MERGED from [com.google.firebase:firebase-firestore:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/c5b78ca6394d7f958f37d4bac4d2611c/transformed/firebase-firestore-25.0.0/AndroidManifest.xml:13:5-24:19
 MERGED from [com.google.firebase:firebase-firestore:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/c5b78ca6394d7f958f37d4bac4d2611c/transformed/firebase-firestore-25.0.0/AndroidManifest.xml:13:5-24:19
+MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:21:5-32:19
+MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:21:5-32:19
 MERGED from [com.google.firebase:firebase-messaging-ktx:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0f67e2aa1f68a15af1b96004b3c37ce1/transformed/firebase-messaging-ktx-24.0.0/AndroidManifest.xml:22:5-30:19
 MERGED from [com.google.firebase:firebase-messaging-ktx:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0f67e2aa1f68a15af1b96004b3c37ce1/transformed/firebase-messaging-ktx-24.0.0/AndroidManifest.xml:22:5-30:19
 MERGED from [com.google.firebase:firebase-messaging:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/738a1e47490f767990214839aa9c2ea7/transformed/firebase-messaging-24.0.0/AndroidManifest.xml:28:5-64:19
 MERGED from [com.google.firebase:firebase-messaging:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/738a1e47490f767990214839aa9c2ea7/transformed/firebase-messaging-24.0.0/AndroidManifest.xml:28:5-64:19
-MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:21:5-32:19
-MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:21:5-32:19
 MERGED from [com.google.firebase:firebase-appcheck-interop:17.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/93a02d2345c18f8d30de7e92729de2d0/transformed/firebase-appcheck-interop-17.1.0/AndroidManifest.xml:21:5-20
 MERGED from [com.google.firebase:firebase-appcheck-interop:17.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/93a02d2345c18f8d30de7e92729de2d0/transformed/firebase-appcheck-interop-17.1.0/AndroidManifest.xml:21:5-20
 MERGED from [com.google.android.gms:play-services-fido:20.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/1ed1b0161906e1cbe2b16d217af44902/transformed/play-services-fido-20.1.0/AndroidManifest.xml:7:5-8:19
@@ -395,10 +398,10 @@ MERGED from [com.google.firebase:firebase-auth-interop:20.0.0] /Users/israelbill
 MERGED from [com.google.firebase:firebase-auth-interop:20.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f32295257fbe600095da991fcff64fc4/transformed/firebase-auth-interop-20.0.0/AndroidManifest.xml:7:5-8:19
 MERGED from [com.google.firebase:firebase-common:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f1858c784c8b334655698381547f02d7/transformed/firebase-common-21.0.0/AndroidManifest.xml:22:5-39:19
 MERGED from [com.google.firebase:firebase-common:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f1858c784c8b334655698381547f02d7/transformed/firebase-common-21.0.0/AndroidManifest.xml:22:5-39:19
-MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/858daff51fec44ea6dc0dc9fed0808c2/transformed/firebase-iid-interop-17.1.0/AndroidManifest.xml:7:5-8:19
-MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/858daff51fec44ea6dc0dc9fed0808c2/transformed/firebase-iid-interop-17.1.0/AndroidManifest.xml:7:5-8:19
 MERGED from [com.google.android.play:integrity:1.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/5d083a483d7f1ef71d933500203de81a/transformed/integrity-1.2.0/AndroidManifest.xml:5:5-6:19
 MERGED from [com.google.android.play:integrity:1.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/5d083a483d7f1ef71d933500203de81a/transformed/integrity-1.2.0/AndroidManifest.xml:5:5-6:19
+MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/858daff51fec44ea6dc0dc9fed0808c2/transformed/firebase-iid-interop-17.1.0/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/858daff51fec44ea6dc0dc9fed0808c2/transformed/firebase-iid-interop-17.1.0/AndroidManifest.xml:7:5-8:19
 MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/a9cbeaa5c5f56f17a6be555bd518c649/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:4:5-20
 MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/a9cbeaa5c5f56f17a6be555bd518c649/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:4:5-20
 MERGED from [com.google.firebase:firebase-abt:21.1.1] /Users/israelbill/.gradle/caches/8.14/transforms/aace9191d8c5ed27b4c18f7149e8f281/transformed/firebase-abt-21.1.1/AndroidManifest.xml:10:5-16:19
@@ -591,6 +594,8 @@ MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/israelbill
 MERGED from [com.google.android.gms:play-services-maps:18.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/7f159acc536affca3f42c1608e370ffc/transformed/play-services-maps-18.2.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-location:21.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/f45c336199fddcaae63a91d8bb963a41/transformed/play-services-location-21.3.0/AndroidManifest.xml:4:5-44
 MERGED from [com.google.android.gms:play-services-location:21.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/f45c336199fddcaae63a91d8bb963a41/transformed/play-services-location-21.3.0/AndroidManifest.xml:4:5-44
+MERGED from [com.google.firebase:firebase-appcheck-playintegrity:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/cc0a29394ccfd3f73264af1e3d037412/transformed/firebase-appcheck-playintegrity-18.0.0/AndroidManifest.xml:18:5-44
+MERGED from [com.google.firebase:firebase-appcheck-playintegrity:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/cc0a29394ccfd3f73264af1e3d037412/transformed/firebase-appcheck-playintegrity-18.0.0/AndroidManifest.xml:18:5-44
 MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.2] /Users/israelbill/.gradle/caches/8.14/transforms/60153a968383dfac938ea0adf9ab6880/transformed/play-services-auth-api-phone-18.0.2/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.2] /Users/israelbill/.gradle/caches/8.14/transforms/60153a968383dfac938ea0adf9ab6880/transformed/play-services-auth-api-phone-18.0.2/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-auth-base:18.0.10] /Users/israelbill/.gradle/caches/8.14/transforms/2eb440193e1b4412d9e2a5d2239e7390/transformed/play-services-auth-base-18.0.10/AndroidManifest.xml:5:5-44
@@ -607,12 +612,12 @@ MERGED from [com.google.firebase:firebase-firestore-ktx:25.0.0] /Users/israelbil
 MERGED from [com.google.firebase:firebase-firestore-ktx:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/9cecd4f6c6eb60ba70ae30226988b2ae/transformed/firebase-firestore-ktx-25.0.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-firestore:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/c5b78ca6394d7f958f37d4bac4d2611c/transformed/firebase-firestore-25.0.0/AndroidManifest.xml:6:5-44
 MERGED from [com.google.firebase:firebase-firestore:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/c5b78ca6394d7f958f37d4bac4d2611c/transformed/firebase-firestore-25.0.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:18:5-44
+MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:18:5-44
 MERGED from [com.google.firebase:firebase-messaging-ktx:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0f67e2aa1f68a15af1b96004b3c37ce1/transformed/firebase-messaging-ktx-24.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-messaging-ktx:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0f67e2aa1f68a15af1b96004b3c37ce1/transformed/firebase-messaging-ktx-24.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-messaging:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/738a1e47490f767990214839aa9c2ea7/transformed/firebase-messaging-24.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-messaging:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/738a1e47490f767990214839aa9c2ea7/transformed/firebase-messaging-24.0.0/AndroidManifest.xml:20:5-44
-MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:18:5-44
-MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:18:5-44
 MERGED from [com.google.firebase:firebase-appcheck-interop:17.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/93a02d2345c18f8d30de7e92729de2d0/transformed/firebase-appcheck-interop-17.1.0/AndroidManifest.xml:18:5-44
 MERGED from [com.google.firebase:firebase-appcheck-interop:17.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/93a02d2345c18f8d30de7e92729de2d0/transformed/firebase-appcheck-interop-17.1.0/AndroidManifest.xml:18:5-44
 MERGED from [com.google.firebase:firebase-database-collection:18.0.1] /Users/israelbill/.gradle/caches/8.14/transforms/9962a105b6b363dc593b1df450989cde/transformed/firebase-database-collection-18.0.1/AndroidManifest.xml:5:5-7:41
@@ -765,12 +770,12 @@ MERGED from [com.google.firebase:firebase-auth-interop:20.0.0] /Users/israelbill
 MERGED from [com.google.firebase:firebase-auth-interop:20.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f32295257fbe600095da991fcff64fc4/transformed/firebase-auth-interop-20.0.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-common:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f1858c784c8b334655698381547f02d7/transformed/firebase-common-21.0.0/AndroidManifest.xml:19:5-44
 MERGED from [com.google.firebase:firebase-common:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f1858c784c8b334655698381547f02d7/transformed/firebase-common-21.0.0/AndroidManifest.xml:19:5-44
+MERGED from [com.google.android.play:integrity:1.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/5d083a483d7f1ef71d933500203de81a/transformed/integrity-1.2.0/AndroidManifest.xml:4:5-44
+MERGED from [com.google.android.play:integrity:1.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/5d083a483d7f1ef71d933500203de81a/transformed/integrity-1.2.0/AndroidManifest.xml:4:5-44
 MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/858daff51fec44ea6dc0dc9fed0808c2/transformed/firebase-iid-interop-17.1.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/858daff51fec44ea6dc0dc9fed0808c2/transformed/firebase-iid-interop-17.1.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-installations-interop:17.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/859252e335c255bd8bc7bec1217110b3/transformed/firebase-installations-interop-17.2.0/AndroidManifest.xml:17:5-44
 MERGED from [com.google.firebase:firebase-installations-interop:17.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/859252e335c255bd8bc7bec1217110b3/transformed/firebase-installations-interop-17.2.0/AndroidManifest.xml:17:5-44
-MERGED from [com.google.android.play:integrity:1.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/5d083a483d7f1ef71d933500203de81a/transformed/integrity-1.2.0/AndroidManifest.xml:4:5-44
-MERGED from [com.google.android.play:integrity:1.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/5d083a483d7f1ef71d933500203de81a/transformed/integrity-1.2.0/AndroidManifest.xml:4:5-44
 MERGED from [com.google.android.gms:play-services-cloud-messaging:17.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/9d9fc1b2f021734f37b029a7c2ba894f/transformed/play-services-cloud-messaging-17.2.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-cloud-messaging:17.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/9d9fc1b2f021734f37b029a7c2ba894f/transformed/play-services-cloud-messaging-17.2.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/a9cbeaa5c5f56f17a6be555bd518c649/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:3:5-44
@@ -899,6 +904,8 @@ MERGED from [com.google.firebase:firebase-auth-ktx:23.0.0] /Users/israelbill/.gr
 MERGED from [com.google.firebase:firebase-auth-ktx:23.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/8b7cf8b012462c278b419d285c075c43/transformed/firebase-auth-ktx-23.0.0/AndroidManifest.xml:8:9-14:19
 MERGED from [com.google.firebase:firebase-auth:23.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/29ed769f9ac49200d61dc4e720468aae/transformed/firebase-auth-23.0.0/AndroidManifest.xml:66:9-72:19
 MERGED from [com.google.firebase:firebase-auth:23.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/29ed769f9ac49200d61dc4e720468aae/transformed/firebase-auth-23.0.0/AndroidManifest.xml:66:9-72:19
+MERGED from [com.google.firebase:firebase-appcheck-playintegrity:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/cc0a29394ccfd3f73264af1e3d037412/transformed/firebase-appcheck-playintegrity-18.0.0/AndroidManifest.xml:22:9-28:19
+MERGED from [com.google.firebase:firebase-appcheck-playintegrity:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/cc0a29394ccfd3f73264af1e3d037412/transformed/firebase-appcheck-playintegrity-18.0.0/AndroidManifest.xml:22:9-28:19
 MERGED from [com.google.firebase:firebase-functions-ktx:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/51070e1c3598eb22fff0471171dff731/transformed/firebase-functions-ktx-21.0.0/AndroidManifest.xml:9:9-15:19
 MERGED from [com.google.firebase:firebase-functions-ktx:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/51070e1c3598eb22fff0471171dff731/transformed/firebase-functions-ktx-21.0.0/AndroidManifest.xml:9:9-15:19
 MERGED from [com.google.firebase:firebase-functions:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/3b273e1d4909d6b53fe4d8c0a4f85c73/transformed/firebase-functions-21.0.0/AndroidManifest.xml:12:9-21:19
@@ -911,12 +918,12 @@ MERGED from [com.google.firebase:firebase-firestore-ktx:25.0.0] /Users/israelbil
 MERGED from [com.google.firebase:firebase-firestore-ktx:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/9cecd4f6c6eb60ba70ae30226988b2ae/transformed/firebase-firestore-ktx-25.0.0/AndroidManifest.xml:9:9-15:19
 MERGED from [com.google.firebase:firebase-firestore:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/c5b78ca6394d7f958f37d4bac4d2611c/transformed/firebase-firestore-25.0.0/AndroidManifest.xml:14:9-23:19
 MERGED from [com.google.firebase:firebase-firestore:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/c5b78ca6394d7f958f37d4bac4d2611c/transformed/firebase-firestore-25.0.0/AndroidManifest.xml:14:9-23:19
+MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:22:9-31:19
+MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:22:9-31:19
 MERGED from [com.google.firebase:firebase-messaging-ktx:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0f67e2aa1f68a15af1b96004b3c37ce1/transformed/firebase-messaging-ktx-24.0.0/AndroidManifest.xml:23:9-29:19
 MERGED from [com.google.firebase:firebase-messaging-ktx:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0f67e2aa1f68a15af1b96004b3c37ce1/transformed/firebase-messaging-ktx-24.0.0/AndroidManifest.xml:23:9-29:19
 MERGED from [com.google.firebase:firebase-messaging:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/738a1e47490f767990214839aa9c2ea7/transformed/firebase-messaging-24.0.0/AndroidManifest.xml:54:9-63:19
 MERGED from [com.google.firebase:firebase-messaging:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/738a1e47490f767990214839aa9c2ea7/transformed/firebase-messaging-24.0.0/AndroidManifest.xml:54:9-63:19
-MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:22:9-31:19
-MERGED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:22:9-31:19
 MERGED from [com.google.firebase:firebase-iid:21.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/c781c793d1c8bfa40302c5be64d844ed/transformed/firebase-iid-21.1.0/AndroidManifest.xml:29:9-35:19
 MERGED from [com.google.firebase:firebase-iid:21.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/c781c793d1c8bfa40302c5be64d844ed/transformed/firebase-iid-21.1.0/AndroidManifest.xml:29:9-35:19
 MERGED from [com.google.firebase:firebase-analytics-ktx:22.0.2] /Users/israelbill/.gradle/caches/8.14/transforms/8a611f6277bc5bd3bf26091a2aa96f13/transformed/firebase-analytics-ktx-22.0.2/AndroidManifest.xml:8:9-14:19
@@ -1119,6 +1126,12 @@ ADDED from [com.google.android.gms:play-services-maps:18.2.0] /Users/israelbill/
 		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/7f159acc536affca3f42c1608e370ffc/transformed/play-services-maps-18.2.0/AndroidManifest.xml:41:13-37
 	android:name
 		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /Users/israelbill/.gradle/caches/8.14/transforms/7f159acc536affca3f42c1608e370ffc/transformed/play-services-maps-18.2.0/AndroidManifest.xml:40:13-50
+meta-data#com.google.firebase.components:com.google.firebase.appcheck.playintegrity.FirebaseAppCheckPlayIntegrityRegistrar
+ADDED from [com.google.firebase:firebase-appcheck-playintegrity:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/cc0a29394ccfd3f73264af1e3d037412/transformed/firebase-appcheck-playintegrity-18.0.0/AndroidManifest.xml:25:13-27:85
+	android:value
+		ADDED from [com.google.firebase:firebase-appcheck-playintegrity:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/cc0a29394ccfd3f73264af1e3d037412/transformed/firebase-appcheck-playintegrity-18.0.0/AndroidManifest.xml:27:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-appcheck-playintegrity:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/cc0a29394ccfd3f73264af1e3d037412/transformed/firebase-appcheck-playintegrity-18.0.0/AndroidManifest.xml:26:17-144
 meta-data#com.google.firebase.components:com.google.firebase.functions.ktx.FirebaseFunctionsLegacyRegistrar
 ADDED from [com.google.firebase:firebase-functions-ktx:21.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/51070e1c3598eb22fff0471171dff731/transformed/firebase-functions-ktx-21.0.0/AndroidManifest.xml:12:13-14:85
 	android:value
@@ -1173,6 +1186,18 @@ ADDED from [com.google.firebase:firebase-firestore:25.0.0] /Users/israelbill/.gr
 		ADDED from [com.google.firebase:firebase-firestore:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/c5b78ca6394d7f958f37d4bac4d2611c/transformed/firebase-firestore-25.0.0/AndroidManifest.xml:22:17-82
 	android:name
 		ADDED from [com.google.firebase:firebase-firestore:25.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/c5b78ca6394d7f958f37d4bac4d2611c/transformed/firebase-firestore-25.0.0/AndroidManifest.xml:21:17-111
+meta-data#com.google.firebase.components:com.google.firebase.appcheck.FirebaseAppCheckKtxRegistrar
+ADDED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:25:13-27:85
+	android:value
+		ADDED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:27:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:26:17-120
+meta-data#com.google.firebase.components:com.google.firebase.appcheck.FirebaseAppCheckRegistrar
+ADDED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:28:13-30:85
+	android:value
+		ADDED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:30:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:29:17-117
 meta-data#com.google.firebase.components:com.google.firebase.messaging.ktx.FirebaseMessagingLegacyRegistrar
 ADDED from [com.google.firebase:firebase-messaging-ktx:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0f67e2aa1f68a15af1b96004b3c37ce1/transformed/firebase-messaging-ktx-24.0.0/AndroidManifest.xml:26:13-28:85
 	android:value
@@ -1247,18 +1272,6 @@ ADDED from [com.google.firebase:firebase-messaging:24.0.0] /Users/israelbill/.gr
 		ADDED from [com.google.firebase:firebase-messaging:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/738a1e47490f767990214839aa9c2ea7/transformed/firebase-messaging-24.0.0/AndroidManifest.xml:62:17-82
 	android:name
 		ADDED from [com.google.firebase:firebase-messaging:24.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/738a1e47490f767990214839aa9c2ea7/transformed/firebase-messaging-24.0.0/AndroidManifest.xml:61:17-119
-meta-data#com.google.firebase.components:com.google.firebase.appcheck.FirebaseAppCheckKtxRegistrar
-ADDED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:25:13-27:85
-	android:value
-		ADDED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:27:17-82
-	android:name
-		ADDED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:26:17-120
-meta-data#com.google.firebase.components:com.google.firebase.appcheck.FirebaseAppCheckRegistrar
-ADDED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:28:13-30:85
-	android:value
-		ADDED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:30:17-82
-	android:name
-		ADDED from [com.google.firebase:firebase-appcheck:18.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/ff31da8ac9c1099365a2bb049d4c100d/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:29:17-117
 activity#com.google.android.gms.common.api.GoogleApiActivity
 ADDED from [com.google.android.gms:play-services-base:18.5.0] /Users/israelbill/.gradle/caches/8.14/transforms/d2db899f3013b878ffaeb65aac349ca0/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:9-173
 	android:exported

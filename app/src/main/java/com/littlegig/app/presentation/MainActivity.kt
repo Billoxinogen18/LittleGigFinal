@@ -23,6 +23,8 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import com.littlegig.app.utils.PaymentEventBus
 import com.littlegig.app.utils.PaymentVerificationEvent
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -59,6 +61,11 @@ class MainActivity : ComponentActivity() {
             .build()
         
         googleSignInClient = GoogleSignIn.getClient(this, gso)
+        
+        // Initialize Firebase App Check with Play Integrity
+        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+            PlayIntegrityAppCheckProviderFactory.getInstance()
+        )
         
         // 🔥 AUTOMATIC ANONYMOUS AUTHENTICATION - TIKTOK STYLE! 🔥
         // Anonymous auth will be handled in LittleGigApp

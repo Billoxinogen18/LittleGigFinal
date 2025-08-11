@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.seedDemoUsers = exports.deleteAllUsers = exports.checkExistingUsers = exports.cleanupOldData = exports.sendPushNotification = exports.getActiveUsersNearby = exports.updateUserLocation = exports.calculateUserRanks = exports.getPaymentHistory = exports.upgradeToBusinessAccount = exports.verifyPayment = exports.processTicketPurchase = void 0;
+exports.seedDemoUsers = exports.fixAnonymousUsersHttp = exports.checkUsersHttp = exports.createDemoUsersHttp = exports.deleteAllUsers = exports.checkExistingUsers = exports.cleanupOldData = exports.sendPushNotification = exports.getActiveUsersNearby = exports.updateUserLocation = exports.calculateUserRanks = exports.getPaymentHistory = exports.upgradeToBusinessAccount = exports.verifyPayment = exports.processTicketPurchase = void 0;
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const axios_1 = require("axios");
@@ -430,7 +430,156 @@ exports.deleteAllUsers = functions.region('us-central1').https.onCall(async (dat
         };
     }
 });
+// HTTP function to create demo users (bypasses App Check)
+exports.createDemoUsersHttp = functions.region('us-central1').https.onRequest(async (req, res) => {
+    // Enable CORS
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') {
+        res.status(204).send('');
+        return;
+    }
+    try {
+        const count = parseInt(req.query.count) || 10;
+        const actualCount = Math.max(1, Math.min(20, count));
+        console.log(`Creating ${actualCount} demo users via HTTP function`);
+        const batch = db.batch();
+        for (let i = 0; i < actualCount; i++) {
+            const id = `demo_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+            const userRef = db.collection('users').doc(id);
+            batch.set(userRef, {
+                // Basic user info - EXACTLY match the User model
+                id: id,
+                displayName: `Demo User ${i + 1}`,
+                username: `demo${i + 1}`,
+                email: `demo${i + 1}@example.com`,
+                name: `Demo User ${i + 1}`,
+                phoneNumber: `+254700000${i.toString().padStart(3, '0')}`,
+                profileImageUrl: '',
+                profilePictureUrl: '',
+                // User type and rank - EXACTLY match the User model
+                userType: 'REGULAR',
+                rank: 'NOVICE',
+                // Lists - EXACTLY match the User model
+                followers: [],
+                following: [],
+                pinnedChats: [],
+                likedEvents: [],
+                // Analytics and timestamps - EXACTLY match the User model
+                engagementScore: 0.0,
+                lastRankUpdate: null,
+                bio: `This is demo user ${i + 1}`,
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                // Lowercase search fields - EXACTLY match the User model
+                username_lower: `demo${i + 1}`,
+                email_lower: `demo${i + 1}@example.com`,
+                displayName_lower: `demo user ${i + 1}`,
+                // Status fields - EXACTLY match the User model
+                lastSeen: Date.now(),
+                online: false,
+                // Legacy field mapping - EXACTLY match the User model
+                influencer: false,
+                isInfluencer: false,
+                influencerLegacy: false
+            });
+        }
+        await batch.commit();
+        res.status(200).json({
+            success: true,
+            created: actualCount,
+            message: `Successfully created ${actualCount} demo users`
+        });
+    }
+    catch (error) {
+        console.error('Error creating demo users:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+// HTTP function to check existing users (bypasses App Check)
+exports.checkUsersHttp = functions.region('us-central1').https.onRequest(async (req, res) => {
+    // Enable CORS
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') {
+        res.status(204).send('');
+        return;
+    }
+    try {
+        const usersSnapshot = await db.collection('users').limit(10).get();
+        const users = [];
+        usersSnapshot.forEach(doc => {
+            const userData = doc.data();
+            users.push({
+                id: doc.id,
+                fields: Object.keys(userData),
+                sampleData: userData
+            });
+        });
+        res.status(200).json({
+            success: true,
+            userCount: usersSnapshot.size,
+            users: users
+        });
+    }
+    catch (error) {
+        console.error('Error checking users:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+// HTTP function to fix existing anonymous users
+exports.fixAnonymousUsersHttp = functions.region('us-central1').https.onRequest(async (req, res) => {
+    // Enable CORS
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') {
+        res.status(204).send('');
+        return;
+    }
+    try {
+        const usersSnapshot = await db.collection('users').get();
+        const batch = db.batch();
+        let fixedCount = 0;
+        usersSnapshot.forEach(doc => {
+            const userData = doc.data();
+            const fields = Object.keys(userData);
+            // If user has less than 10 fields, it's incomplete and needs fixing
+            if (fields.length < 10) {
+                const userRef = db.collection('users').doc(doc.id);
+                const now = Date.now();
+                batch.set(userRef, Object.assign(Object.assign({}, userData), { 
+                    // Add missing required fields
+                    id: doc.id, displayName: userData.displayName || `User ${doc.id.slice(0, 8)}`, username: userData.username || `user_${doc.id.slice(0, 8)}`, email: userData.email || '', name: userData.name || userData.displayName || `User ${doc.id.slice(0, 8)}`, phoneNumber: userData.phoneNumber || '', profileImageUrl: userData.profileImageUrl || '', profilePictureUrl: userData.profilePictureUrl || '', userType: userData.userType || 'REGULAR', rank: userData.rank || 'NOVICE', followers: userData.followers || [], following: userData.following || [], pinnedChats: userData.pinnedChats || [], likedEvents: userData.likedEvents || [], engagementScore: userData.engagementScore || 0.0, lastRankUpdate: userData.lastRankUpdate || null, bio: userData.bio || null, createdAt: userData.createdAt || now, updatedAt: now, username_lower: userData.username_lower || (userData.username || `user_${doc.id.slice(0, 8)}`).toLowerCase(), email_lower: userData.email_lower || (userData.email || '').toLowerCase(), displayName_lower: userData.displayName_lower || (userData.displayName || `User ${doc.id.slice(0, 8)}`).toLowerCase(), lastSeen: userData.lastSeen || now, online: userData.online || false, influencer: userData.influencer || false, isInfluencer: userData.isInfluencer || false, influencerLegacy: userData.influencerLegacy || false }), { merge: true });
+                fixedCount++;
+            }
+        });
+        await batch.commit();
+        res.status(200).json({
+            success: true,
+            fixed: fixedCount,
+            message: `Fixed ${fixedCount} incomplete users`
+        });
+    }
+    catch (error) {
+        console.error('Error fixing users:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
 exports.seedDemoUsers = functions.region('us-central1').https.onCall(async (data, context) => {
+    // Bypass App Check for demo user creation
+    console.log('seedDemoUsers called with data:', data);
     const count = Math.max(1, Math.min(20, (data && data.count) || 10));
     const batch = db.batch();
     for (let i = 0; i < count; i++) {

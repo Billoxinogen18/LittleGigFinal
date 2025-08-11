@@ -107,13 +107,19 @@ class ChatViewModel @Inject constructor(
     fun searchUsers(query: String) {
         viewModelScope.launch {
             try {
+                println("🔥 DEBUG: ChatViewModel.searchUsers called with query: '$query'")
                 if (query.isBlank()) {
                     // default to all users if loaded, else contacts
                     _searchResults.value = if (_allUsers.value.isNotEmpty()) _allUsers.value else _contactsUsers.value
+                    println("🔥 DEBUG: Query blank, setting searchResults to: ${_searchResults.value.size}")
                     return@launch
                 }
-                _searchResults.value = userRepository.searchUsers(query)
+                val results = userRepository.searchUsers(query)
+                println("🔥 DEBUG: UserRepository returned ${results.size} results")
+                _searchResults.value = results
+                println("🔥 DEBUG: SearchResults state updated to: ${_searchResults.value.size}")
             } catch (e: Exception) {
+                println("🔥 DEBUG: Search error in ChatViewModel: ${e.message}")
                 _uiState.value = _uiState.value.copy(
                     error = "Failed to search users: ${e.message}"
                 )
