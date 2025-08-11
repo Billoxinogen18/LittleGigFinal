@@ -128,7 +128,8 @@
   - [TODO] Standard `GlassEmptyState` and shimmer/pulse loaders
 
 - Phase 3 — Screen Overhauls (No functional removal)
-  - [NEXT] Event Details uplift (panels, chips, actions)
+  - [DONE] Event Details header uplift (scrim + glass overlay)
+  - [NEXT] Event Details content polish (chips, organizer/actions cohesion)
   - [TODO] Account unification (glass panels + soft controls)
   - [TODO] Inbox glass and badges; Tickets/Receipts ticket card styles; Map filter sheet; Upload/Recaps step panels
 
