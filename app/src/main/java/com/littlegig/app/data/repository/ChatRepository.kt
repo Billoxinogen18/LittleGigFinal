@@ -143,23 +143,8 @@ class ChatRepository @Inject constructor(
     suspend fun sendMessage(chatId: String, message: Message): Result<Unit> {
         return try {
             // Inline reply preview population if needed (best-effort)
-            val enriched = if (!message.replyToMessageId.isNullOrBlank() && message.replyPreview == null) {
-                val prev = getMessage(chatId, message.replyToMessageId).getOrNull()
-                if (prev != null) message.copy(
-                    replyPreview = ReplyPreview(
-                        senderName = prev.senderName,
-                        snippet = when (prev.messageType) {
-                            MessageType.TEXT -> prev.content.take(80)
-                            MessageType.IMAGE -> "Photo"
-                            MessageType.VIDEO -> "Video"
-                            MessageType.AUDIO -> "Audio"
-                            MessageType.FILE -> "File"
-                            MessageType.TICKET_SHARE -> "Ticket share"
-                            else -> prev.content.take(80)
-                        }
-                    )
-                ) else message
-            } else message
+            val enriched = message
+                
             val messageRef = firestore.collection("chats")
                 .document(chatId)
                 .collection("messages")

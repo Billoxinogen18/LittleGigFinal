@@ -366,60 +366,59 @@ private fun ChatListItem(
     onClick: () -> Unit
 ) {
     val pinnedChatIds by viewModel.pinnedChatIds.collectAsState()
-    
+
     HapticButton(onClick = onClick) {
-                                            AdvancedNeumorphicCard(modifier = Modifier.fillMaxWidth()) {
-                                                Row(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                                                    verticalAlignment = Alignment.CenterVertically
-                                                ) {
-                // Chat Avatar
-                                                    Box(
-                    modifier = Modifier.size(50.dp).clip(CircleShape).background(LittleGigPrimary.copy(alpha = 0.1f)),
-                                                        contentAlignment = Alignment.Center
-                                                    ) {
+        AdvancedNeumorphicCard(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Avatar
+                Box(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                        .background(LittleGigPrimary.copy(alpha = 0.1f)),
+                    contentAlignment = Alignment.Center
+                ) {
                     when (chat.chatType) {
-                        com.littlegig.app.data.model.ChatType.DIRECT -> {
-                            Icon(imageVector = Icons.Default.Person, contentDescription = null, modifier = Modifier.size(30.dp), tint = LittleGigPrimary)
-                        }
-                        com.littlegig.app.data.model.ChatType.GROUP -> {
-                            Icon(imageVector = Icons.Default.Group, contentDescription = null, modifier = Modifier.size(30.dp), tint = LittleGigPrimary)
-                        }
-                        com.littlegig.app.data.model.ChatType.EVENT -> {
-                            Icon(imageVector = Icons.Default.Event, contentDescription = null, modifier = Modifier.size(30.dp), tint = LittleGigPrimary)
-                        }
+                        com.littlegig.app.data.model.ChatType.DIRECT -> Icon(Icons.Default.Person, null, tint = LittleGigPrimary, modifier = Modifier.size(30.dp))
+                        com.littlegig.app.data.model.ChatType.GROUP -> Icon(Icons.Default.Group, null, tint = LittleGigPrimary, modifier = Modifier.size(30.dp))
+                        com.littlegig.app.data.model.ChatType.EVENT -> Icon(Icons.Default.Event, null, tint = LittleGigPrimary, modifier = Modifier.size(30.dp))
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.width(16.dp))
-                                                    
-                                                    Column(modifier = Modifier.weight(1f)) {
-                                                        Text(
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
                         text = chat.name ?: "Chat",
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                                                            color = MaterialTheme.colorScheme.onSurface
-                                                        )
-                    
-                    if (chat.lastMessage != null) {
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    chat.lastMessage?.let {
                         Text(
-                            text = chat.lastMessage,
+                            text = it,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 2
                         )
                     }
-                                                        
-                                                        Text(
+                    Text(
                         text = "Participants: ${chat.participants.size}",
-                                                            style = MaterialTheme.typography.bodySmall,
-                                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                        )
-                                                    }
-                                                    
-                // Unread indicator
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
                 if (chat.unreadCount > 0) {
                     Box(
-                        modifier = Modifier.size(20.dp).clip(CircleShape).background(LittleGigPrimary),
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clip(CircleShape)
+                            .background(LittleGigPrimary),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -428,24 +427,21 @@ private fun ChatListItem(
                             color = Color.White
                         )
                     }
-}
                 }
-                
-                // Pin button
+
                 if (pinnedChatIds.contains(chat.id)) {
                     IconButton(onClick = { viewModel.unpinChat(chat.id) }) {
                         Icon(Icons.Default.PushPin, contentDescription = "Unpin", tint = LittleGigPrimary)
-
                     }
                 } else {
                     IconButton(onClick = { viewModel.pinChat(chat.id) }) {
                         Icon(Icons.Default.PushPin, contentDescription = "Pin")
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
 private fun UserListItem(user: com.littlegig.app.data.model.User, onClick: () -> Unit) {
