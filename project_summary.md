@@ -110,3 +110,34 @@
 - Process
   - [ALWAYS] Build with `./gradlew assembleDebug` locally when possible and push to `main`
   - [ALWAYS] Update this TODO after each change with [DONE]/[TODO] markers
+
+---
+
+## 5-Phase Delivery Plan (Ambitious)
+
+- Phase 1 — Foundations and Critical Fixes [IN PROGRESS]
+  - [DONE] Silent anonymous bootstrap (no auth flash)
+  - [DONE] Chat viewport fix (single list area + preload users)
+  - [DONE] Real frosted bottom nav with shared blur
+  - [TODO] Auth UI glass redesign (no logic change)
+  - [TODO] Contacts discovery as separate screen
+
+- Phase 2 — Design System Hardening
+  - [TODO] Tokenize glass/neumorphic (light/dark tints, borders, radii, motion)
+  - [TODO] AGSL refraction borders + fallbacks
+  - [TODO] Standard `GlassEmptyState` and shimmer/pulse loaders
+
+- Phase 3 — Screen Overhauls (No functional removal)
+  - [TODO] Event Details uplift (panels, chips, actions)
+  - [TODO] Account unification (glass panels + soft controls)
+  - [TODO] Inbox glass and badges; Tickets/Receipts ticket card styles; Map filter sheet; Upload/Recaps step panels
+
+- Phase 4 — Accessibility, Performance, and Polish
+  - [TODO] Contrast, TalkBack labels, large-text tests
+  - [TODO] Blur budget and shader capability gating; precompose heavy panels
+  - [TODO] Spacing/typography/icon consistency pass
+
+- Phase 5 — QA, Docs, and Release Prep
+  - [TODO] Snapshot tests dark/light; device matrix (26/28/31/34)
+  - [TODO] Update README/DESIGN_SYSTEM with final assets
+  - [TODO] Release checklist and store assets
