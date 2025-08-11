@@ -8,12 +8,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.littlegig.app.presentation.auth.AuthViewModel
 import com.littlegig.app.presentation.main.MainScreen
 import com.littlegig.app.presentation.auth.AuthScreen
 import timber.log.Timber
-import androidx.compose.material3.Box
 import androidx.compose.material3.CircularProgressIndicator
 
 @Composable
