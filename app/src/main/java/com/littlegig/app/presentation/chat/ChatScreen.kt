@@ -232,8 +232,8 @@ fun ChatScreen(
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Main Users List (when not searching)
-            if (!showSearch) {
+            // Main Users List (when not actively searching)
+            if (searchQuery.isBlank()) {
                 val mainDisplayedUsers = remember(contactsUsers, allUsers, showContactsOnly) {
                     if (showContactsOnly) contactsUsers else allUsers
                 }
