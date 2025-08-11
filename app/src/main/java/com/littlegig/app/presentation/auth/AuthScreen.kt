@@ -82,27 +82,27 @@ fun AuthScreen(
         ) {
             Spacer(modifier = Modifier.height(60.dp))
             
-            // App Logo and Branding
-            Box(
-                modifier = Modifier
-                    .size(120.dp)
-                    .background(
-                        Brush.radialGradient(
-                            colors = listOf(
-                                LittleGigPrimary,
-                                LittleGigSecondary
-                            )
+            // App Logo and Branding inside a subtle liquid glass card
+            LiquidGlassCard(glowEffect = true) {
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(12.dp)
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(LittleGigPrimary, LittleGigSecondary)
+                            ),
+                            CircleShape
                         ),
-                        CircleShape
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Event,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(60.dp)
-                )
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Event,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(60.dp)
+                    )
+                }
             }
             
             Spacer(modifier = Modifier.height(24.dp))
@@ -123,17 +123,14 @@ fun AuthScreen(
             
             Spacer(modifier = Modifier.height(48.dp))
             
-            // Toggle between Sign Up and Sign In
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        Color.White.copy(alpha = 0.1f),
-                        RoundedCornerShape(16.dp)
-                    )
-                    .padding(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
+            // Toggle between Sign Up and Sign In wrapped in glass
+            AdvancedGlassmorphicCard {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                 Button(
                     onClick = { isSignUp = true },
                     modifier = Modifier.weight(1f),
@@ -167,11 +164,13 @@ fun AuthScreen(
                         )
                     )
                 }
+                }
             }
             
             Spacer(modifier = Modifier.height(32.dp))
             
-            // Form Fields
+            // Form Fields in a glass card
+            AdvancedGlassmorphicCard {
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -233,6 +232,7 @@ fun AuthScreen(
                 ),
                 shape = RoundedCornerShape(16.dp)
             )
+            }
             
             Spacer(modifier = Modifier.height(24.dp))
             
@@ -336,13 +336,7 @@ fun AuthScreen(
             // Anonymous account linking section
             currentUser?.let { user ->
                 if (user.email.isEmpty()) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White.copy(alpha = 0.1f)
-                        ),
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
+                    AdvancedGlassmorphicCard {
                         Column(
                             modifier = Modifier.padding(20.dp)
                         ) {
@@ -353,17 +347,13 @@ fun AuthScreen(
                                 ),
                                 color = Color.White
                             )
-                            
                             Spacer(modifier = Modifier.height(8.dp))
-                            
                             Text(
                                 text = "Link your anonymous account to access all features",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = Color.White.copy(alpha = 0.8f)
                             )
-                            
                             Spacer(modifier = Modifier.height(16.dp))
-                            
                             Button(
                                 onClick = {
                                     if (email.isNotEmpty() && password.isNotEmpty()) {
