@@ -428,87 +428,14 @@ private fun ChatListItem(
                             color = Color.White
                         )
                     }
-<<<<<<< HEAD
-                    // Main Users list (not searching) only when there are no chats
-                    !showSearch && chats.isEmpty() && allUsers.isNotEmpty() -> {
-                        AdvancedGlassmorphicCard {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Text(
-                                    text = "People on LittleGig",
-                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                                Spacer(modifier = Modifier.height(12.dp))
-                                val userListState = rememberLazyListState()
-                                LaunchedEffect(userListState) {
-                                    snapshotFlow { userListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index to userListState.layoutInfo.totalItemsCount }
-                                        .collect { (last, total) ->
-                                            if (last != null && total > 0 && last >= total - 3) {
-                                                viewModel.loadMoreAllUsers()
-                                            }
-                                        }
-                                }
-                                LazyColumn(state = userListState, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    items(allUsers) { user ->
-                                        HapticButton(onClick = { viewModel.createChatWithUser(user.id) }) {
-                                            AdvancedNeumorphicCard(modifier = Modifier.fillMaxWidth()) {
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(12.dp),
-                                                    verticalAlignment = Alignment.CenterVertically
-                                                ) {
-                                                    Box(
-                                                        modifier = Modifier
-                                                            .size(40.dp)
-                                                            .clip(CircleShape)
-                                                            .background(LittleGigPrimary.copy(alpha = 0.1f)),
-                                                        contentAlignment = Alignment.Center
-                                                    ) {
-                                                        if (user.profilePictureUrl.isNotEmpty()) {
-                                                            AsyncImage(
-                                                                model = user.profilePictureUrl,
-                                                                contentDescription = null,
-                                                                modifier = Modifier.fillMaxSize(),
-                                                                contentScale = ContentScale.Crop
-                                                            )
-                                                        } else {
-                                                            Icon(
-                                                                imageVector = Icons.Default.Person,
-                                                                contentDescription = null,
-                                                                modifier = Modifier.size(24.dp),
-                                                                tint = LittleGigPrimary
-                                                            )
-                                                        }
-                                                    }
-                                                    Spacer(modifier = Modifier.width(12.dp))
-                                                    Column(modifier = Modifier.weight(1f)) {
-                                                        Text(
-                                                            text = user.displayName.ifEmpty { user.name },
-                                                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-                                                            color = MaterialTheme.colorScheme.onSurface
-                                                        )
-                                                        Text(
-                                                            text = "@${user.username}",
-                                                            style = MaterialTheme.typography.bodySmall,
-                                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-=======
+}
                 }
                 
                 // Pin button
                 if (pinnedChatIds.contains(chat.id)) {
                     IconButton(onClick = { viewModel.unpinChat(chat.id) }) {
                         Icon(Icons.Default.PushPin, contentDescription = "Unpin", tint = LittleGigPrimary)
->>>>>>> e277bc78 (chat: input bar floats above nav; smooth scroll; reply preview chip + jump; dark glass tuning; loading fix — Chatting finally shows (no build outputs))
+
                     }
                 } else {
                     IconButton(onClick = { viewModel.pinChat(chat.id) }) {

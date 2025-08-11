@@ -273,30 +273,14 @@ fun LiquidGlassBottomNavigation(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(88.dp)
-<<<<<<< HEAD
                 .graphicsLayer { clip = true; shape = RoundedCornerShape(28.dp) }
-=======
-                .clip(RoundedCornerShape(28.dp))
->>>>>>> e277bc78 (chat: input bar floats above nav; smooth scroll; reply preview chip + jump; dark glass tuning; loading fix — Chatting finally shows (no build outputs))
                 .glassmorphicBackground(
                     hazeState = hazeState,
-                    alpha = 0.25f, // Visible but still translucent
-                    tint = if (isDark) Color.White.copy(alpha = 0.05f) else Color.Black.copy(alpha = 0.02f),
+                    alpha = if (isDark) 0.6f else 0.75f,
+                    tint = if (isDark) Color.White.copy(alpha = 0.06f) else Color.White.copy(alpha = 0.12f),
                     blurRadius = 24.dp
-<<<<<<< HEAD
                 )
-                .drawBehind {
-                    // Neumorphic shadow for elevation
-                    drawRoundRect(
-                        color = if (isDark) Color.Black.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.2f),
-                        topLeft = Offset(0f, 8.dp.toPx()),
-                        size = size,
-                        cornerRadius = CornerRadius(28.dp.toPx())
-                    )
-                },
-=======
-                ),
->>>>>>> e277bc78 (chat: input bar floats above nav; smooth scroll; reply preview chip + jump; dark glass tuning; loading fix — Chatting finally shows (no build outputs))
+                ,
             shape = RoundedCornerShape(28.dp),
             color = Color.Transparent,
             border = BorderStroke(
