@@ -36,12 +36,11 @@ fun ModernAccountScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = Brush.verticalGradient(
-                    colors = if (isSystemInDarkTheme()) 
-                        listOf(Color(0xFF0F0F23), Color(0xFF1A1A2E))
-                    else 
-                        listOf(Color(0xFFF8FAFC), Color(0xFFE2E8F0))
-                )
+                if (isSystemInDarkTheme()) {
+                    Color(0xFF0F0F23) // Pure dark blue, no grey
+                } else {
+                    Color(0xFFF8FAFC) // Pure light, no grey
+                }
             )
     ) {
         Column(

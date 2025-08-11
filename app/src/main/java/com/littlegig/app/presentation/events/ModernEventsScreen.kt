@@ -1,5 +1,6 @@
 package com.littlegig.app.presentation.events
 
+import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -35,12 +36,14 @@ fun ModernEventsScreen(
     viewModel: EventsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val shareScope = rememberCoroutineScope()
     
     // Auto-paging setup for VerticalPager
     val pagerState = rememberPagerState(pageCount = { uiState.events.size })
+    val (isSearchExpanded, setSearchExpanded) = remember { mutableStateOf(false) }
     
     LaunchedEffect(pagerState.currentPage, uiState.events.size) {
         if (uiState.events.isNotEmpty() && pagerState.currentPage >= uiState.events.size - 3) {
@@ -52,20 +55,22 @@ fun ModernEventsScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = Brush.verticalGradient(
-                    colors = if (isSystemInDarkTheme()) 
-                        listOf(Color(0xFF0F0F23), Color(0xFF1A1A2E))
-                    else 
-                        listOf(Color(0xFFF8FAFC), Color(0xFFE2E8F0))
-                )
+                if (isSystemInDarkTheme()) {
+                    Color(0xFF0F0F23) // Pure dark blue, no grey gradients
+                } else {
+                    Color(0xFFF8FAFC) // Pure light, no grey gradients  
+                }
             )
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             // Modern Header
             ModernEventsHeader(
-                onSearchClick = { navController.navigate("chat_search") },
+                onSearchClick = { setSearchExpanded(!isSearchExpanded) },
                 onNotificationClick = { navController.navigate("inbox") },
-                onProfileClick = { navController.navigate("account") }
+                onProfileClick = { navController.navigate("account") },
+                searchQuery = searchQuery,
+                isSearchExpanded = isSearchExpanded,
+                onSearchQueryChange = { viewModel.updateSearchQuery(it) }
             )
 
             // Full-screen vertical pager with smooth snapping
@@ -152,8 +157,12 @@ fun ModernEventsScreen(
 private fun ModernEventsHeader(
     onSearchClick: () -> Unit,
     onNotificationClick: () -> Unit,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
+    searchQuery: String = "",
+    isSearchExpanded: Boolean = false,
+    onSearchQueryChange: (String) -> Unit = {}
 ) {
+    Column {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -221,17 +230,66 @@ private fun ModernEventsHeader(
                 onClick = onProfileClick,
                 shape = RoundedCornerShape(16.dp)
             ) {
-                AsyncImage(
-                    model = "https://via.placeholder.com/40",
-                    contentDescription = "Profile",
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Account",
+                    tint = GlassOnSurface(),
                     modifier = Modifier
-                        .size(44.dp)
-                        .clip(RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Crop
+                        .padding(12.dp)
+                        .size(20.dp)
                 )
             }
         }
+    } // End Row
+    
+    // Expandable Search Field
+    AnimatedVisibility(
+        visible = isSearchExpanded,
+        enter = slideInVertically() + fadeIn(),
+        exit = slideOutVertically() + fadeOut()
+    ) {
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = onSearchQueryChange,
+            placeholder = { Text("Search events...", color = GlassOnSurface().copy(alpha = 0.6f)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 16.dp)
+                .clip(RoundedCornerShape(16.dp)),
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null,
+                    tint = GlassOnSurface().copy(alpha = 0.7f),
+                    modifier = Modifier.size(20.dp)
+                )
+            },
+            trailingIcon = if (searchQuery.isNotEmpty()) {
+                {
+                    IconButton(onClick = { onSearchQueryChange("") }) {
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "Clear search",
+                            tint = GlassOnSurface().copy(alpha = 0.7f),
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+            } else null,
+            shape = RoundedCornerShape(16.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = GlassPink,
+                unfocusedBorderColor = GlassOnSurface().copy(alpha = 0.3f),
+                focusedContainerColor = GlassOnSurface().copy(alpha = 0.05f),
+                unfocusedContainerColor = GlassOnSurface().copy(alpha = 0.03f),
+                focusedTextColor = GlassOnSurface(),
+                unfocusedTextColor = GlassOnSurface()
+            ),
+            singleLine = true
+        )
     }
+    } // End Column
 }
 
 @Composable

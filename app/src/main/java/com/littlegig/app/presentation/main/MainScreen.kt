@@ -53,24 +53,12 @@ fun MainScreen(
             .fillMaxSize()
             .background(
                 if (isDark) {
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            DarkBackground,
-                            DarkSurface
-                        )
-                    )
+                    Color(0xFF0F0F23) // Pure dark blue, no grey
                 } else {
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            LightBackground,
-                            LightSurface
-                        )
-                    )
+                    Color(0xFFF8FAFC) // Pure light color, no grey
                 }
             )
     ) {
-        val hazeState = com.littlegig.app.presentation.components.rememberHazeState()
-        
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Transparent,
@@ -98,8 +86,7 @@ fun MainScreen(
             ) {
                 NavHost(
                     navController = navController,
-                    startDestination = "events",
-                    modifier = Modifier.blurrable(hazeState)
+                    startDestination = "events"
                 ) {
                     composable("events") {
                         ModernEventsScreen(navController = navController)

@@ -257,8 +257,8 @@ fun LiquidGlassBottomNavigation(
         BottomNavItem("events", "Events", Icons.Default.Event),
         BottomNavItem("tickets", "Tickets", Icons.Default.Receipt),
         BottomNavItem("map", "LittleMap", Icons.Default.Map),
-        BottomNavItem("chat", "Chat", Icons.Default.Chat),
-        BottomNavItem("upload", "Upload", Icons.Default.Add)
+        BottomNavItem("chat", "Chat", Icons.Default.Chat)
+        // Removed upload since FAB handles this
     )
     
             // Elevated floating bottom navigation with proper glassmorphism
@@ -268,18 +268,12 @@ fun LiquidGlassBottomNavigation(
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .padding(bottom = 38.dp) // Increased elevation from bottom (24 + 14)
         ) {
-        // REAL frosted glass background with actual background blur!
+        // REAL GLASSMORPHIC BACKGROUND - Blur behind, clear content 
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(88.dp)
                 .clip(RoundedCornerShape(28.dp))
-                .realBackgroundBlur(
-                    blurRadius = 20.dp,
-                    blurAlpha = 0.5f,
-                    noiseStrength = 0.03f,
-                    tintColor = if (isDark) Color.Black.copy(alpha = 0.1f) else Color.White.copy(alpha = 0.2f)
-                )
                 .drawBehind {
                     // Neumorphic shadow for elevation
                     drawRoundRect(
@@ -290,21 +284,13 @@ fun LiquidGlassBottomNavigation(
                     )
                 },
             shape = RoundedCornerShape(28.dp),
-            color = if (isDark) Color(0xFF141B2E).copy(alpha = 0.4f) else Color(0xFFFFFFFF).copy(alpha = 0.5f), // Reduced opacity for real glass effect
+            color = if (isDark) Color(0xFF141B2E).copy(alpha = 0.7f) else Color(0xFFFFFFFF).copy(alpha = 0.8f),
             border = BorderStroke(
                 width = 1.dp,
                 color = if (isDark) Color.White.copy(alpha = 0.15f) else Color.Black.copy(alpha = 0.08f)
             )
         ) {
-            // Inner frosted glass effect with blur
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        if (isDark) Color(0xFF1A2332).copy(alpha = 0.7f) else Color(0xFFF8FAFF).copy(alpha = 0.8f),
-                        RoundedCornerShape(28.dp)
-                    )
-            )
+            // Clean navigation content - no extra backgrounds needed since blur handles it
             
             // Navigation items with proper spacing
             Row(
