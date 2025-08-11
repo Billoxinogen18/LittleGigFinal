@@ -1,10 +1,12 @@
 package com.littlegig.app.data.model
 
 import android.os.Parcelable
+import com.google.firebase.firestore.IgnoreExtraProperties
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 import java.util.Date
 
+@IgnoreExtraProperties
 @Parcelize
 data class User(
     val id: String = "",
@@ -18,8 +20,10 @@ data class User(
     val userType: UserType = UserType.REGULAR,
     // Legacy field for backward compatibility
     val influencerLegacy: Boolean? = null,
+    // Another legacy alias that may exist in old documents
+    val influencer: Boolean? = null,
     // Primary field used by the app
-    val isInfluencer: Boolean = false,
+    var isInfluencer: Boolean = false,
     val businessId: String? = null,
     val rank: UserRank = UserRank.NOVICE,
     val followers: List<String> = emptyList(),

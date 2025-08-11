@@ -86,7 +86,7 @@ fun MainScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(top = paddingValues.calculateTopPadding())
                     // Mark content as blurrable so the bottom bar can blur it
                     .blurrable(hazeState)
             ) {

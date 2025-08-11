@@ -43,7 +43,7 @@ class UserRepository @Inject constructor(
                 .get()
                 .await()
             val users = snapshot.documents.mapNotNull { it.toObject(User::class.java)?.copy(id = it.id) }
-            Result.success(users)
+            Result.success(users.map { it.ensureInfluencerFlag() })
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -60,7 +60,7 @@ class UserRepository @Inject constructor(
             }
             val snapshot = query.get().await()
             val users = snapshot.documents.mapNotNull { it.toObject(User::class.java)?.copy(id = it.id) }
-            Result.success(users)
+            Result.success(users.map { it.ensureInfluencerFlag() })
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -79,7 +79,7 @@ class UserRepository @Inject constructor(
                     .get()
                     .await()
                 snap.documents.forEach { doc ->
-                    val u = doc.toObject(User::class.java)?.copy(id = doc.id)
+                    val u = doc.toObject(User::class.java)?.copy(id = doc.id)?.ensureInfluencerFlag()
                     if (u != null) results.add(u)
                 }
             }
@@ -181,7 +181,7 @@ class UserRepository @Inject constructor(
                 .get()
                 .await()
             usernameQuery.documents.forEach { doc ->
-                doc.toObject(User::class.java)?.copy(id = doc.id)?.let { if (it !in results) results.add(it) }
+                doc.toObject(User::class.java)?.copy(id = doc.id)?.ensureInfluencerFlag()?.let { if (it !in results) results.add(it) }
             }
 
             val emailQuery = firestore.collection("users")
@@ -191,7 +191,7 @@ class UserRepository @Inject constructor(
                 .get()
                 .await()
             emailQuery.documents.forEach { doc ->
-                doc.toObject(User::class.java)?.copy(id = doc.id)?.let { if (it !in results) results.add(it) }
+                doc.toObject(User::class.java)?.copy(id = doc.id)?.ensureInfluencerFlag()?.let { if (it !in results) results.add(it) }
             }
 
             val nameQuery = firestore.collection("users")
@@ -201,7 +201,7 @@ class UserRepository @Inject constructor(
                 .get()
                 .await()
             nameQuery.documents.forEach { doc ->
-                doc.toObject(User::class.java)?.copy(id = doc.id)?.let { if (it !in results) results.add(it) }
+                doc.toObject(User::class.java)?.copy(id = doc.id)?.ensureInfluencerFlag()?.let { if (it !in results) results.add(it) }
             }
 
             // Phone: normalize possible phone query to E.164 and/or prefix match
@@ -213,7 +213,7 @@ class UserRepository @Inject constructor(
                     .get()
                     .await()
                 phoneEq.documents.forEach { doc ->
-                    doc.toObject(User::class.java)?.copy(id = doc.id)?.let { if (it !in results) results.add(it) }
+                    doc.toObject(User::class.java)?.copy(id = doc.id)?.ensureInfluencerFlag()?.let { if (it !in results) results.add(it) }
                 }
             }
 
@@ -221,7 +221,7 @@ class UserRepository @Inject constructor(
             if (deduped.isEmpty()) {
                 // Fallback: fetch a page and filter on client, case-insensitive
                 val page = firestore.collection("users").limit(100).get().await()
-                val all = page.documents.mapNotNull { it.toObject(User::class.java)?.copy(id = it.id) }
+                val all = page.documents.mapNotNull { it.toObject(User::class.java)?.copy(id = it.id)?.ensureInfluencerFlag() }
                 deduped = all.filter { u ->
                     u.username.contains(q, ignoreCase = true) ||
                     u.displayName.contains(q, ignoreCase = true) ||
@@ -433,3 +433,9 @@ data class UserStats(
     val eventsCreated: Int,
     val eventsAttended: Int
 ) 
+
+// Hydration helpers
+private fun User.ensureInfluencerFlag(): User {
+    val computed = this.isInfluencer || (this.influencerLegacy ?: false) || (this.influencer ?: false)
+    return if (computed != this.isInfluencer) this.copy(isInfluencer = computed) else this
+} 
