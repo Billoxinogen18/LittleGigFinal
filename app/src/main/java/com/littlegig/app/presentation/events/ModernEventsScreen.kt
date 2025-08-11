@@ -186,7 +186,7 @@ private fun ModernEventsHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Search button
-            GlassmorphicCard(
+            ModernGlassmorphicCard(
                 
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -201,7 +201,7 @@ private fun ModernEventsHeader(
             }
             
             // Notification button with badge
-            GlassmorphicCard(
+            ModernGlassmorphicCard(
                 
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -226,7 +226,7 @@ private fun ModernEventsHeader(
             }
             
             // Profile button
-            GlassmorphicCard(
+            ModernGlassmorphicCard(
                 
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -300,7 +300,7 @@ private fun ModernFullScreenEventCard(
     onLikeClick: () -> Unit,
     onShareClick: () -> Unit
 ) {
-    GlassmorphicCard(
+    ModernGlassmorphicCard(
         modifier = modifier,
         
         shape = RoundedCornerShape(24.dp)
@@ -347,7 +347,7 @@ private fun ModernFullScreenEventCard(
                     verticalAlignment = Alignment.Top
                 ) {
                     // Category badge
-                    GlassmorphicCard(
+                    ModernGlassmorphicCard(
                         shape = RoundedCornerShape(20.dp)
                     ) {
                         Text(
@@ -364,7 +364,7 @@ private fun ModernFullScreenEventCard(
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        GlassmorphicCard(
+                        ModernGlassmorphicCard(
                             
                             shape = RoundedCornerShape(16.dp)
                         ) {
@@ -378,7 +378,7 @@ private fun ModernFullScreenEventCard(
                             )
                         }
                         
-                        GlassmorphicCard(
+                        ModernGlassmorphicCard(
                             
                             shape = RoundedCornerShape(16.dp)
                         ) {
@@ -473,13 +473,12 @@ private fun ModernFullScreenEventCard(
                         }
                         
                         // Join button
-                        NeumorphicButton(
-                            
+                        Button(
+                            onClick = { /* Join event */ },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = GlassPrimary,
                                 contentColor = Color.White
                             ),
-                            
                             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
                         ) {
                             Text(
@@ -535,8 +534,8 @@ private fun ModernEmptyState(
             
             Spacer(modifier = Modifier.height(24.dp))
             
-            NeumorphicButton(
-                
+            Button(
+                onClick = onCreateEvent,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = GlassPrimary,
                     contentColor = Color.White

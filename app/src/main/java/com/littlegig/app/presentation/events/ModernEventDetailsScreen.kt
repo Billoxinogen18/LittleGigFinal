@@ -208,9 +208,7 @@ private fun ModernEventHero(
                 .padding(20.dp)
         ) {
             // Category Badge
-            GlassmorphicCard(
-                shape = RoundedCornerShape(20.dp)
-            ) {
+            ModernGlassmorphicCard() {
                 Text(
                     text = event.category.name,
                     style = MaterialTheme.typography.labelMedium.copy(
@@ -239,9 +237,7 @@ private fun ModernEventHero(
 private fun ModernEventInfoCard(
     event: com.littlegig.app.data.model.Event
 ) {
-    GlassmorphicCard(
-        shape = RoundedCornerShape(24.dp)
-    ) {
+    ModernGlassmorphicCard() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -317,9 +313,7 @@ private fun ModernInfoRow(
     Row(
         verticalAlignment = Alignment.Top
     ) {
-        GlassmorphicCard(
-            shape = RoundedCornerShape(12.dp)
-        ) {
+        ModernGlassmorphicCard() {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
@@ -354,7 +348,7 @@ private fun ModernInfoRow(
 private fun ModernOrganizerCard(
     event: com.littlegig.app.data.model.Event
 ) {
-    GlassmorphicCard(
+    ModernGlassmorphicCard(
         shape = RoundedCornerShape(20.dp)
     ) {
         Row(
@@ -410,13 +404,12 @@ private fun ModernOrganizerCard(
                 )
             }
             
-            NeumorphicButton(
-                
+            Button(
+                onClick = { /* Follow organizer */ },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = GlassPrimary,
                     contentColor = Color.White
                 ),
-                
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Text(
@@ -440,14 +433,13 @@ private fun ModernActionButtons(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         // Buy Ticket Button
-        NeumorphicButton(
-            
+        Button(
+            onClick = onBuyTicketClick,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = GlassPrimary,
                 contentColor = Color.White
             ),
-            
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
             Icon(
@@ -469,8 +461,8 @@ private fun ModernActionButtons(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            NeumorphicButton(
-                
+            Button(
+                onClick = onAddRecapClick,
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = GlassSecondary,
@@ -492,8 +484,8 @@ private fun ModernActionButtons(
                 )
             }
             
-            NeumorphicButton(
-                
+            Button(
+                onClick = onViewRecapsClick,
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = GlassAccent,
@@ -522,7 +514,7 @@ private fun ModernActionButtons(
 private fun ModernRecapsPreview(
     onViewAllClick: () -> Unit
 ) {
-    GlassmorphicCard(
+    ModernGlassmorphicCard(
         shape = RoundedCornerShape(20.dp)
     ) {
         Column(
