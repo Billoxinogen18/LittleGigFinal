@@ -344,7 +344,7 @@ fun EventsScreen(
         }
         }
         
-        // Floating action button for quick upload
+        // Floating action button for quick upload, ensure above bottom nav and content
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -356,7 +356,8 @@ fun EventsScreen(
                     // Navigate to upload tab
                     navController.navigate("upload")
                 },
-                modifier = Modifier.padding(bottom = 80.dp) // Add padding to avoid overlap with bottom navigation
+                // place above raised bottom nav bar height (88dp) plus increased gap
+                modifier = Modifier.padding(bottom = 140.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,

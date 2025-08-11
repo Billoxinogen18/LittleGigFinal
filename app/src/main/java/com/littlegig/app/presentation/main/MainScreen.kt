@@ -86,9 +86,9 @@ fun MainScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = paddingValues.calculateTopPadding())
-                    // Mark content as blurrable so the bottom bar can blur it
-                    .blurrable(hazeState)
+                    .padding(paddingValues)
+                    // TEMPORARILY REMOVED BLUR TO DEBUG CHAT SCREEN
+                    // .blurrable(hazeState)
             ) {
                 NavHost(
                     navController = navController,

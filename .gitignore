@@ -20,3 +20,8 @@ functions/lib/
 # Logs
 *.log
 
+app/build/
+build/
+**/build/
+
+.gradle/

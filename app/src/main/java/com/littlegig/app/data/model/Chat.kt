@@ -54,11 +54,18 @@ data class Message(
     val deletedAt: Long = 0L,
     val editedAt: Long = 0L,
     val replyToMessageId: String? = null,
+    val replyPreview: ReplyPreview? = null,
     val forwardFromMessageId: String? = null,
     val fileSize: Long = 0L,
     val duration: Long = 0L,
     val width: Int = 0,
     val height: Int = 0
+) : Parcelable
+
+@Parcelize
+data class ReplyPreview(
+    val senderName: String = "",
+    val snippet: String = ""
 ) : Parcelable
 
 enum class MessageType {

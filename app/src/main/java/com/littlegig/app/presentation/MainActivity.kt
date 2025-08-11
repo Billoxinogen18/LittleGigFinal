@@ -25,6 +25,8 @@ import com.littlegig.app.utils.PaymentEventBus
 import com.littlegig.app.utils.PaymentVerificationEvent
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+// Avoid direct BuildConfig in this module if it's not generated in this package; use packageName heuristic
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -62,10 +64,23 @@ class MainActivity : ComponentActivity() {
         
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         
-        // Initialize Firebase App Check with Play Integrity
-        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
-            PlayIntegrityAppCheckProviderFactory.getInstance()
-        )
+        // Initialize Firebase App Check
+        // Use Debug provider in debug builds to avoid token errors in emulator
+        val isDebugBuild = try {
+            // Heuristic: debug builds often have debuggable flag; safer for this context
+            (applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        } catch (e: Exception) {
+            false
+        }
+        if (isDebugBuild) {
+            FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+                DebugAppCheckProviderFactory.getInstance()
+            )
+        } else {
+            FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+                PlayIntegrityAppCheckProviderFactory.getInstance()
+            )
+        }
         
         // 🔥 AUTOMATIC ANONYMOUS AUTHENTICATION - TIKTOK STYLE! 🔥
         // Anonymous auth will be handled in LittleGigApp

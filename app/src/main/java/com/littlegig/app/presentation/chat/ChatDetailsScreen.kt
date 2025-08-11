@@ -81,6 +81,7 @@ fun ChatDetailsScreen(
     var showTicketPicker by remember { mutableStateOf(false) }
     var searchOpen by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    val uiScope = rememberCoroutineScope()
     val matchPositions = remember(messages, searchQuery) {
         if (searchQuery.isBlank()) emptyList() else messages.mapIndexedNotNull { idx, m -> if (m.content.contains(searchQuery, true)) idx else null }
     }
@@ -202,10 +203,12 @@ fun ChatDetailsScreen(
             var lastDate: String? = null
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .weight(1f)
+                    .fillMaxWidth()
                     .padding(bottom = 96.dp),
                 state = listState,
-                contentPadding = PaddingValues(vertical = 16.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
             ) {
                 items(messages) { message ->
                     val dateText = java.text.SimpleDateFormat("MMM d, yyyy").format(java.util.Date(message.timestamp))
@@ -250,6 +253,12 @@ fun ChatDetailsScreen(
                             onLikeMessage = { msgId -> viewModel.toggleReaction(chatId, msgId, "♥") },
                             onMentionClick = { username -> navController.navigate("profile/$username") },
                             onShareTicket = { /* no-op */ },
+                            onReplyReferenceClick = { refId ->
+                                val index = messages.indexOfFirst { it.id == refId }
+                                if (index >= 0) {
+                                    uiScope.launch { listState.animateScrollToItem(index) }
+                                }
+                            },
                             searchQuery = if (searchOpen) searchQuery else null,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -259,10 +268,7 @@ fun ChatDetailsScreen(
                                     })
                                 }
                         )
-                        if (message.senderId == viewModel.currentUserId && message.deliveredTo.isEmpty() && message.readBy.isEmpty()) {
-                            SendingShimmerBubble(modifier = Modifier
-                                .padding(start = 48.dp, end = 8.dp, top = 0.dp, bottom = 4.dp))
-                        }
+                        // Remove pending shimmer to avoid confusing clocks; messages are persisted immediately
                     }
                     }
                 }
@@ -308,6 +314,7 @@ fun ChatDetailsScreen(
                 }
             }
 
+            // Chat input anchored above the floating bottom nav pill (3dp gap)
             NeumorphicChatInput(
                 message = messageText,
                 onMessageChange = {
@@ -324,7 +331,7 @@ fun ChatDetailsScreen(
                 onShareTicket = { showTicketPicker = true },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(16.dp)
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 3.dp + 88.dp)
             )
 
             if (showTicketPicker) {
@@ -448,13 +455,16 @@ class ChatDetailsViewModel @Inject constructor(
     private var subscribedChatId: String? = null
 
     fun loadChat(chatId: String) {
+        // Stream the chat document so header updates (title, announcement, pins)
         viewModelScope.launch {
             try {
-                // TODO: fetch Chat doc
-                _chat.value = com.littlegig.app.data.model.Chat(id = chatId)
-                // Subscribe to chat topic for notifications
-                try { notificationRepository.subscribeToChatTopic(chatId) } catch (_: Exception) {}
-                subscribedChatId = chatId
+                if (subscribedChatId != chatId) {
+                    try { notificationRepository.subscribeToChatTopic(chatId) } catch (_: Exception) {}
+                    subscribedChatId = chatId
+                }
+                chatRepository.getChat(chatId).collect { doc ->
+                    _chat.value = doc ?: com.littlegig.app.data.model.Chat(id = chatId)
+                }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(error = e.message)
             }
@@ -472,10 +482,10 @@ class ChatDetailsViewModel @Inject constructor(
                     if (first) {
                         com.littlegig.app.utils.PerfMonitor.putMetric("chat_load_messages", "count", chatMessages.size.toLong())
                         com.littlegig.app.utils.PerfMonitor.stopTrace("chat_load_messages")
+                        _uiState.value = _uiState.value.copy(isLoading = false)
                         first = false
                     }
                 }
-                _uiState.value = _uiState.value.copy(isLoading = false)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
                 com.littlegig.app.utils.PerfMonitor.stopTrace("chat_load_messages")

@@ -265,20 +265,25 @@ fun LiquidGlassBottomNavigation(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .padding(bottom = 38.dp) // Increased elevation from bottom (24 + 14)
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 64.dp) // Raise higher above system nav
         ) {
-        // REAL GLASSMORPHIC BACKGROUND - Blur behind, clear content 
+        // GLASSMORPHIC PILL WITH PROPER VISIBILITY
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(88.dp)
+<<<<<<< HEAD
                 .graphicsLayer { clip = true; shape = RoundedCornerShape(28.dp) }
+=======
+                .clip(RoundedCornerShape(28.dp))
+>>>>>>> e277bc78 (chat: input bar floats above nav; smooth scroll; reply preview chip + jump; dark glass tuning; loading fix — Chatting finally shows (no build outputs))
                 .glassmorphicBackground(
                     hazeState = hazeState,
-                    alpha = if (isDark) 0.6f else 0.75f,
-                    tint = if (isDark) Color.White.copy(alpha = 0.06f) else Color.White.copy(alpha = 0.12f),
+                    alpha = 0.25f, // Visible but still translucent
+                    tint = if (isDark) Color.White.copy(alpha = 0.05f) else Color.Black.copy(alpha = 0.02f),
                     blurRadius = 24.dp
+<<<<<<< HEAD
                 )
                 .drawBehind {
                     // Neumorphic shadow for elevation
@@ -289,6 +294,9 @@ fun LiquidGlassBottomNavigation(
                         cornerRadius = CornerRadius(28.dp.toPx())
                     )
                 },
+=======
+                ),
+>>>>>>> e277bc78 (chat: input bar floats above nav; smooth scroll; reply preview chip + jump; dark glass tuning; loading fix — Chatting finally shows (no build outputs))
             shape = RoundedCornerShape(28.dp),
             color = Color.Transparent,
             border = BorderStroke(
@@ -302,7 +310,7 @@ fun LiquidGlassBottomNavigation(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 28.dp, vertical = 16.dp),
+                    .padding(horizontal = 20.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -470,13 +478,10 @@ fun AdvancedNeumorphicCard(
             color = if (isDark) Color.White.copy(alpha = 0.1f) else Color.Black.copy(alpha = 0.05f)
         )
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    if (isDark) Color(0xFF1A2332).copy(alpha = 0.8f) else Color(0xFFFFFFFF).copy(alpha = 0.9f)
-                )
-        ) {
+        // IMPORTANT: do not force children to fillMaxSize, otherwise small wrappers (like headers)
+        // will expand to the whole screen and hide content below.
+        // Clean container without opaque backgrounds; child decides tint so cards never obstruct content
+        Box(modifier = Modifier.fillMaxWidth()) {
             content()
         }
     }
@@ -503,22 +508,12 @@ fun AdvancedGlassmorphicCard(
                     ) { onClick() }
                 } else Modifier
             )
-            .drawBehind {
-                // Frosted glass effect with gradient
-                drawRoundRect(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            if (isDark) Color.White.copy(alpha = 0.15f) else Color.White.copy(alpha = 0.3f),
-                            if (isDark) Color.White.copy(alpha = 0.08f) else Color.White.copy(alpha = 0.15f),
-                            Color.Transparent,
-                            if (isDark) Color.White.copy(alpha = 0.05f) else Color.White.copy(alpha = 0.1f),
-                            if (isDark) Color.White.copy(alpha = 0.12f) else Color.White.copy(alpha = 0.25f)
-                        )
-                    ),
-                    size = size,
-                    cornerRadius = CornerRadius(cornerRadius.toPx())
-                )
-            },
+            .glassmorphicBackground(
+                hazeState = dev.chrisbanes.haze.HazeState(),
+                alpha = if (isDark) 0.2f else 0.28f,
+                tint = if (isDark) Color.White.copy(alpha = 0.06f) else Color.Black.copy(alpha = 0.04f),
+                blurRadius = 24.dp
+            ),
         shape = RoundedCornerShape(cornerRadius),
         color = if (isDark) Color(0xFF141B2E).copy(alpha = 0.7f) else Color(0xFFFFFFFF).copy(alpha = 0.8f),
         border = BorderStroke(
@@ -526,7 +521,7 @@ fun AdvancedGlassmorphicCard(
             color = if (isDark) Color.White.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.1f)
         )
     ) {
-        content()
+        Box(Modifier.fillMaxWidth().padding(2.dp)) { content() }
     }
 }
 

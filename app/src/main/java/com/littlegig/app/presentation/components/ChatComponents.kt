@@ -50,6 +50,7 @@ fun NeumorphicChatBubble(
     onLikeMessage: (String) -> Unit,
     onMentionClick: (String) -> Unit = {},
     onShareTicket: (SharedTicket) -> Unit,
+    onReplyReferenceClick: (String) -> Unit = {},
     searchQuery: String? = null,
     modifier: Modifier = Modifier
 ) {
@@ -71,8 +72,32 @@ fun NeumorphicChatBubble(
             )
         ) {
             Column(
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier
+                    .padding(8.dp)
             ) {
+                // Inline reply reference (if any)
+                if (!message.replyToMessageId.isNullOrBlank() && message.replyPreview != null) {
+                    Surface(
+                        onClick = { onReplyReferenceClick(message.replyToMessageId!!) },
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.08f),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 6.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(Icons.Default.Reply, contentDescription = null, tint = LittleGigPrimary, modifier = Modifier.size(16.dp))
+                            Spacer(Modifier.width(6.dp))
+                            Column(Modifier.weight(1f)) {
+                                Text(message.replyPreview.senderName, style = MaterialTheme.typography.labelSmall, color = LittleGigPrimary)
+                                Text(message.replyPreview.snippet, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            }
+                        }
+                    }
+                }
                 // Message content based on type
                 when (message.messageType) {
                     MessageType.TEXT -> {
@@ -601,7 +626,9 @@ fun NeumorphicChatInput(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = 40.dp, max = 120.dp),
                 singleLine = false,
                 maxLines = 4,
                 colors = OutlinedTextFieldDefaults.colors(

@@ -56,17 +56,22 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val user = authRepository.currentUser.first() ?: return@launch
+                println("🔥 DEBUG: ChatViewModel.loadChats() - currentUser: ${user.id}")
                 // initialize pinned ids from current user
                 _pinnedChatIds.value = authRepository.currentUser.value?.pinnedChats ?: emptyList()
                 chatRepository.getUserChats(user.id).collect { list ->
+                    println("🔥 DEBUG: ChatRepository returned ${list.size} chats")
                     val me = authRepository.currentUser.value
                     val pinned = me?.pinnedChats ?: emptyList()
                     val sorted = list.sortedWith(compareByDescending<Chat> { pinned.contains(it.id) }.thenByDescending { it.lastMessageTime })
                     _chats.value = sorted
+                    println("🔥 DEBUG: _chats.value updated to ${sorted.size} chats")
                     // track last timestamp for pagination
                     lastChatsTime = list.lastOrNull()?.lastMessageTime
                 }
             } catch (e: Exception) {
+                println("🔥 DEBUG: ChatViewModel.loadChats() ERROR: ${e.message}")
+                e.printStackTrace()
                 _uiState.value = _uiState.value.copy(
                     error = "Failed to load chats: ${e.message}"
                 )
@@ -248,14 +253,46 @@ class ChatViewModel @Inject constructor(
             try {
                 val currentUser = authRepository.currentUser.first()
                 if (currentUser != null) {
+                    println("🔥 DEBUG: Creating chat between ${currentUser.id} and $userId")
                     chatRepository.createOrGetDirectChat(currentUser.id, userId)
                     // Refresh chats list
                     loadChats()
+                    println("🔥 DEBUG: Chat creation completed, refreshed chat list")
                 }
             } catch (e: Exception) {
+                println("🔥 DEBUG: Chat creation failed: ${e.message}")
+                e.printStackTrace()
                 _uiState.value = _uiState.value.copy(
                     error = "Failed to create chat: ${e.message}"
                 )
+            }
+        }
+    }
+    
+    // 🔥 TEST FUNCTION TO CREATE A SAMPLE CHAT 🔥
+    fun createTestChat() {
+        viewModelScope.launch {
+            try {
+                val currentUser = authRepository.currentUser.first()
+                if (currentUser != null) {
+                    println("🔥 DEBUG: Creating test chat for user: ${currentUser.id}")
+                    
+                    // Find the first other user from allUsers to create a chat with
+                    val otherUser = _allUsers.value.firstOrNull { it.id != currentUser.id }
+                    if (otherUser != null) {
+                        println("🔥 DEBUG: Creating test chat with user: ${otherUser.displayName} (${otherUser.id})")
+                        chatRepository.createOrGetDirectChat(currentUser.id, otherUser.id)
+                        loadChats()
+                        println("🔥 DEBUG: Test chat created successfully!")
+                    } else {
+                        println("🔥 DEBUG: No other users found to create test chat with")
+                        _uiState.value = _uiState.value.copy(error = "No other users found to create test chat")
+                    }
+                }
+            } catch (e: Exception) {
+                println("🔥 DEBUG: Test chat creation failed: ${e.message}")
+                e.printStackTrace()
+                _uiState.value = _uiState.value.copy(error = "Test chat creation failed: ${e.message}")
             }
         }
     }

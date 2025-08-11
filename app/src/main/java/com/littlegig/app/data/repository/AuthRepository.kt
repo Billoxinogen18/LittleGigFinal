@@ -447,11 +447,25 @@ class AuthRepository @Inject constructor(
     // 🔥 SAVE ANONYMOUS USER DATA TO FIRESTORE! 🔥
     private suspend fun saveAnonymousUserData(user: User) {
         try {
+            // Save the main user data
             firestore.collection("users")
                 .document(user.id)
                 .set(user)
                 .await()
-            println("🔥 DEBUG: Anonymous user data saved to Firestore: ${user.id}")
+            
+            // 🔥 ADD SEARCH INDEX FIELDS FOR ANONYMOUS USERS TOO! 🔥
+            val searchFields = mapOf(
+                "username_lower" to user.username.lowercase(),
+                "email_lower" to user.email.lowercase(),
+                "displayName_lower" to user.displayName.lowercase()
+            )
+            
+            firestore.collection("users")
+                .document(user.id)
+                .set(searchFields, com.google.firebase.firestore.SetOptions.merge())
+                .await()
+                
+            println("🔥 DEBUG: Anonymous user data + search fields saved to Firestore: ${user.id}")
         } catch (e: Exception) {
             println("🔥 DEBUG: Failed to save anonymous user data: ${e.message}")
             // Continue without saving to Firestore for now
