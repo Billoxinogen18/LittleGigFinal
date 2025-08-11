@@ -60,7 +60,7 @@ Notes
   - Tickets wallet auto-refresh + success snackbar and quick navigate to Tickets
   - Event Details: recent recaps preview row; subscribe/unsubscribe to event topic
   - Recap upload: route wired, permission prompt, proximity verification hook
-  - Chat: reactions (per-user), mention parsing and highlighting; reply preview enrichment restored on send
+  - Chat: reactions (per-user), mention parsing and highlighting; reply preview enrichment restored on send; double-tap like + quick reactions bar
 
 ## Build & Install
 - Build: `./gradlew assembleDebug`
@@ -228,6 +228,7 @@ Definition of Done
   - [DONE] Preload `allUsers` on entry to avoid empty lists by default
   - [DONE] Split "LittleGig Contacts" into a separate discovery screen with its own empty states and glass panels
   - [TODO] Strong empty states across Chat (no users, no results, no chats) with clear CTAs
+  - [TODO] Full Chat UI overhaul per references (glass panels, gradients, soft neumorphic accents, pill input, modern chips)
 
 - P0 Auth Flow and Splash
   - [DONE] Silent anonymous bootstrap to prevent auth screen flash (attempt anon sign-in on app start)
@@ -296,6 +297,7 @@ Definition of Done
   - [DONE] Inbox glass header + unread badge + empty state
   - [DONE] Tickets: ticket card with perforation + barcode glass slot
   - [NEXT] Upload/Recaps step panels polish
+  - [DONE] Account: integrate phone linking (OTP) in-sheet via `AccountLinkingScreen`; glass panels refined
 
 - Phase 4 — Accessibility, Performance, and Polish
   - [TODO] Contrast, TalkBack labels, large-text tests

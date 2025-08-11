@@ -250,7 +250,7 @@ fun ChatDetailsScreen(
                         NeumorphicChatBubble(
                             message = message,
                             isFromCurrentUser = message.senderId == viewModel.currentUserId,
-                            onLikeMessage = { msgId -> viewModel.toggleReaction(chatId, msgId, "♥") },
+                            onReact = { msgId, emoji -> viewModel.toggleReaction(chatId, msgId, emoji) },
                             onMentionClick = { username -> navController.navigate("profile/$username") },
                             onShareTicket = { /* no-op */ },
                             onReplyReferenceClick = { refId ->

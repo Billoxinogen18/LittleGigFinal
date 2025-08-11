@@ -23,6 +23,7 @@ import coil.compose.AsyncImage
 import com.littlegig.app.data.model.UserType
 import com.littlegig.app.presentation.components.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModernAccountScreen(
     navController: NavController,
@@ -86,6 +87,16 @@ fun ModernAccountScreen(
             Spacer(modifier = Modifier.height(100.dp)) // Bottom padding for navigation
         }
         
+        // Phone linking flow in a glass sheet
+        if (uiState.showAccountLinking) {
+            androidx.compose.material3.ModalBottomSheet(onDismissRequest = { viewModel.clearAccountLinking() }) {
+                com.littlegig.app.presentation.auth.AccountLinkingScreen(
+                    onAccountLinked = { viewModel.clearAccountLinking() },
+                    onSkip = { viewModel.clearAccountLinking() }
+                )
+            }
+        }
+
         // Loading overlay
         if (uiState.isLoading) {
             Box(

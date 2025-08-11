@@ -40,6 +40,8 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectTapGestures
 
 // Unique LittleGig Chat Bubble with Neumorphic Design
 @Composable
@@ -47,7 +49,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 fun NeumorphicChatBubble(
     message: Message,
     isFromCurrentUser: Boolean,
-    onLikeMessage: (String) -> Unit,
+    onReact: (messageId: String, emoji: String) -> Unit,
     onMentionClick: (String) -> Unit = {},
     onShareTicket: (SharedTicket) -> Unit,
     onReplyReferenceClick: (String) -> Unit = {},
@@ -64,12 +66,18 @@ fun NeumorphicChatBubble(
     ) {
         // Message bubble
         AdvancedGlassmorphicCard(
-            modifier = Modifier.padding(
-                start = if (isFromCurrentUser) 48.dp else 8.dp,
-                end = if (isFromCurrentUser) 8.dp else 48.dp,
-                top = 4.dp,
-                bottom = 4.dp
-            )
+            modifier = Modifier
+                .padding(
+                    start = if (isFromCurrentUser) 48.dp else 8.dp,
+                    end = if (isFromCurrentUser) 8.dp else 48.dp,
+                    top = 4.dp,
+                    bottom = 4.dp
+                )
+                .pointerInput(message.id) {
+                    detectTapGestures(
+                        onDoubleTap = { onReact(message.id, "❤️") }
+                    )
+                }
         ) {
             Column(
                 modifier = Modifier
@@ -307,7 +315,7 @@ fun NeumorphicChatBubble(
                     }
                     if (!isFromCurrentUser) {
                         IconButton(
-                            onClick = { onLikeMessage(message.id) },
+                            onClick = { onReact(message.id, "❤️") },
                             modifier = Modifier.size(24.dp)
                         ) {
                             Icon(
@@ -357,7 +365,7 @@ fun NeumorphicChatBubble(
                     Text(text = emoji, style = MaterialTheme.typography.headlineSmall, modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                            onLikeMessage(message.id)
+                            onReact(message.id, emoji)
                             showReactions = false
                         })
                 }
