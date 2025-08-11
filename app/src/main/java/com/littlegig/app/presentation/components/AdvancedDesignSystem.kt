@@ -60,6 +60,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.littlegig.app.presentation.theme.*
 import com.littlegig.app.data.model.UserRank
+import com.littlegig.app.presentation.components.realBackgroundBlur
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -242,7 +243,7 @@ fun FloatingActionButton(
     }
 }
 
-// Liquid Glass Bottom Navigation - Proper glassmorphism with neumorphic effects
+// Real Glassmorphic Bottom Navigation with actual background blur
 @Composable
 fun LiquidGlassBottomNavigation(
     currentRoute: String?,
@@ -250,6 +251,7 @@ fun LiquidGlassBottomNavigation(
     inboxUnreadCount: Int = 0
 ) {
     val isDark = isSystemInDarkTheme()
+    val hazeState = com.littlegig.app.presentation.components.rememberHazeState()
     
     val items = listOf(
         BottomNavItem("events", "Events", Icons.Default.Event),
@@ -266,12 +268,18 @@ fun LiquidGlassBottomNavigation(
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .padding(bottom = 38.dp) // Increased elevation from bottom (24 + 14)
         ) {
-        // Frosted glass background with proper neumorphic effects
+        // REAL frosted glass background with actual background blur!
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(88.dp)
                 .clip(RoundedCornerShape(28.dp))
+                .realBackgroundBlur(
+                    blurRadius = 20.dp,
+                    blurAlpha = 0.5f,
+                    noiseStrength = 0.03f,
+                    tintColor = if (isDark) Color.Black.copy(alpha = 0.1f) else Color.White.copy(alpha = 0.2f)
+                )
                 .drawBehind {
                     // Neumorphic shadow for elevation
                     drawRoundRect(
@@ -280,24 +288,9 @@ fun LiquidGlassBottomNavigation(
                         size = size,
                         cornerRadius = CornerRadius(28.dp.toPx())
                     )
-                    
-                    // Frosted glass edge effects with gradient
-                    drawRoundRect(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                if (isDark) Color.White.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.4f),
-                                if (isDark) Color.White.copy(alpha = 0.1f) else Color.White.copy(alpha = 0.2f),
-                                Color.Transparent,
-                                if (isDark) Color.White.copy(alpha = 0.05f) else Color.White.copy(alpha = 0.1f),
-                                if (isDark) Color.White.copy(alpha = 0.15f) else Color.White.copy(alpha = 0.3f)
-                            )
-                        ),
-                        size = size,
-                        cornerRadius = CornerRadius(28.dp.toPx())
-                    )
                 },
             shape = RoundedCornerShape(28.dp),
-            color = if (isDark) Color(0xFF141B2E).copy(alpha = 0.85f) else Color(0xFFFFFFFF).copy(alpha = 0.9f),
+            color = if (isDark) Color(0xFF141B2E).copy(alpha = 0.4f) else Color(0xFFFFFFFF).copy(alpha = 0.5f), // Reduced opacity for real glass effect
             border = BorderStroke(
                 width = 1.dp,
                 color = if (isDark) Color.White.copy(alpha = 0.15f) else Color.Black.copy(alpha = 0.08f)

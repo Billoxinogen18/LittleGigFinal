@@ -20,6 +20,7 @@ import com.littlegig.app.presentation.account.EditProfileScreen
 import com.littlegig.app.presentation.chat.ChatDetailsScreen
 import com.littlegig.app.presentation.chat.ChatScreen
 import com.littlegig.app.presentation.components.*
+import com.littlegig.app.presentation.components.blurrable
 import com.littlegig.app.presentation.events.EventsScreen
 import com.littlegig.app.presentation.events.ModernEventsScreen
 import com.littlegig.app.presentation.events.EventDetailsScreen
@@ -68,6 +69,8 @@ fun MainScreen(
                 }
             )
     ) {
+        val hazeState = com.littlegig.app.presentation.components.rememberHazeState()
+        
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Transparent,
@@ -95,7 +98,8 @@ fun MainScreen(
             ) {
                 NavHost(
                     navController = navController,
-                    startDestination = "events"
+                    startDestination = "events",
+                    modifier = Modifier.blurrable(hazeState)
                 ) {
                     composable("events") {
                         ModernEventsScreen(navController = navController)

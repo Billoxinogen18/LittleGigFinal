@@ -65,28 +65,17 @@ MERGED from [com.google.android.material:material:1.4.0] /Users/israelbill/.grad
 MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/7f1e45ce53b8f989bac6102945f728b9/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/780381014c6a9cfa19b32625557523b2/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.loader:loader:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/fa34a83d1b00ca1f0ea9d5f023ce27b4/transformed/loader-1.1.0/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.compose.material3:material3-android:1.2.1] /Users/israelbill/.gradle/caches/8.14/transforms/4b0c055b48a91d71fd62b9b0fdaddd30/transformed/material3-release/AndroidManifest.xml:17:1-22:12
 MERGED from [io.coil-kt:coil-compose:2.6.0] /Users/israelbill/.gradle/caches/8.14/transforms/6dde74574b6a54e5685924d1a4436df5/transformed/coil-compose-2.6.0/AndroidManifest.xml:2:1-7:12
 MERGED from [io.coil-kt:coil-compose-base:2.6.0] /Users/israelbill/.gradle/caches/8.14/transforms/2e860799482c87670c34a83adc59bb1c/transformed/coil-compose-base-2.6.0/AndroidManifest.xml:2:1-7:12
 MERGED from [io.coil-kt:coil:2.6.0] /Users/israelbill/.gradle/caches/8.14/transforms/806f18f9b2892a923f8061aee3fb5974/transformed/coil-2.6.0/AndroidManifest.xml:2:1-7:12
 MERGED from [io.coil-kt:coil-base:2.6.0] /Users/israelbill/.gradle/caches/8.14/transforms/83af1c2c8d41ee746a1a5393d7bb0b57/transformed/coil-base-2.6.0/AndroidManifest.xml:2:1-7:12
+MERGED from [dev.chrisbanes.haze:haze-materials-android:0.7.2] /Users/israelbill/.gradle/caches/8.14/transforms/ab006408e6ced3b10b3bf67825093213/transformed/haze-materials-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material3:material3-android:1.2.1] /Users/israelbill/.gradle/caches/8.14/transforms/4b0c055b48a91d71fd62b9b0fdaddd30/transformed/material3-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/israelbill/.gradle/caches/8.14/transforms/dbeba489e991bf62905f3f9cc5392f99/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.compose.material:material-ripple-android:1.6.7] /Users/israelbill/.gradle/caches/8.14/transforms/dec1f20d9ca09f06100c5a06ffcc52bf/transformed/material-ripple-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.material:material-icons-core-android:1.6.7] /Users/israelbill/.gradle/caches/8.14/transforms/918e65b37175ae84d63847213e3ddc2a/transformed/material-icons-core-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.material:material-icons-extended-android:1.6.7] /Users/israelbill/.gradle/caches/8.14/transforms/b7dbb09b4f93a0e995a3d121c7b63c35/transformed/material-icons-extended-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.material:material-android:1.6.7] /Users/israelbill/.gradle/caches/8.14/transforms/4ce0ebaeb56817510302fde0313b5dd7/transformed/material-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/4d11a1d125a0d9f9a5ce8612114d810b/transformed/foundation-layout-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.foundation:foundation-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/e1681158beb22741ba5c67bb4ec955ec/transformed/foundation-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.animation:animation-core-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/4be740f54f7f6f1e5f23be5c9fcad7a9/transformed/animation-core-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.animation:animation-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/3f2493cd864b57d70e8f13aeaf4fdaac/transformed/animation-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/0b6e904e4e36239267927761d622515b/transformed/ui-tooling-data-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-geometry-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/c679e1438c031b0db46b19338642f875/transformed/ui-geometry-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/dbd9f23a82539d9ef468fb445f48c758/transformed/ui-tooling-preview-release/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.compose.ui:ui-util-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/40622a83d3d9a51652c917d65664488d/transformed/ui-util-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-unit-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/02e04aa94cc1ec1d9df3674b023d5ce1/transformed/ui-unit-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-text-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/e9da255a7783909629bfb640cc8b3b65/transformed/ui-text-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-graphics-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/c6be53ae0a643ae965ca3dd64591deaf/transformed/ui-graphics-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:17:1-28:12
-MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/israelbill/.gradle/caches/8.14/transforms/dbeba489e991bf62905f3f9cc5392f99/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/israelbill/.gradle/caches/8.14/transforms/c1c4852fdafca3a8afb0626309e151c4/transformed/constraintlayout-2.0.1/AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /Users/israelbill/.gradle/caches/8.14/transforms/5dc58ca4babc7226e0caa9bac6db33ee/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.appcompat:appcompat:1.6.1] /Users/israelbill/.gradle/caches/8.14/transforms/61cf643e7f00052a35a31fa82184013f/transformed/appcompat-1.6.1/AndroidManifest.xml:17:1-22:12
@@ -99,19 +88,27 @@ MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/israelbill/.gradle/cache
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/eea739c3b7afcf2d3393b4f80d87c884/transformed/viewpager2-1.0.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/f4ace93ec40c7f8ae72ab932eb98669a/transformed/recyclerview-1.1.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.customview:customview:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/ce7823b7590b6ece976f017cf30f1e3f/transformed/customview-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [dev.chrisbanes.haze:haze-android:0.7.2] /Users/israelbill/.gradle/caches/8.14/transforms/d2debd9d89dc5c844676b4f492d2acb7/transformed/haze-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0c983e70ace4e35addbbf88d08f86ffb/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.privacysandbox.ads:ads-adservices-java:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/cc296afc333d8d715331cea175687313/transformed/ads-adservices-java-1.0.0-beta05/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/israelbill/.gradle/caches/8.14/transforms/606d2fe989d869374f50e5ab1e44bb63/transformed/core-ktx-1.13.1/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.browser:browser:1.4.0] /Users/israelbill/.gradle/caches/8.14/transforms/50f4eb791250d4f7b4dd4bfe3cc917b8/transformed/browser-1.4.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.autofill:autofill:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/c86eb75c730361727fb53ca7cd55b051/transformed/autofill-1.0.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.transition:transition:1.4.1] /Users/israelbill/.gradle/caches/8.14/transforms/249122a5aa3f65f37d966f12000a4f8d/transformed/transition-1.4.1/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.window:window:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f28ae779e49e53c0e6b9b793fce69472/transformed/window-1.0.0/AndroidManifest.xml:17:1-33:12
 MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/e4fba404d843e7c798de0f09d3c62a15/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/ac0e6feb87c49ff4dbe5ac7df8928a9f/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.animation:animation-core-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/4be740f54f7f6f1e5f23be5c9fcad7a9/transformed/animation-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/3f2493cd864b57d70e8f13aeaf4fdaac/transformed/animation-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/4d11a1d125a0d9f9a5ce8612114d810b/transformed/foundation-layout-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/e1681158beb22741ba5c67bb4ec955ec/transformed/foundation-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.graphics:graphics-path:1.0.1] /Users/israelbill/.gradle/caches/8.14/transforms/6ea883ddac6c1b210b60ec7bc3f9bcc7/transformed/graphics-path-1.0.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-util-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/40622a83d3d9a51652c917d65664488d/transformed/ui-util-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/0b6e904e4e36239267927761d622515b/transformed/ui-tooling-data-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-text-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/e9da255a7783909629bfb640cc8b3b65/transformed/ui-text-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/0fa5346f5d965cd2f779be96ce2b44a2/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/edb9a2c805f209e7b2d9c4aea3fa2d48/transformed/emoji2-1.3.0/AndroidManifest.xml:17:1-35:12
-MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0c983e70ace4e35addbbf88d08f86ffb/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
-MERGED from [androidx.privacysandbox.ads:ads-adservices-java:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/cc296afc333d8d715331cea175687313/transformed/ads-adservices-java-1.0.0-beta05/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:17:1-28:12
-MERGED from [androidx.core:core-ktx:1.13.1] /Users/israelbill/.gradle/caches/8.14/transforms/606d2fe989d869374f50e5ab1e44bb63/transformed/core-ktx-1.13.1/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.core:core:1.13.1] /Users/israelbill/.gradle/caches/8.14/transforms/915221fe0308c0846d3c848de5517356/transformed/core-1.13.1/AndroidManifest.xml:17:1-30:12
 MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.4] /Users/israelbill/.gradle/caches/8.14/transforms/6739eb3cd3bbd0c611bd6d9176a5f61c/transformed/lifecycle-runtime-release/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.4] /Users/israelbill/.gradle/caches/8.14/transforms/23dcb88c53a2fb6487c41d88ca78234f/transformed/lifecycle-livedata-core-2.8.4/AndroidManifest.xml:17:1-22:12
@@ -150,6 +147,11 @@ MERGED from [androidx.lifecycle:lifecycle-process:2.8.4] /Users/israelbill/.grad
 MERGED from [androidx.lifecycle:lifecycle-livedata-ktx:2.8.4] /Users/israelbill/.gradle/caches/8.14/transforms/4606c4d5d67c512293871516f87eb99b/transformed/lifecycle-livedata-ktx-2.8.4/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.4] /Users/israelbill/.gradle/caches/8.14/transforms/eea247af1f8c94194e14a9207c96bbc6/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/891cc95fe304ce76c0c35975c0e81ecc/transformed/ui-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-geometry-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/c679e1438c031b0db46b19338642f875/transformed/ui-geometry-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/dbd9f23a82539d9ef468fb445f48c758/transformed/ui-tooling-preview-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.compose.ui:ui-unit-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/02e04aa94cc1ec1d9df3674b023d5ce1/transformed/ui-unit-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-graphics-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/c6be53ae0a643ae965ca3dd64591deaf/transformed/ui-graphics-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-test-manifest:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/d2bb18f55a20fcba4bb7846c04bceed8/transformed/ui-test-manifest-1.7.0/AndroidManifest.xml:17:1-28:12
 MERGED from [androidx.activity:activity:1.9.2] /Users/israelbill/.gradle/caches/8.14/transforms/8c8919c0a5784196626c8b1c58b9a59c/transformed/activity-1.9.2/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.activity:activity-ktx:1.9.2] /Users/israelbill/.gradle/caches/8.14/transforms/6f1191f00f69a5fb1d6d831e7f45c003/transformed/activity-ktx-1.9.2/AndroidManifest.xml:2:1-7:12
@@ -369,16 +371,14 @@ MERGED from [com.google.android.gms:play-services-stats:17.0.2] /Users/israelbil
 MERGED from [com.google.android.gms:play-services-stats:17.0.2] /Users/israelbill/.gradle/caches/8.14/transforms/bc899bbf6e9f39b7dc1241dea955a289/transformed/play-services-stats-17.0.2/AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.material:material:1.4.0] /Users/israelbill/.gradle/caches/8.14/transforms/efeb3522bd1932212f31d78d2a3e77be/transformed/material-1.4.0/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.4.0] /Users/israelbill/.gradle/caches/8.14/transforms/efeb3522bd1932212f31d78d2a3e77be/transformed/material-1.4.0/AndroidManifest.xml:22:5-20
-MERGED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
-MERGED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/israelbill/.gradle/caches/8.14/transforms/c1c4852fdafca3a8afb0626309e151c4/transformed/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/israelbill/.gradle/caches/8.14/transforms/c1c4852fdafca3a8afb0626309e151c4/transformed/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
+MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.window:window:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f28ae779e49e53c0e6b9b793fce69472/transformed/window-1.0.0/AndroidManifest.xml:24:5-31:19
 MERGED from [androidx.window:window:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f28ae779e49e53c0e6b9b793fce69472/transformed/window-1.0.0/AndroidManifest.xml:24:5-31:19
 MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/edb9a2c805f209e7b2d9c4aea3fa2d48/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/edb9a2c805f209e7b2d9c4aea3fa2d48/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
-MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:22:5-26:19
-MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.core:core:1.13.1] /Users/israelbill/.gradle/caches/8.14/transforms/915221fe0308c0846d3c848de5517356/transformed/core-1.13.1/AndroidManifest.xml:28:5-89
 MERGED from [androidx.core:core:1.13.1] /Users/israelbill/.gradle/caches/8.14/transforms/915221fe0308c0846d3c848de5517356/transformed/core-1.13.1/AndroidManifest.xml:28:5-89
 MERGED from [com.google.firebase:firebase-config-ktx:22.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/cfbf642bf3976d9b8c04bed49ede8973/transformed/firebase-config-ktx-22.0.0/AndroidManifest.xml:8:5-16:19
@@ -413,6 +413,8 @@ MERGED from [com.google.android.gms:play-services-basement:18.4.0] /Users/israel
 MERGED from [com.google.android.gms:play-services-basement:18.4.0] /Users/israelbill/.gradle/caches/8.14/transforms/71c40b6362bd29db0a539fb3e7133b07/transformed/play-services-basement-18.4.0/AndroidManifest.xml:5:5-7:19
 MERGED from [androidx.lifecycle:lifecycle-process:2.8.4] /Users/israelbill/.gradle/caches/8.14/transforms/90b764331cc78e972d4e441e2d0b5cf0/transformed/lifecycle-process-2.8.4/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.lifecycle:lifecycle-process:2.8.4] /Users/israelbill/.gradle/caches/8.14/transforms/90b764331cc78e972d4e441e2d0b5cf0/transformed/lifecycle-process-2.8.4/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-test-manifest:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/d2bb18f55a20fcba4bb7846c04bceed8/transformed/ui-test-manifest-1.7.0/AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-test-manifest:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/d2bb18f55a20fcba4bb7846c04bceed8/transformed/ui-test-manifest-1.7.0/AndroidManifest.xml:22:5-26:19
 MERGED from [com.jakewharton.timber:timber:5.0.1] /Users/israelbill/.gradle/caches/8.14/transforms/a5e6ddf1ff5bccfea5c7bbccc8bc77a9/transformed/timber-5.0.1/AndroidManifest.xml:7:5-20
@@ -643,8 +645,6 @@ MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/israelbill/
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/780381014c6a9cfa19b32625557523b2/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.loader:loader:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/fa34a83d1b00ca1f0ea9d5f023ce27b4/transformed/loader-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.loader:loader:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/fa34a83d1b00ca1f0ea9d5f023ce27b4/transformed/loader-1.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.compose.material3:material3-android:1.2.1] /Users/israelbill/.gradle/caches/8.14/transforms/4b0c055b48a91d71fd62b9b0fdaddd30/transformed/material3-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.material3:material3-android:1.2.1] /Users/israelbill/.gradle/caches/8.14/transforms/4b0c055b48a91d71fd62b9b0fdaddd30/transformed/material3-release/AndroidManifest.xml:20:5-44
 MERGED from [io.coil-kt:coil-compose:2.6.0] /Users/israelbill/.gradle/caches/8.14/transforms/6dde74574b6a54e5685924d1a4436df5/transformed/coil-compose-2.6.0/AndroidManifest.xml:5:5-44
 MERGED from [io.coil-kt:coil-compose:2.6.0] /Users/israelbill/.gradle/caches/8.14/transforms/6dde74574b6a54e5685924d1a4436df5/transformed/coil-compose-2.6.0/AndroidManifest.xml:5:5-44
 MERGED from [io.coil-kt:coil-compose-base:2.6.0] /Users/israelbill/.gradle/caches/8.14/transforms/2e860799482c87670c34a83adc59bb1c/transformed/coil-compose-base-2.6.0/AndroidManifest.xml:5:5-44
@@ -653,6 +653,12 @@ MERGED from [io.coil-kt:coil:2.6.0] /Users/israelbill/.gradle/caches/8.14/transf
 MERGED from [io.coil-kt:coil:2.6.0] /Users/israelbill/.gradle/caches/8.14/transforms/806f18f9b2892a923f8061aee3fb5974/transformed/coil-2.6.0/AndroidManifest.xml:5:5-44
 MERGED from [io.coil-kt:coil-base:2.6.0] /Users/israelbill/.gradle/caches/8.14/transforms/83af1c2c8d41ee746a1a5393d7bb0b57/transformed/coil-base-2.6.0/AndroidManifest.xml:5:5-44
 MERGED from [io.coil-kt:coil-base:2.6.0] /Users/israelbill/.gradle/caches/8.14/transforms/83af1c2c8d41ee746a1a5393d7bb0b57/transformed/coil-base-2.6.0/AndroidManifest.xml:5:5-44
+MERGED from [dev.chrisbanes.haze:haze-materials-android:0.7.2] /Users/israelbill/.gradle/caches/8.14/transforms/ab006408e6ced3b10b3bf67825093213/transformed/haze-materials-release/AndroidManifest.xml:5:5-44
+MERGED from [dev.chrisbanes.haze:haze-materials-android:0.7.2] /Users/israelbill/.gradle/caches/8.14/transforms/ab006408e6ced3b10b3bf67825093213/transformed/haze-materials-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material3:material3-android:1.2.1] /Users/israelbill/.gradle/caches/8.14/transforms/4b0c055b48a91d71fd62b9b0fdaddd30/transformed/material3-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material3:material3-android:1.2.1] /Users/israelbill/.gradle/caches/8.14/transforms/4b0c055b48a91d71fd62b9b0fdaddd30/transformed/material3-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/israelbill/.gradle/caches/8.14/transforms/dbeba489e991bf62905f3f9cc5392f99/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/israelbill/.gradle/caches/8.14/transforms/dbeba489e991bf62905f3f9cc5392f99/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
 MERGED from [androidx.compose.material:material-ripple-android:1.6.7] /Users/israelbill/.gradle/caches/8.14/transforms/dec1f20d9ca09f06100c5a06ffcc52bf/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.material:material-ripple-android:1.6.7] /Users/israelbill/.gradle/caches/8.14/transforms/dec1f20d9ca09f06100c5a06ffcc52bf/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.material:material-icons-core-android:1.6.7] /Users/israelbill/.gradle/caches/8.14/transforms/918e65b37175ae84d63847213e3ddc2a/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
@@ -661,32 +667,6 @@ MERGED from [androidx.compose.material:material-icons-extended-android:1.6.7] /U
 MERGED from [androidx.compose.material:material-icons-extended-android:1.6.7] /Users/israelbill/.gradle/caches/8.14/transforms/b7dbb09b4f93a0e995a3d121c7b63c35/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.material:material-android:1.6.7] /Users/israelbill/.gradle/caches/8.14/transforms/4ce0ebaeb56817510302fde0313b5dd7/transformed/material-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.material:material-android:1.6.7] /Users/israelbill/.gradle/caches/8.14/transforms/4ce0ebaeb56817510302fde0313b5dd7/transformed/material-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/4d11a1d125a0d9f9a5ce8612114d810b/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/4d11a1d125a0d9f9a5ce8612114d810b/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.foundation:foundation-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/e1681158beb22741ba5c67bb4ec955ec/transformed/foundation-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.foundation:foundation-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/e1681158beb22741ba5c67bb4ec955ec/transformed/foundation-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.animation:animation-core-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/4be740f54f7f6f1e5f23be5c9fcad7a9/transformed/animation-core-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.animation:animation-core-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/4be740f54f7f6f1e5f23be5c9fcad7a9/transformed/animation-core-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.animation:animation-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/3f2493cd864b57d70e8f13aeaf4fdaac/transformed/animation-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.animation:animation-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/3f2493cd864b57d70e8f13aeaf4fdaac/transformed/animation-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/0b6e904e4e36239267927761d622515b/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/0b6e904e4e36239267927761d622515b/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-geometry-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/c679e1438c031b0db46b19338642f875/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-geometry-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/c679e1438c031b0db46b19338642f875/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/dbd9f23a82539d9ef468fb445f48c758/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/dbd9f23a82539d9ef468fb445f48c758/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.ui:ui-util-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/40622a83d3d9a51652c917d65664488d/transformed/ui-util-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-util-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/40622a83d3d9a51652c917d65664488d/transformed/ui-util-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-unit-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/02e04aa94cc1ec1d9df3674b023d5ce1/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-unit-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/02e04aa94cc1ec1d9df3674b023d5ce1/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-text-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/e9da255a7783909629bfb640cc8b3b65/transformed/ui-text-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-text-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/e9da255a7783909629bfb640cc8b3b65/transformed/ui-text-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-graphics-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/c6be53ae0a643ae965ca3dd64591deaf/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-graphics-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/c6be53ae0a643ae965ca3dd64591deaf/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/israelbill/.gradle/caches/8.14/transforms/dbeba489e991bf62905f3f9cc5392f99/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
-MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/israelbill/.gradle/caches/8.14/transforms/dbeba489e991bf62905f3f9cc5392f99/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/israelbill/.gradle/caches/8.14/transforms/c1c4852fdafca3a8afb0626309e151c4/transformed/constraintlayout-2.0.1/AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/israelbill/.gradle/caches/8.14/transforms/c1c4852fdafca3a8afb0626309e151c4/transformed/constraintlayout-2.0.1/AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /Users/israelbill/.gradle/caches/8.14/transforms/5dc58ca4babc7226e0caa9bac6db33ee/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:20:5-44
@@ -711,6 +691,16 @@ MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/israelbill/.gradle
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/f4ace93ec40c7f8ae72ab932eb98669a/transformed/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.customview:customview:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/ce7823b7590b6ece976f017cf30f1e3f/transformed/customview-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.customview:customview:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/ce7823b7590b6ece976f017cf30f1e3f/transformed/customview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [dev.chrisbanes.haze:haze-android:0.7.2] /Users/israelbill/.gradle/caches/8.14/transforms/d2debd9d89dc5c844676b4f492d2acb7/transformed/haze-release/AndroidManifest.xml:5:5-44
+MERGED from [dev.chrisbanes.haze:haze-android:0.7.2] /Users/israelbill/.gradle/caches/8.14/transforms/d2debd9d89dc5c844676b4f492d2acb7/transformed/haze-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0c983e70ace4e35addbbf88d08f86ffb/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0c983e70ace4e35addbbf88d08f86ffb/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.privacysandbox.ads:ads-adservices-java:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/cc296afc333d8d715331cea175687313/transformed/ads-adservices-java-1.0.0-beta05/AndroidManifest.xml:5:5-44
+MERGED from [androidx.privacysandbox.ads:ads-adservices-java:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/cc296afc333d8d715331cea175687313/transformed/ads-adservices-java-1.0.0-beta05/AndroidManifest.xml:5:5-44
+MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:20:5-44
+MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/israelbill/.gradle/caches/8.14/transforms/606d2fe989d869374f50e5ab1e44bb63/transformed/core-ktx-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/israelbill/.gradle/caches/8.14/transforms/606d2fe989d869374f50e5ab1e44bb63/transformed/core-ktx-1.13.1/AndroidManifest.xml:5:5-44
 MERGED from [androidx.browser:browser:1.4.0] /Users/israelbill/.gradle/caches/8.14/transforms/50f4eb791250d4f7b4dd4bfe3cc917b8/transformed/browser-1.4.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.browser:browser:1.4.0] /Users/israelbill/.gradle/caches/8.14/transforms/50f4eb791250d4f7b4dd4bfe3cc917b8/transformed/browser-1.4.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.autofill:autofill:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/c86eb75c730361727fb53ca7cd55b051/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
@@ -723,20 +713,26 @@ MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/israe
 MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/e4fba404d843e7c798de0f09d3c62a15/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/ac0e6feb87c49ff4dbe5ac7df8928a9f/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/israelbill/.gradle/caches/8.14/transforms/ac0e6feb87c49ff4dbe5ac7df8928a9f/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.animation:animation-core-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/4be740f54f7f6f1e5f23be5c9fcad7a9/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/4be740f54f7f6f1e5f23be5c9fcad7a9/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/3f2493cd864b57d70e8f13aeaf4fdaac/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/3f2493cd864b57d70e8f13aeaf4fdaac/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/4d11a1d125a0d9f9a5ce8612114d810b/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/4d11a1d125a0d9f9a5ce8612114d810b/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/e1681158beb22741ba5c67bb4ec955ec/transformed/foundation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/e1681158beb22741ba5c67bb4ec955ec/transformed/foundation-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.graphics:graphics-path:1.0.1] /Users/israelbill/.gradle/caches/8.14/transforms/6ea883ddac6c1b210b60ec7bc3f9bcc7/transformed/graphics-path-1.0.1/AndroidManifest.xml:5:5-44
 MERGED from [androidx.graphics:graphics-path:1.0.1] /Users/israelbill/.gradle/caches/8.14/transforms/6ea883ddac6c1b210b60ec7bc3f9bcc7/transformed/graphics-path-1.0.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/40622a83d3d9a51652c917d65664488d/transformed/ui-util-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/40622a83d3d9a51652c917d65664488d/transformed/ui-util-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/0b6e904e4e36239267927761d622515b/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/0b6e904e4e36239267927761d622515b/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/e9da255a7783909629bfb640cc8b3b65/transformed/ui-text-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/e9da255a7783909629bfb640cc8b3b65/transformed/ui-text-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/0fa5346f5d965cd2f779be96ce2b44a2/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/0fa5346f5d965cd2f779be96ce2b44a2/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/edb9a2c805f209e7b2d9c4aea3fa2d48/transformed/emoji2-1.3.0/AndroidManifest.xml:21:5-44
 MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/edb9a2c805f209e7b2d9c4aea3fa2d48/transformed/emoji2-1.3.0/AndroidManifest.xml:21:5-44
-MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0c983e70ace4e35addbbf88d08f86ffb/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
-MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/0c983e70ace4e35addbbf88d08f86ffb/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
-MERGED from [androidx.privacysandbox.ads:ads-adservices-java:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/cc296afc333d8d715331cea175687313/transformed/ads-adservices-java-1.0.0-beta05/AndroidManifest.xml:5:5-44
-MERGED from [androidx.privacysandbox.ads:ads-adservices-java:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/cc296afc333d8d715331cea175687313/transformed/ads-adservices-java-1.0.0-beta05/AndroidManifest.xml:5:5-44
-MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:20:5-44
-MERGED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:20:5-44
-MERGED from [androidx.core:core-ktx:1.13.1] /Users/israelbill/.gradle/caches/8.14/transforms/606d2fe989d869374f50e5ab1e44bb63/transformed/core-ktx-1.13.1/AndroidManifest.xml:5:5-44
-MERGED from [androidx.core:core-ktx:1.13.1] /Users/israelbill/.gradle/caches/8.14/transforms/606d2fe989d869374f50e5ab1e44bb63/transformed/core-ktx-1.13.1/AndroidManifest.xml:5:5-44
 MERGED from [androidx.core:core:1.13.1] /Users/israelbill/.gradle/caches/8.14/transforms/915221fe0308c0846d3c848de5517356/transformed/core-1.13.1/AndroidManifest.xml:20:5-44
 MERGED from [androidx.core:core:1.13.1] /Users/israelbill/.gradle/caches/8.14/transforms/915221fe0308c0846d3c848de5517356/transformed/core-1.13.1/AndroidManifest.xml:20:5-44
 MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.4] /Users/israelbill/.gradle/caches/8.14/transforms/6739eb3cd3bbd0c611bd6d9176a5f61c/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
@@ -813,6 +809,16 @@ MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.4] /User
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.4] /Users/israelbill/.gradle/caches/8.14/transforms/eea247af1f8c94194e14a9207c96bbc6/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/891cc95fe304ce76c0c35975c0e81ecc/transformed/ui-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/891cc95fe304ce76c0c35975c0e81ecc/transformed/ui-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/c679e1438c031b0db46b19338642f875/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/c679e1438c031b0db46b19338642f875/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/dbd9f23a82539d9ef468fb445f48c758/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/dbd9f23a82539d9ef468fb445f48c758/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/02e04aa94cc1ec1d9df3674b023d5ce1/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/02e04aa94cc1ec1d9df3674b023d5ce1/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/c6be53ae0a643ae965ca3dd64591deaf/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/c6be53ae0a643ae965ca3dd64591deaf/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-test-manifest:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/d2bb18f55a20fcba4bb7846c04bceed8/transformed/ui-test-manifest-1.7.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.compose.ui:ui-test-manifest:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/d2bb18f55a20fcba4bb7846c04bceed8/transformed/ui-test-manifest-1.7.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.activity:activity:1.9.2] /Users/israelbill/.gradle/caches/8.14/transforms/8c8919c0a5784196626c8b1c58b9a59c/transformed/activity-1.9.2/AndroidManifest.xml:20:5-44
@@ -1315,12 +1321,12 @@ MERGED from [com.google.android.gms:play-services-measurement-sdk-api:22.0.2] /U
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:22.0.2] /Users/israelbill/.gradle/caches/8.14/transforms/761bcae8e4d333749e4af5beb162eeee/transformed/play-services-measurement-sdk-api-22.0.2/AndroidManifest.xml:26:5-79
 	android:name
 		ADDED from [com.google.android.gms:play-services-measurement-impl:22.0.2] /Users/israelbill/.gradle/caches/8.14/transforms/c23c2a36467e6f7e06a034292f23158c/transformed/play-services-measurement-impl-22.0.2/AndroidManifest.xml:27:22-76
-activity#androidx.compose.ui.tooling.PreviewActivity
-ADDED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
-	android:exported
-		ADDED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
+uses-library#android.ext.adservices
+ADDED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:23:9-25:40
+	android:required
+		ADDED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:25:13-37
 	android:name
-		ADDED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
+		ADDED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:24:13-50
 uses-library#androidx.window.extensions
 ADDED from [androidx.window:window:1.0.0] /Users/israelbill/.gradle/caches/8.14/transforms/f28ae779e49e53c0e6b9b793fce69472/transformed/window-1.0.0/AndroidManifest.xml:25:9-27:40
 	android:required
@@ -1355,12 +1361,6 @@ ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/israelbill/.gradle/caches/8.14/
 		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/edb9a2c805f209e7b2d9c4aea3fa2d48/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
 	android:name
 		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/israelbill/.gradle/caches/8.14/transforms/edb9a2c805f209e7b2d9c4aea3fa2d48/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
-uses-library#android.ext.adservices
-ADDED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:23:9-25:40
-	android:required
-		ADDED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:25:13-37
-	android:name
-		ADDED from [androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/israelbill/.gradle/caches/8.14/transforms/a6dc854223adac999e5c1435d1c2323e/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:24:13-50
 permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.13.1] /Users/israelbill/.gradle/caches/8.14/transforms/915221fe0308c0846d3c848de5517356/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
 	android:protectionLevel
@@ -1481,6 +1481,12 @@ ADDED from [androidx.lifecycle:lifecycle-process:2.8.4] /Users/israelbill/.gradl
 		ADDED from [androidx.lifecycle:lifecycle-process:2.8.4] /Users/israelbill/.gradle/caches/8.14/transforms/90b764331cc78e972d4e441e2d0b5cf0/transformed/lifecycle-process-2.8.4/AndroidManifest.xml:31:17-49
 	android:name
 		ADDED from [androidx.lifecycle:lifecycle-process:2.8.4] /Users/israelbill/.gradle/caches/8.14/transforms/90b764331cc78e972d4e441e2d0b5cf0/transformed/lifecycle-process-2.8.4/AndroidManifest.xml:30:17-78
+activity#androidx.compose.ui.tooling.PreviewActivity
+ADDED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/376a701d4cfc9d1152b73d7f58e7d88c/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
 activity#androidx.activity.ComponentActivity
 ADDED from [androidx.compose.ui:ui-test-manifest:1.7.0] /Users/israelbill/.gradle/caches/8.14/transforms/d2bb18f55a20fcba4bb7846c04bceed8/transformed/ui-test-manifest-1.7.0/AndroidManifest.xml:23:9-25:39
 	android:exported
