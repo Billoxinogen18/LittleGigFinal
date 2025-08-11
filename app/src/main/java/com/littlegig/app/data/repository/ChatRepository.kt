@@ -7,6 +7,7 @@ import com.littlegig.app.data.model.Chat
 import com.littlegig.app.data.model.Message
 import com.littlegig.app.data.model.ChatType
 import com.littlegig.app.data.model.MessageType
+import com.littlegig.app.data.model.ReplyPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
@@ -142,8 +143,41 @@ class ChatRepository @Inject constructor(
 
     suspend fun sendMessage(chatId: String, message: Message): Result<Unit> {
         return try {
-            // Inline reply preview population if needed (best-effort)
-            val enriched = message
+            // Inline reply preview population if needed (best-effort, non-fatal)
+            var enriched = message
+            if (!message.replyToMessageId.isNullOrBlank() && message.replyPreview == null) {
+                try {
+                    val prevDoc = firestore.collection("chats")
+                        .document(chatId)
+                        .collection("messages")
+                        .document(message.replyToMessageId!!)
+                        .get()
+                        .await()
+                    if (prevDoc.exists()) {
+                        val prevMsg = prevDoc.toObject(Message::class.java)
+                        if (prevMsg != null) {
+                            val snippet = when (prevMsg.messageType) {
+                                MessageType.TEXT -> prevMsg.content.take(80)
+                                MessageType.IMAGE -> "Photo"
+                                MessageType.VIDEO -> "Video"
+                                MessageType.AUDIO -> "Audio"
+                                MessageType.FILE -> "File"
+                                MessageType.TICKET_SHARE -> "Ticket share"
+                                else -> prevMsg.content.take(80)
+                            }
+                            val sender = if (prevMsg.senderName.isNotBlank()) prevMsg.senderName else "Message"
+                            enriched = message.copy(
+                                replyPreview = ReplyPreview(
+                                    senderName = sender,
+                                    snippet = snippet
+                                )
+                            )
+                        }
+                    }
+                } catch (_: Exception) {
+                    // Ignore enrichment errors; proceed with original message
+                }
+            }
                 
             val messageRef = firestore.collection("chats")
                 .document(chatId)
