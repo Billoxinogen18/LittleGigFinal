@@ -68,7 +68,7 @@
 - P0 Chat Visibility and Search
   - [DONE] Unstack lists in `ChatScreen.kt`; use a single viewport with `weight(1f)` so users/results/chats render correctly
   - [DONE] Preload `allUsers` on entry to avoid empty lists by default
-  - [TODO] Split "LittleGig Contacts" into a separate discovery screen with its own empty states and glass panels
+  - [DONE] Split "LittleGig Contacts" into a separate discovery screen with its own empty states and glass panels
   - [TODO] Strong empty states across Chat (no users, no results, no chats) with clear CTAs
 
 - P0 Auth Flow and Splash
@@ -119,7 +119,7 @@
   - [DONE] Silent anonymous bootstrap (no auth flash)
   - [DONE] Chat viewport fix (single list area + preload users)
   - [DONE] Real frosted bottom nav with shared blur
-  - [TODO] Auth UI glass redesign (no logic change)
+  - [DONE] Auth UI glass redesign (no logic change)
   - [TODO] Contacts discovery as separate screen
 
 - Phase 2 — Design System Hardening
@@ -128,7 +128,7 @@
   - [TODO] Standard `GlassEmptyState` and shimmer/pulse loaders
 
 - Phase 3 — Screen Overhauls (No functional removal)
-  - [TODO] Event Details uplift (panels, chips, actions)
+  - [NEXT] Event Details uplift (panels, chips, actions)
   - [TODO] Account unification (glass panels + soft controls)
   - [TODO] Inbox glass and badges; Tickets/Receipts ticket card styles; Map filter sheet; Upload/Recaps step panels
 
