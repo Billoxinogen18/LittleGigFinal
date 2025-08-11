@@ -380,17 +380,32 @@ fun BeautifulTicketCard(
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            // Add to Google Wallet CTA stub
-            Surface(
-                onClick = { /* TODO: Integrate Google Wallet */ },
-                shape = RoundedCornerShape(16.dp),
-                color = Color(0xFF1A73E8).copy(alpha = 0.12f),
-                border = BorderStroke(1.dp, Color(0xFF1A73E8))
-            ) {
-                Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Outlined.Wallet, contentDescription = null, tint = Color(0xFF1A73E8))
-                    Spacer(Modifier.width(8.dp))
-                    Text("Add to Google Wallet", color = Color(0xFF1A73E8), style = MaterialTheme.typography.labelLarge)
+            // Perforation + barcode glass slot
+            Spacer(Modifier.height(12.dp))
+            // Perforation divider
+            val perforationColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .drawBehind {
+                        val dot = 6.dp.toPx()
+                        val gap = 6.dp.toPx()
+                        var x = 0f
+                        while (x < size.width) {
+                            drawRect(color = perforationColor, topLeft = androidx.compose.ui.geometry.Offset(x, 0f), size = androidx.compose.ui.geometry.Size(dot, 1.dp.toPx()))
+                            x += dot + gap
+                        }
+                    }
+            )
+            Spacer(Modifier.height(12.dp))
+            AdvancedGlassmorphicCard {
+                Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                    Column(Modifier.weight(1f)) {
+                        Text("${ticket.eventLocation}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(ticket.qrCode.ifBlank { "RSD0000000000" }, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurface)
+                    }
+                    Icon(Icons.Default.QrCode, contentDescription = null, tint = LittleGigPrimary)
                 }
             }
         }
