@@ -438,17 +438,44 @@ export const seedDemoUsers = functions.region('us-central1').https.onCall(async 
     const id = `demo_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
     const userRef = db.collection('users').doc(id);
     batch.set(userRef, {
+      // Basic user info
       displayName: `Demo User ${i+1}`,
       username: `demo${i+1}`,
       email: `demo${i+1}@example.com`,
+      name: `Demo User ${i+1}`,
+      phoneNumber: `+254700000${i.toString().padStart(3, '0')}`,
       profileImageUrl: '',
+      profilePictureUrl: '',
+      
+      // User type and rank
       userType: 'REGULAR',
       rank: 'NOVICE',
+      
+      // Lists
+      followers: [],
+      following: [],
+      pinnedChats: [],
+      likedEvents: [],
+      
+      // Analytics and timestamps
+      engagementScore: 0.0,
+      lastRankUpdate: admin.firestore.FieldValue.serverTimestamp(),
+      bio: `This is demo user ${i+1}`,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      
+      // Lowercase search fields
       username_lower: `demo${i+1}`,
       email_lower: `demo${i+1}@example.com`,
-      displayName_lower: `demo user ${i+1}`
+      displayName_lower: `demo user ${i+1}`,
+      
+      // Status fields
+      lastSeen: Date.now(),
+      online: false,
+      
+      // Legacy field mapping
+      influencer: false,
+      isInfluencer: false
     });
   }
   await batch.commit();

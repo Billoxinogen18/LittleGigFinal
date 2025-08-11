@@ -33,7 +33,13 @@ data class User(
     val lastRankUpdate: java.util.Date? = null,
     val bio: String? = null,
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
+    // Additional fields created by Cloud Functions
+    val username_lower: String? = null,
+    val email_lower: String? = null,
+    val displayName_lower: String? = null,
+    val lastSeen: Long? = null,
+    val online: Boolean = false
 ) : Parcelable
 
 enum class UserType {
