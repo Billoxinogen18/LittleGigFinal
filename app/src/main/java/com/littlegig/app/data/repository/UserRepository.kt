@@ -436,6 +436,6 @@ data class UserStats(
 
 // Hydration helpers
 private fun User.ensureInfluencerFlag(): User {
-    val computed = this.isInfluencer || (this.influencerLegacy ?: false) || (this.influencer ?: false)
-    return if (computed != this.isInfluencer) this.copy(isInfluencer = computed) else this
+    val computed = this.influencerFlag || (this.influencerLegacy ?: false) || (this.influencer ?: false)
+    return if (computed != this.influencerFlag) this.copy(influencerFlag = computed) else this
 } 

@@ -189,7 +189,7 @@ class AuthRepository @Inject constructor(
                 // 🧠 PRESERVE ALGORITHM DATA! 🧠
                 profilePictureUrl = existingUser.profilePictureUrl,
                 profileImageUrl = existingUser.profileImageUrl,
-                isInfluencer = existingUser.isInfluencer,
+                influencerFlag = existingUser.influencerFlag,
                 businessId = existingUser.businessId,
                 createdAt = existingUser.createdAt, // Keep original creation date
                 updatedAt = System.currentTimeMillis()
@@ -258,7 +258,7 @@ class AuthRepository @Inject constructor(
                     bio = "",
                     profilePictureUrl = googleSignInAccount.photoUrl?.toString() ?: "",
                     profileImageUrl = googleSignInAccount.photoUrl?.toString() ?: "",
-                    isInfluencer = false,
+                    influencerFlag = false,
                     businessId = null,
                     createdAt = System.currentTimeMillis(),
                     updatedAt = System.currentTimeMillis()
@@ -332,7 +332,7 @@ class AuthRepository @Inject constructor(
                 // 🧠 PRESERVE ALGORITHM DATA! 🧠
                 profilePictureUrl = googleSignInAccount.photoUrl?.toString() ?: existingUser.profilePictureUrl,
                 profileImageUrl = googleSignInAccount.photoUrl?.toString() ?: existingUser.profileImageUrl,
-                isInfluencer = existingUser.isInfluencer,
+                influencerFlag = existingUser.influencerFlag,
                 businessId = existingUser.businessId,
                 createdAt = existingUser.createdAt, // Keep original creation date
                 updatedAt = System.currentTimeMillis()
@@ -393,7 +393,7 @@ class AuthRepository @Inject constructor(
                 // 🧠 PRESERVE ALGORITHM DATA! 🧠
                 profilePictureUrl = existingUser.profilePictureUrl,
                 profileImageUrl = existingUser.profileImageUrl,
-                isInfluencer = existingUser.isInfluencer,
+                influencerFlag = existingUser.influencerFlag,
                 businessId = existingUser.businessId,
                 createdAt = existingUser.createdAt, // Keep original creation date
                 updatedAt = System.currentTimeMillis()
@@ -437,7 +437,7 @@ class AuthRepository @Inject constructor(
             bio = "",
             profilePictureUrl = "",
             profileImageUrl = "",
-            isInfluencer = false,
+            influencerFlag = false,
             businessId = null,
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
@@ -576,7 +576,7 @@ class AuthRepository @Inject constructor(
                     profilePictureUrl = updates["profilePictureUrl"] as? String ?: cachedUser.profilePictureUrl,
                     profileImageUrl = updates["profileImageUrl"] as? String ?: cachedUser.profileImageUrl,
                     userType = (updates["userType"] as? String)?.let { runCatching { UserType.valueOf(it) }.getOrNull() } ?: cachedUser.userType,
-                    isInfluencer = updates["isInfluencer"] as? Boolean ?: cachedUser.isInfluencer,
+                    influencerFlag = updates["isInfluencer"] as? Boolean ?: cachedUser.influencerFlag,
                     updatedAt = System.currentTimeMillis()
                 )
                 cacheUser(updatedUser)
@@ -738,7 +738,7 @@ class AuthRepository @Inject constructor(
                 bio = existingUser.bio,
                 profilePictureUrl = existingUser.profilePictureUrl,
                 profileImageUrl = existingUser.profileImageUrl,
-                isInfluencer = existingUser.isInfluencer,
+                influencerFlag = existingUser.influencerFlag,
                 businessId = existingUser.businessId,
                 createdAt = existingUser.createdAt,
                 updatedAt = System.currentTimeMillis()

@@ -95,7 +95,7 @@ class AccountViewModel @Inject constructor(
                         "bio" to (user.bio ?: ""),
                         "profilePictureUrl" to user.profilePictureUrl,
                         "profileImageUrl" to user.profileImageUrl,
-                        "isInfluencer" to user.isInfluencer,
+                        "isInfluencer" to user.influencerFlag,
                         "businessId" to (user.businessId ?: ""),
                         "createdAt" to user.createdAt,
                         "updatedAt" to System.currentTimeMillis()
@@ -325,7 +325,7 @@ class AccountViewModel @Inject constructor(
                     "bio" to (currentUser.bio ?: ""),
                     "profilePictureUrl" to currentUser.profilePictureUrl,
                     "profileImageUrl" to currentUser.profileImageUrl,
-                    "isInfluencer" to currentUser.isInfluencer,
+                    "isInfluencer" to currentUser.influencerFlag,
                     "businessId" to (currentUser.businessId ?: ""),
                     "createdAt" to currentUser.createdAt,
                     "updatedAt" to System.currentTimeMillis()

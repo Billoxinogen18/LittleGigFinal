@@ -115,7 +115,7 @@ fun ModernEventsScreen(
             onClick = { navController.navigate("upload") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(24.dp),
+                .padding(end = 24.dp, bottom = 112.dp),
             icon = Icons.Default.Add,
             containerColor = GlassPrimary
         )

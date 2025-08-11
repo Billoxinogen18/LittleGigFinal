@@ -2,6 +2,7 @@ package com.littlegig.app.data.model
 
 import android.os.Parcelable
 import com.google.firebase.firestore.IgnoreExtraProperties
+import com.google.firebase.firestore.PropertyName
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 import java.util.Date
@@ -22,8 +23,9 @@ data class User(
     val influencerLegacy: Boolean? = null,
     // Another legacy alias that may exist in old documents
     val influencer: Boolean? = null,
-    // Primary field used by the app
-    var isInfluencer: Boolean = false,
+    // Primary field used by the app. Name avoids Kotlin boolean getter conflict; mapped to Firestore `isInfluencer`.
+    @get:PropertyName("isInfluencer") @set:PropertyName("isInfluencer")
+    var influencerFlag: Boolean = false,
     val businessId: String? = null,
     val rank: UserRank = UserRank.NOVICE,
     val followers: List<String> = emptyList(),

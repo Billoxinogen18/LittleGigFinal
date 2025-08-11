@@ -162,7 +162,7 @@ fun LegacyAccountScreen(
                         )
                     }
                     
-                    if (user.isInfluencer) {
+                    if (user.influencerFlag) {
                         Spacer(modifier = Modifier.height(4.dp))
                         Card(
                             colors = CardDefaults.cardColors(
@@ -215,7 +215,7 @@ fun LegacyAccountScreen(
             }
             
             // Influencer Features
-            if (currentUser?.isInfluencer == true) {
+            if (currentUser?.influencerFlag == true) {
                 AccountMenuItem(
                     icon = Icons.Default.Campaign,
                     title = "Advertisement Manager",
