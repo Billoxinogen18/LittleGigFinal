@@ -215,40 +215,38 @@ fun EventsScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(32.dp)
                     ) {
-                        LoadingPulseAnimation {
-                            Box(
-                                modifier = Modifier
-                                    .size(120.dp)
-                                    .drawBehind {
-                                        drawCircle(
-                                            brush = Brush.radialGradient(
-                                                colors = listOf(
-                                                    LittleGigPrimary.copy(alpha = 0.3f),
-                                                    LittleGigPrimary.copy(alpha = 0.1f),
-                                                    Color.Transparent
-                                                )
-                                            ),
-                                            radius = size.minDimension / 2
-                                        )
-                                    }
-                                    .clip(CircleShape)
-                                    .background(
-                                        Brush.radialGradient(
+                        Box(
+                            modifier = Modifier
+                                .size(120.dp)
+                                .drawBehind {
+                                    drawCircle(
+                                        brush = Brush.radialGradient(
                                             colors = listOf(
-                                                LittleGigPrimary.copy(alpha = 0.2f),
+                                                LittleGigPrimary.copy(alpha = 0.3f),
+                                                LittleGigPrimary.copy(alpha = 0.1f),
                                                 Color.Transparent
                                             )
+                                        ),
+                                        radius = size.minDimension / 2
+                                    )
+                                }
+                                .clip(CircleShape)
+                                .background(
+                                    Brush.radialGradient(
+                                        colors = listOf(
+                                            LittleGigPrimary.copy(alpha = 0.2f),
+                                            Color.Transparent
                                         )
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Event,
-                                    contentDescription = null,
-                                    tint = LittleGigPrimary,
-                                    modifier = Modifier.size(48.dp)
-                                )
-                            }
+                                    )
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Event,
+                                contentDescription = null,
+                                tint = LittleGigPrimary,
+                                modifier = Modifier.size(48.dp)
+                            )
                         }
                         
                         Spacer(modifier = Modifier.height(24.dp))

@@ -83,7 +83,7 @@ fun AuthScreen(
             Spacer(modifier = Modifier.height(60.dp))
             
             // App Logo and Branding inside a subtle liquid glass card
-            LiquidGlassCard(glowEffect = true) {
+            LiquidGlassCard() {
                 Box(
                     modifier = Modifier
                         .size(120.dp)
@@ -407,8 +407,7 @@ fun AnimatedLogoSection() {
     )
     
     LiquidGlassCard(
-        modifier = Modifier.fillMaxWidth(),
-        glowEffect = true
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier
@@ -558,8 +557,7 @@ fun NeumorphicTextField(
     val iconColor = if (isFocused) LittleGigPrimary else (if (isDark) Color(0xFFCCCCCC) else Color(0xFF666666))
     
     LiquidGlassCard(
-        modifier = modifier,
-        glowEffect = isFocused
+        modifier = modifier
     ) {
         OutlinedTextField(
             value = value,
@@ -618,8 +616,7 @@ fun NeumorphicChip(
     val isDark = isSystemInDarkTheme()
     
     LiquidGlassCard(
-        modifier = modifier,
-        glowEffect = isSelected
+        modifier = modifier
     ) {
         Surface(
             onClick = onClick,

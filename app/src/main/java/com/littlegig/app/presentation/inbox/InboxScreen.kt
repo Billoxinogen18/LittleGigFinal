@@ -52,8 +52,6 @@ fun InboxScreen(viewModel: InboxViewModel = hiltViewModel()) {
                 icon = Icons.Default.MarkEmailRead,
                 title = "No messages",
                 message = if (filter=="unread") "You have no unread messages" else "Your inbox is empty",
-                primaryActionLabel = if (filter=="unread") "Show All" else null,
-                onPrimaryAction = { filter = "all" },
                 modifier = Modifier.fillMaxWidth()
             )
         } else {

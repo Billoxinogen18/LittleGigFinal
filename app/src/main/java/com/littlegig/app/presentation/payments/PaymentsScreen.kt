@@ -93,8 +93,7 @@ fun PaymentsScreen(
             
             // Payment Summary
             LiquidGlassCard(
-                modifier = Modifier.fillMaxWidth(),
-                glowEffect = false
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier.padding(20.dp),
@@ -149,8 +148,7 @@ fun PaymentsScreen(
             
             // Payment Methods
             LiquidGlassCard(
-                modifier = Modifier.fillMaxWidth(),
-                glowEffect = false
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier.padding(20.dp),
@@ -266,8 +264,7 @@ fun PaymentsScreen(
             
             // Recent Transactions
             LiquidGlassCard(
-                modifier = Modifier.fillMaxWidth(),
-                glowEffect = false
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier.padding(20.dp),

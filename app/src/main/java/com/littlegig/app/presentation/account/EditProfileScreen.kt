@@ -397,12 +397,10 @@ fun EditProfileScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         if (uiState.isLoading) {
-                            LoadingPulseAnimation {
-                                CircularProgressIndicator(
-                                    color = LittleGigPrimary,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
+                            CircularProgressIndicator(
+                                color = LittleGigPrimary,
+                                modifier = Modifier.size(24.dp)
+                            )
                         } else {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically

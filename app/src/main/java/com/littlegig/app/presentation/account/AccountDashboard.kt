@@ -160,7 +160,7 @@ fun AccountDashboard(
                     
                     // Rank Badge
                     NeumorphicRankBadge(
-                        rank = currentUser?.rank ?: UserRank.NOVICE,
+                        rank = (currentUser?.rank ?: UserRank.NOVICE).name,
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
                 }

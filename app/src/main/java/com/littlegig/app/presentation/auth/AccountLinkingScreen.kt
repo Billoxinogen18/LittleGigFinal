@@ -88,8 +88,7 @@ fun AccountLinkingScreen(
             Spacer(modifier = Modifier.height(60.dp))
             
             LiquidGlassCard(
-                modifier = Modifier.fillMaxWidth(),
-                glowEffect = true
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier
@@ -138,8 +137,7 @@ fun AccountLinkingScreen(
             Spacer(modifier = Modifier.height(32.dp))
             
             LiquidGlassCard(
-                modifier = Modifier.fillMaxWidth(),
-                glowEffect = true
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier.padding(24.dp),
@@ -267,7 +265,7 @@ fun AccountLinkingScreen(
                     }
                     
                     uiState.error?.let { error ->
-                        LiquidGlassCard(modifier = Modifier.fillMaxWidth(), glowEffect = false) {
+                        LiquidGlassCard(modifier = Modifier.fillMaxWidth()) {
                             Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Icon(imageVector = Icons.Default.Warning, contentDescription = null, tint = Color(0xFFFF6B6B), modifier = Modifier.size(20.dp))
                                 Spacer(modifier = Modifier.width(8.dp))

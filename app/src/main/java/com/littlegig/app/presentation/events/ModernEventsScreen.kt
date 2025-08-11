@@ -187,7 +187,7 @@ private fun ModernEventsHeader(
         ) {
             // Search button
             GlassmorphicCard(
-                onClick = onSearchClick,
+                
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Icon(
@@ -202,7 +202,7 @@ private fun ModernEventsHeader(
             
             // Notification button with badge
             GlassmorphicCard(
-                onClick = onNotificationClick,
+                
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Box {
@@ -227,7 +227,7 @@ private fun ModernEventsHeader(
             
             // Profile button
             GlassmorphicCard(
-                onClick = onProfileClick,
+                
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Icon(
@@ -277,7 +277,7 @@ private fun ModernEventsHeader(
                     }
                 }
             } else null,
-            shape = RoundedCornerShape(16.dp),
+            
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = GlassPink,
                 unfocusedBorderColor = GlassOnSurface().copy(alpha = 0.3f),
@@ -302,7 +302,7 @@ private fun ModernFullScreenEventCard(
 ) {
     GlassmorphicCard(
         modifier = modifier,
-        onClick = onEventClick,
+        
         shape = RoundedCornerShape(24.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -365,7 +365,7 @@ private fun ModernFullScreenEventCard(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         GlassmorphicCard(
-                            onClick = onLikeClick,
+                            
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Icon(
@@ -379,7 +379,7 @@ private fun ModernFullScreenEventCard(
                         }
                         
                         GlassmorphicCard(
-                            onClick = onShareClick,
+                            
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Icon(
@@ -474,12 +474,12 @@ private fun ModernFullScreenEventCard(
                         
                         // Join button
                         NeumorphicButton(
-                            onClick = onEventClick,
+                            
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = GlassPrimary,
                                 contentColor = Color.White
                             ),
-                            shape = RoundedCornerShape(20.dp),
+                            
                             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
                         ) {
                             Text(
@@ -536,7 +536,7 @@ private fun ModernEmptyState(
             Spacer(modifier = Modifier.height(24.dp))
             
             NeumorphicButton(
-                onClick = onCreateEvent,
+                
                 colors = ButtonDefaults.buttonColors(
                     containerColor = GlassPrimary,
                     contentColor = Color.White

@@ -79,7 +79,7 @@ fun GlassOnSurfaceVariant(): Color {
  * Modern Glassmorphic Card with backdrop blur effect
  */
 @Composable
-fun GlassmorphicCard(
+fun ModernGlassmorphicCard(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     shape: RoundedCornerShape = RoundedCornerShape(24.dp),
@@ -254,7 +254,7 @@ fun ModernEventCard(
     badge: String? = null,
     attendeeCount: Int? = null
 ) {
-    GlassmorphicCard(
+    ModernGlassmorphicCard(
         modifier = modifier
             .fillMaxWidth()
             .height(280.dp),
@@ -302,7 +302,7 @@ fun ModernEventCard(
                     verticalAlignment = Alignment.Top
                 ) {
                     badge?.let {
-                        GlassmorphicCard(
+                        ModernGlassmorphicCard(
                             shape = RoundedCornerShape(12.dp)
                         ) {
                             Text(
@@ -375,7 +375,7 @@ fun ModernBottomNavigation(
     onItemSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    GlassmorphicCard(
+    ModernGlassmorphicCard(
         modifier = modifier
             .fillMaxWidth()
             .height(80.dp),

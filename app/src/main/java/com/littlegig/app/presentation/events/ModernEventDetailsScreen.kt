@@ -157,10 +157,9 @@ private fun ModernEventHero(
                 .padding(20.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            GlassmorphicCard(
-                onClick = onBackClick,
-                shape = RoundedCornerShape(16.dp)
-            ) {
+                    ModernGlassmorphicCard(
+            onClick = onBackClick
+        ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Back",
@@ -174,10 +173,9 @@ private fun ModernEventHero(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                GlassmorphicCard(
-                    onClick = onLikeClick,
-                    shape = RoundedCornerShape(16.dp)
-                ) {
+                            ModernGlassmorphicCard(
+                onClick = onLikeClick
+            ) {
                     Icon(
                         imageVector = Icons.Default.FavoriteBorder,
                         contentDescription = "Like",
@@ -188,9 +186,8 @@ private fun ModernEventHero(
                     )
                 }
                 
-                GlassmorphicCard(
-                    onClick = onShareClick,
-                    shape = RoundedCornerShape(16.dp)
+                ModernGlassmorphicCard(
+                    onClick = onShareClick
                 ) {
                     Icon(
                         imageVector = Icons.Default.Share,
@@ -414,12 +411,12 @@ private fun ModernOrganizerCard(
             }
             
             NeumorphicButton(
-                onClick = { /* Follow organizer */ },
+                
                 colors = ButtonDefaults.buttonColors(
                     containerColor = GlassPrimary,
                     contentColor = Color.White
                 ),
-                shape = RoundedCornerShape(12.dp),
+                
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Text(
@@ -444,13 +441,13 @@ private fun ModernActionButtons(
     ) {
         // Buy Ticket Button
         NeumorphicButton(
-            onClick = onBuyTicketClick,
+            
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = GlassPrimary,
                 contentColor = Color.White
             ),
-            shape = RoundedCornerShape(20.dp),
+            
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
             Icon(
@@ -473,7 +470,7 @@ private fun ModernActionButtons(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             NeumorphicButton(
-                onClick = onAddRecapClick,
+                
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = GlassSecondary,
@@ -496,7 +493,7 @@ private fun ModernActionButtons(
             }
             
             NeumorphicButton(
-                onClick = onViewRecapsClick,
+                
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = GlassAccent,

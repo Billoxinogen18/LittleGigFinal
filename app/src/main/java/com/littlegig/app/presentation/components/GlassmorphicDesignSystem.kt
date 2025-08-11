@@ -516,3 +516,161 @@ data class BottomNavItem(
     val label: String,
     val icon: ImageVector
 )
+
+// 🌟 MISSING COMPONENTS FOR COMPILATION FIXES 🌟
+
+@Composable
+fun AdvancedGlassmorphicCard(
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = 16.dp,
+    alpha: Float = 0.8f,
+    borderWidth: Dp = 1.dp,
+    borderColor: Color = Color.Transparent,
+    content: @Composable () -> Unit
+) {
+    GlassmorphicCard(
+        modifier = modifier,
+        cornerRadius = cornerRadius,
+        alpha = alpha,
+        borderWidth = borderWidth,
+        borderColor = borderColor,
+        content = content
+    )
+}
+
+@Composable
+fun HapticButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    content: @Composable () -> Unit
+) {
+    GlassmorphicButton(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        content = content
+    )
+}
+
+@Composable
+fun NeumorphicRankBadge(
+    rank: String,
+    modifier: Modifier = Modifier
+) {
+    GlassmorphicChip(
+        text = rank,
+        onClick = { /* Rank badge is not clickable */ },
+        modifier = modifier
+    )
+}
+
+@Composable
+fun ShimmerLoadingCard(
+    modifier: Modifier = Modifier
+) {
+    val shimmerColors = listOf(
+        Color.LightGray.copy(alpha = 0.6f),
+        Color.LightGray.copy(alpha = 0.2f),
+        Color.LightGray.copy(alpha = 0.6f)
+    )
+    
+    val transition = rememberInfiniteTransition()
+    val translateAnim = transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Restart
+        )
+    )
+    
+    GlassmorphicCard(
+        modifier = modifier.height(120.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = shimmerColors,
+                        start = androidx.compose.ui.geometry.Offset(translateAnim.value - 1000f, 0f),
+                        end = androidx.compose.ui.geometry.Offset(translateAnim.value, 0f)
+                    )
+                )
+        )
+    }
+}
+
+@Composable
+fun LoadingPulseAnimation(
+    modifier: Modifier = Modifier
+) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 0.8f,
+        targetValue = 1.2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    
+    Box(
+        modifier = modifier
+            .size(24.dp)
+            .scale(scale)
+            .background(
+                color = LittleGigPrimary,
+                shape = CircleShape
+            )
+    )
+}
+
+@Composable
+fun FloatingActionButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    contentDescription: String? = null
+) {
+    GlassmorphicButton(
+        onClick = onClick,
+        modifier = modifier.size(56.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = Color.White
+        )
+    }
+}
+
+@Composable
+fun GlassEmptyState(
+    title: String,
+    message: String,
+    icon: ImageVector,
+    modifier: Modifier = Modifier
+) {
+    GlassmorphicEmptyState(
+        title = title,
+        message = message,
+        icon = icon,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun AdvancedNeumorphicCard(
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = 16.dp,
+    content: @Composable () -> Unit
+) {
+    // For now, use GlassmorphicCard as replacement
+    GlassmorphicCard(
+        modifier = modifier,
+        cornerRadius = cornerRadius,
+        content = content
+    )
+}

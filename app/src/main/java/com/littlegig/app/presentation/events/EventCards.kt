@@ -38,9 +38,7 @@ fun LiquidGlassEventCard(
     val isDark = isSystemInDarkTheme()
     
     LiquidGlassCard(
-        modifier = modifier,
-        onClick = onClick,
-        glowEffect = event.featured
+        modifier = modifier.clickable { onClick() }
     ) {
         Column {
             // Event Image with overlay
@@ -300,9 +298,7 @@ fun LiquidGlassFeaturedEventCard(
     val isDark = isSystemInDarkTheme()
     
     LiquidGlassCard(
-        modifier = modifier.width(280.dp),
-        onClick = onClick,
-        glowEffect = true
+        modifier = modifier.width(280.dp).clickable { onClick() }
     ) {
         Column {
             // Event Image
@@ -418,8 +414,7 @@ fun NeumorphicPriceButton(
     if (price > 0) {
         NeumorphicButton(
             onClick = { /* Handle ticket purchase */ },
-            modifier = modifier,
-            glowEffect = true
+            modifier = modifier
         ) {
             Icon(
                 imageVector = Icons.Default.LocalOffer,

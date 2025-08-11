@@ -45,7 +45,7 @@ fun BlurredBackground(
 }
 
 @Composable
-fun GlassmorphicCard(
+fun BlurGlassmorphicCard(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 20.dp,
     borderWidth: Dp = 1.dp,

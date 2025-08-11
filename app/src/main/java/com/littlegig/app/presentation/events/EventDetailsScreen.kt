@@ -369,7 +369,7 @@ fun EventDetailsScreen(
                                     
                                     if (uiState.organizer != null) {
                                         NeumorphicRankBadge(
-                                            rank = uiState.organizer!!.rank,
+                                            rank = uiState.organizer!!.rank.name,
                                             modifier = Modifier.padding(top = 4.dp)
                                         )
                                     }

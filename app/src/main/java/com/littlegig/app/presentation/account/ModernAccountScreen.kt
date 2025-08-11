@@ -105,9 +105,7 @@ fun ModernAccountScreen(
                     .background(Color.Black.copy(alpha = 0.3f)),
                 contentAlignment = Alignment.Center
             ) {
-                GlassmorphicCard(
-                    shape = RoundedCornerShape(20.dp)
-                ) {
+                ModernGlassmorphicCard() {
                     Column(
                         modifier = Modifier.padding(32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -143,9 +141,8 @@ private fun ModernAccountHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        GlassmorphicCard(
-            onClick = onBackClick,
-            shape = RoundedCornerShape(16.dp)
+        ModernGlassmorphicCard(
+            onClick = onBackClick
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
@@ -176,9 +173,7 @@ private fun ModernProfileCard(
     user: com.littlegig.app.data.model.User,
     onEditClick: () -> Unit
 ) {
-    GlassmorphicCard(
-        shape = RoundedCornerShape(24.dp)
-    ) {
+    ModernGlassmorphicCard() {
         Box {
             // Background gradient
             Box(
@@ -189,7 +184,7 @@ private fun ModernProfileCard(
                         brush = Brush.linearGradient(
                             colors = listOf(GlassPrimary, GlassSecondary)
                         ),
-                        shape = RoundedCornerShape(24.dp)
+    
                     )
             )
             
@@ -233,9 +228,8 @@ private fun ModernProfileCard(
                     }
                     
                     // Edit button
-                    GlassmorphicCard(
+                    ModernGlassmorphicCard(
                         onClick = onEditClick,
-                        shape = CircleShape,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .offset(x = 8.dp, y = 8.dp)
@@ -271,9 +265,7 @@ private fun ModernProfileCard(
                 Spacer(modifier = Modifier.height(12.dp))
                 
                 // Account Type Badge
-                GlassmorphicCard(
-                    shape = RoundedCornerShape(20.dp)
-                ) {
+                ModernGlassmorphicCard() {
                     Text(
                         text = when (user.userType) {
                             UserType.BUSINESS -> "Business Account"
@@ -296,9 +288,7 @@ private fun ModernProfileCard(
 private fun ModernStatsCard(
     uiState: AccountUiState
 ) {
-    GlassmorphicCard(
-        shape = RoundedCornerShape(20.dp)
-    ) {
+    ModernGlassmorphicCard() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -353,9 +343,7 @@ private fun StatItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        GlassmorphicCard(
-            shape = RoundedCornerShape(16.dp)
-        ) {
+        ModernGlassmorphicCard() {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
@@ -458,9 +446,8 @@ private fun ModernActionButton(
     subtitle: String,
     onClick: () -> Unit
 ) {
-    GlassmorphicCard(
-        onClick = onClick,
-        shape = RoundedCornerShape(20.dp)
+    ModernGlassmorphicCard(
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier
@@ -468,9 +455,7 @@ private fun ModernActionButton(
                 .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            GlassmorphicCard(
-                shape = RoundedCornerShape(16.dp)
-            ) {
+            ModernGlassmorphicCard() {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,

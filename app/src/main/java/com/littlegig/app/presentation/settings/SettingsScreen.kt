@@ -97,8 +97,7 @@ fun SettingsScreen(
             
             // Account Section
             LiquidGlassCard(
-                modifier = Modifier.fillMaxWidth(),
-                glowEffect = false
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier.padding(20.dp),
@@ -208,8 +207,7 @@ fun SettingsScreen(
             
             // Features Section
             LiquidGlassCard(
-                modifier = Modifier.fillMaxWidth(),
-                glowEffect = false
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier.padding(20.dp),
@@ -255,8 +253,7 @@ fun SettingsScreen(
             
             // App Settings Section
             LiquidGlassCard(
-                modifier = Modifier.fillMaxWidth(),
-                glowEffect = false
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier.padding(20.dp),

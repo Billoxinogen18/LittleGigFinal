@@ -35,8 +35,7 @@ fun NeumorphicChip(
     content: @Composable () -> Unit
 ) {
     LiquidGlassCard(
-        modifier = modifier,
-        glowEffect = false
+        modifier = modifier
     ) {
         Surface(
             onClick = onClick,
@@ -86,8 +85,7 @@ fun ChatSearchScreen(
         LiquidGlassCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            glowEffect = true
+                .padding(16.dp)
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
@@ -135,8 +133,7 @@ fun ChatSearchScreen(
         LiquidGlassCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            glowEffect = false
+                .padding(horizontal = 16.dp)
         ) {
             Row(
                 modifier = Modifier.padding(8.dp)
@@ -193,10 +190,9 @@ fun UserSearchResultCard(
     val isFollowing = currentUser?.following?.contains(user.id) == true
     val isFollower = currentUser?.followers?.contains(user.id) == true
     
-    LiquidGlassCard(
-        modifier = Modifier.fillMaxWidth(),
-        glowEffect = false
-    ) {
+            LiquidGlassCard(
+            modifier = Modifier.fillMaxWidth()
+        ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -361,8 +357,7 @@ fun NeumorphicTextField(
     )
     
     LiquidGlassCard(
-        modifier = modifier,
-        glowEffect = isFocused
+        modifier = modifier
     ) {
         OutlinedTextField(
             value = value,

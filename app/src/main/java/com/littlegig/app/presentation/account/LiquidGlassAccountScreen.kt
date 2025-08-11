@@ -206,7 +206,7 @@ fun LiquidGlassAccountScreen(
                            
                            // Rank Badge
                            NeumorphicRankBadge(
-                               rank = UserRank.POPULAR, // TODO: Get actual rank from user data
+                               rank = UserRank.POPULAR.name, // TODO: Get actual rank from user data
                                modifier = Modifier
                            )
                            
