@@ -399,8 +399,7 @@ fun LiquidGlassTypingIndicator(
                             )
                             .scale(
                                 if (index == (typingAnimation * 3).toInt()) 1.2f else 0.8f
-                            ),
-                        alignment = Alignment.Center
+                            )
                     )
                     
                     if (index < 2) {

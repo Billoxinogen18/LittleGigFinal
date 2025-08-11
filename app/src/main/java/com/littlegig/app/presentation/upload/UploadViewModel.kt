@@ -155,8 +155,8 @@ class UploadViewModel @Inject constructor(
         _placeSuggestions.value = emptyList()
     }
     
-    fun setSelectedPlace(place: com.littlegig.app.presentation.components.PlaceSuggestion) {
-        selectPlace(place.placeId)
+    fun setSelectedPlace(placeId: String) {
+        selectPlace(placeId)
     }
 
     fun updateLocationName(text: String) {

@@ -50,12 +50,9 @@ import com.littlegig.app.data.model.ContentCategory
 import com.littlegig.app.data.model.UserType
 import com.littlegig.app.presentation.components.*
 import com.littlegig.app.presentation.theme.*
-import com.littlegig.app.presentation.components.HapticButton
-import com.littlegig.app.presentation.components.LoadingPulseAnimation
-import com.littlegig.app.presentation.events.NeumorphicCategoryChip
-import com.littlegig.app.presentation.components.NeumorphicDatePicker
-import com.littlegig.app.presentation.components.NeumorphicPlacesAutocomplete
-import com.littlegig.app.presentation.components.PlaceSuggestion
+import com.littlegig.app.presentation.components.LiquidGlassButton
+import com.littlegig.app.presentation.components.LiquidGlassCard
+import com.littlegig.app.presentation.components.LiquidGlassInputField
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -150,7 +147,7 @@ fun UploadScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                AdvancedNeumorphicCard(
+                LiquidGlassCard(
                     modifier = Modifier.padding(24.dp)
                 ) {
                     Column(
@@ -190,8 +187,8 @@ fun UploadScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp)
             ) {
-                // Header with neumorphic design
-                AdvancedNeumorphicCard {
+                // Header with liquid glass design
+                LiquidGlassCard {
                     Column(
                         modifier = Modifier.padding(20.dp)
                     ) {
@@ -216,7 +213,7 @@ fun UploadScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 
                 // Content Type Selection
-                AdvancedGlassmorphicCard {
+                LiquidGlassCard {
                     Column(
                         modifier = Modifier.padding(20.dp)
                     ) {
@@ -235,9 +232,9 @@ fun UploadScreen(
                             contentPadding = PaddingValues(horizontal = 4.dp)
                         ) {
                             items(ContentCategory.values()) { cat ->
-                                NeumorphicCategoryChip(
+                                LiquidGlassChip(
                                     text = cat.name.lowercase().replaceFirstChar { it.uppercase() },
-                                    selected = selectedCategory == cat,
+                                    isSelected = selectedCategory == cat,
                                     onClick = { selectedCategory = cat }
                                 )
                             }
@@ -248,7 +245,7 @@ fun UploadScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 
                 // Basic Information
-                AdvancedGlassmorphicCard {
+                LiquidGlassCard {
                     Column(
                         modifier = Modifier.padding(20.dp)
                     ) {
@@ -291,11 +288,18 @@ fun UploadScreen(
                         
                         Spacer(modifier = Modifier.height(12.dp))
                         
-                        // Beautiful Date Picker
-                        NeumorphicDatePicker(
-                            selectedDate = startDate,
-                            onDateSelected = { startDate = it },
-                            modifier = Modifier.fillMaxWidth()
+                        // Date Input
+                        OutlinedTextField(
+                            value = startDate?.let { SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(it) } ?: "",
+                            onValueChange = { },
+                            label = { Text("Event Date") },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = LittleGigPrimary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                            ),
+                            readOnly = true
                         )
                         
                         Spacer(modifier = Modifier.height(12.dp))
@@ -338,7 +342,7 @@ fun UploadScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 
                 // Location Information
-                AdvancedGlassmorphicCard {
+                LiquidGlassCard {
                     Column(
                         modifier = Modifier.padding(20.dp)
                     ) {
@@ -365,26 +369,20 @@ fun UploadScreen(
                         
                         Spacer(modifier = Modifier.height(16.dp))
                         
-                        // Location Input with Places Autocomplete
-                        NeumorphicPlacesAutocomplete(
-                            query = locationName,
-                            onQueryChange = { newValue -> 
+                        // Location Input
+                        OutlinedTextField(
+                            value = locationName,
+                            onValueChange = { newValue -> 
                                 viewModel.updateLocationName(newValue)
                                 viewModel.searchPlaces(newValue)
                             },
-                            suggestions = placeSuggestions.map { suggestion ->
-                                PlaceSuggestion(
-                                    placeId = suggestion.placeId,
-                                    name = suggestion.mainText,
-                                    address = suggestion.secondaryText,
-                                    latitude = 0.0,
-                                    longitude = 0.0
-                                )
-                            },
-                            onPlaceSelected = { place ->
-                                viewModel.selectPlace(place.placeId)
-                            },
-                            modifier = Modifier.fillMaxWidth()
+                            label = { Text("Location Name") },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = LittleGigPrimary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                            )
                         )
                         
                         Spacer(modifier = Modifier.height(12.dp))
@@ -402,21 +400,14 @@ fun UploadScreen(
                             )
                         )
 
-                        if (viewModel.locationLatitude.collectAsState().value != 0.0 && viewModel.locationLongitude.collectAsState().value != 0.0) {
-                            Spacer(Modifier.height(12.dp))
-                            MiniMapPreview(
-                                latitude = viewModel.locationLatitude.collectAsState().value,
-                                longitude = viewModel.locationLongitude.collectAsState().value,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
+                        // Map preview removed for now
                     }
                 }
                 
                 Spacer(modifier = Modifier.height(20.dp))
                 
                 // Media Upload Section
-                AdvancedGlassmorphicCard {
+                LiquidGlassCard {
                     Column(
                         modifier = Modifier.padding(20.dp)
                     ) {
@@ -444,11 +435,11 @@ fun UploadScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         
                         // Add Media Button
-                        HapticButton(
-                            onClick = { imagePickerLauncher.launch("image/*") },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            AdvancedNeumorphicCard(
+                                    LiquidGlassButton(
+                onClick = { imagePickerLauncher.launch("image/*") },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                            LiquidGlassCard(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Row(
@@ -526,7 +517,7 @@ fun UploadScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 
                 // Post Event Button
-                HapticButton(
+                LiquidGlassButton(
                     onClick = {
                         viewModel.createContent(
                             title = title,
@@ -541,10 +532,9 @@ fun UploadScreen(
                             startDate = startDate,
     
                         )
-                    },
-                    enabled = title.isNotBlank() && description.isNotBlank() && locationName.isNotBlank()
+                    }
                 ) {
-                    AdvancedNeumorphicCard(
+                    LiquidGlassCard(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Box(
@@ -554,12 +544,10 @@ fun UploadScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             if (uiState.isLoading) {
-                                LoadingPulseAnimation {
-                                    CircularProgressIndicator(
-                                        color = LittleGigPrimary,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
+                                CircularProgressIndicator(
+                                    color = LittleGigPrimary,
+                                    modifier = Modifier.size(24.dp)
+                                )
                             } else {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
@@ -585,7 +573,7 @@ fun UploadScreen(
                 // Success/Error Messages
                 if (uiState.isSuccess) {
                     Spacer(modifier = Modifier.height(16.dp))
-                    AdvancedGlassmorphicCard {
+                    LiquidGlassCard {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -610,7 +598,7 @@ fun UploadScreen(
                 
                 if (uiState.error != null) {
                     Spacer(modifier = Modifier.height(16.dp))
-                    AdvancedGlassmorphicCard {
+                    LiquidGlassCard {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
