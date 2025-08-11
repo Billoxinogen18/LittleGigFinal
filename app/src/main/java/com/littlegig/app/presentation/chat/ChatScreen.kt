@@ -211,23 +211,48 @@ private fun ChatHeader(
                     
             AnimatedVisibility(visible = showSearch) {
                 Column {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        OutlinedTextField(
-                            value = searchQuery,
-                        onValueChange = onSearchQueryChange,
-                            label = { Text("Search users...") },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = LittleGigPrimary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-                            ),
-                            leadingIcon = {
-                            Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = LittleGigPrimary)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        // Pill search
+                        Surface(
+                            shape = RoundedCornerShape(28.dp),
+                            color = Color.Transparent
+                        ) {
+                            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.Search, contentDescription = null, tint = LittleGigPrimary)
+                                Spacer(Modifier.width(8.dp))
+                                OutlinedTextField(
+                                    value = searchQuery,
+                                    onValueChange = onSearchQueryChange,
+                                    placeholder = { Text("Search people…") },
+                                    modifier = Modifier.weight(1f),
+                                    singleLine = true,
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = Color.Transparent,
+                                        unfocusedBorderColor = Color.Transparent,
+                                        focusedContainerColor = Color.Transparent,
+                                        unfocusedContainerColor = Color.Transparent
+                                    )
+                                )
+                            }
                         }
-                    )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        // Gradient chips (view all / contacts)
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            GradientChip(label = "All")
+                            GradientChip(label = "Contacts")
+                        }
+                    }
                 }
             }
+        }
+    }
+
+@Composable
+private fun GradientChip(label: String) {
+    val brush = Brush.horizontalGradient(listOf(LittleGigPrimary, LittleGigPrimary.copy(alpha = 0.6f)))
+    Surface(shape = RoundedCornerShape(20.dp), color = Color.Transparent) {
+        Box(Modifier.background(brush = brush, alpha = 0.15f).padding(horizontal = 12.dp, vertical = 6.dp)) {
+            Text(label, color = LittleGigPrimary, style = MaterialTheme.typography.labelMedium)
         }
     }
 }
