@@ -50,6 +50,7 @@ fun NeumorphicChatBubble(
     message: Message,
     isFromCurrentUser: Boolean,
     onReact: (messageId: String, emoji: String) -> Unit,
+    onLongPress: (messageId: String) -> Unit = {},
     onMentionClick: (String) -> Unit = {},
     onShareTicket: (SharedTicket) -> Unit,
     onReplyReferenceClick: (String) -> Unit = {},
@@ -75,7 +76,8 @@ fun NeumorphicChatBubble(
                 )
                 .pointerInput(message.id) {
                     detectTapGestures(
-                        onDoubleTap = { onReact(message.id, "❤️") }
+                        onDoubleTap = { onReact(message.id, "❤️") },
+                        onLongPress = { onLongPress(message.id) }
                     )
                 }
         ) {

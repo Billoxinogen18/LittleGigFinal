@@ -179,7 +179,7 @@ private fun ChatHeader(
     onSearchQueryChange: (String) -> Unit,
     onNavigateToDiscovery: () -> Unit
 ) {
-    AdvancedNeumorphicCard {
+    AdvancedGlassmorphicCard {
         Column(modifier = Modifier.padding(20.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),

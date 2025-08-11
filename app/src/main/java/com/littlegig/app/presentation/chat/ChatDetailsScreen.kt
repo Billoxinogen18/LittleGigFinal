@@ -251,6 +251,7 @@ fun ChatDetailsScreen(
                             message = message,
                             isFromCurrentUser = message.senderId == viewModel.currentUserId,
                             onReact = { msgId, emoji -> viewModel.toggleReaction(chatId, msgId, emoji) },
+                            onLongPress = { actionSheetFor = message },
                             onMentionClick = { username -> navController.navigate("profile/$username") },
                             onShareTicket = { /* no-op */ },
                             onReplyReferenceClick = { refId ->
@@ -260,13 +261,7 @@ fun ChatDetailsScreen(
                                 }
                             },
                             searchQuery = if (searchOpen) searchQuery else null,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .pointerInput(Unit) {
-                                    detectTapGestures(onLongPress = {
-                                        actionSheetFor = message
-                                    })
-                                }
+                            modifier = Modifier.fillMaxWidth()
                         )
                         // Remove pending shimmer to avoid confusing clocks; messages are persisted immediately
                     }
