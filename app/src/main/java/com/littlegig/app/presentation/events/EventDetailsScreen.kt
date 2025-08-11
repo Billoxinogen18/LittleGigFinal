@@ -40,6 +40,7 @@ import com.littlegig.app.utils.PaymentEventBus
 import com.littlegig.app.data.repository.ChatRepository
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
+import androidx.compose.ui.graphics.Brush
 
 @Composable
 fun EventDetailsScreen(
@@ -153,6 +154,50 @@ fun EventDetailsScreen(
                                 contentScale = ContentScale.Crop
                             )
                             
+                            // Gradient scrim for readability
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(
+                                        Brush.verticalGradient(
+                                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.55f))
+                                        )
+                                    )
+                            )
+                            // Glass overlay with key info
+                            AdvancedGlassmorphicCard(
+                                modifier = Modifier
+                                    .align(Alignment.BottomStart)
+                                    .padding(16.dp)
+                            ) {
+                                Column(Modifier.padding(16.dp)) {
+                                    Text(
+                                        text = uiState.event!!.title,
+                                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Spacer(Modifier.height(6.dp))
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(Icons.Default.Schedule, contentDescription = null, tint = LittleGigPrimary, modifier = Modifier.size(18.dp))
+                                        Spacer(Modifier.width(6.dp))
+                                        Text(
+                                            text = SimpleDateFormat("MMM dd, yyyy 'at' HH:mm", Locale.getDefault()).format(Date(uiState.event!!.dateTime)),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
+                                    Spacer(Modifier.height(4.dp))
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(Icons.Default.LocationOn, contentDescription = null, tint = LittleGigPrimary, modifier = Modifier.size(18.dp))
+                                        Spacer(Modifier.width(6.dp))
+                                        Text(
+                                            text = uiState.event!!.location.name,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
+                                }
+                            }
                             // Back button overlay
                             HapticButton(
                                 onClick = { navController.popBackStack() },
