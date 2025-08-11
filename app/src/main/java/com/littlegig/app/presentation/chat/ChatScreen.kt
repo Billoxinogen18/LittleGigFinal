@@ -232,6 +232,202 @@ fun ChatScreen(
             
             Spacer(modifier = Modifier.height(16.dp))
             
+            // Main Users List (when not searching)
+            if (!showSearch) {
+                val mainDisplayedUsers = remember(contactsUsers, allUsers, showContactsOnly) {
+                    if (showContactsOnly) contactsUsers else allUsers
+                }
+                
+                if (mainDisplayedUsers.isNotEmpty()) {
+                    AdvancedGlassmorphicCard {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = if (showContactsOnly) "Your Contacts" else "All Users",
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.SemiBold
+                                    ),
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                
+                                HapticButton(
+                                    onClick = { showContactsOnly = !showContactsOnly }
+                                ) {
+                                    Text(
+                                        text = if (showContactsOnly) "Show All" else "Show Contacts",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = LittleGigPrimary
+                                    )
+                                }
+                            }
+                            
+                            Spacer(modifier = Modifier.height(12.dp))
+                            
+                            val userListState = rememberLazyListState()
+                            LaunchedEffect(userListState) {
+                                snapshotFlow { userListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index to userListState.layoutInfo.totalItemsCount }
+                                    .collect { (last, total) ->
+                                        if (last != null && total > 0 && last >= total - 3 && !showContactsOnly) {
+                                            viewModel.loadMoreAllUsers()
+                                        }
+                                    }
+                            }
+                            LazyColumn(
+                                state = userListState,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(mainDisplayedUsers) { user ->
+                                    HapticButton(
+                                        onClick = { 
+                                            viewModel.createChatWithUser(user.id)
+                                        }
+                                    ) {
+                                        AdvancedNeumorphicCard(
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(12.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                // User Avatar
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(40.dp)
+                                                        .clip(CircleShape)
+                                                        .background(LittleGigPrimary.copy(alpha = 0.1f)),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    if (user.profilePictureUrl.isNotEmpty()) {
+                                                        AsyncImage(
+                                                            model = user.profilePictureUrl,
+                                                            contentDescription = null,
+                                                            modifier = Modifier.fillMaxSize(),
+                                                            contentScale = ContentScale.Crop
+                                                        )
+                                                    } else {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Person,
+                                                            contentDescription = null,
+                                                            modifier = Modifier.size(24.dp),
+                                                            tint = LittleGigPrimary
+                                                        )
+                                                    }
+                                                }
+                                                
+                                                Spacer(modifier = Modifier.width(12.dp))
+                                                
+                                                Column(modifier = Modifier.weight(1f)) {
+                                                    Text(
+                                                        text = user.displayName.ifEmpty { user.name },
+                                                        style = MaterialTheme.typography.bodyLarge.copy(
+                                                            fontWeight = FontWeight.Medium
+                                                        ),
+                                                        color = MaterialTheme.colorScheme.onSurface
+                                                    )
+                                                    
+                                                    Text(
+                                                        text = user.email,
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
+                                                
+                                                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                                    IconButton(onClick = { viewModel.blockUser(user.id) }) {
+                                                        Icon(Icons.Default.Block, contentDescription = "Block", tint = MaterialTheme.colorScheme.error)
+                                                    }
+                                                    IconButton(onClick = { viewModel.reportUser(user.id, "abuse") }) {
+                                                        Icon(Icons.Default.Report, contentDescription = "Report", tint = MaterialTheme.colorScheme.tertiary)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            } else if (!showSearch) {
+                // No users to display
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AdvancedGlassmorphicCard {
+                        Column(
+                            modifier = Modifier.padding(32.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.People,
+                                contentDescription = null,
+                                modifier = Modifier.size(64.dp),
+                                tint = LittleGigPrimary
+                            )
+                            
+                            Spacer(modifier = Modifier.height(16.dp))
+                            
+                            Text(
+                                text = "No Users Found",
+                                style = MaterialTheme.typography.headlineSmall.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            
+                            Spacer(modifier = Modifier.height(8.dp))
+                            
+                            Text(
+                                text = if (showContactsOnly) "No contacts found. Try switching to All Users or grant contacts permission." else "No users available at the moment.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            
+                            Spacer(modifier = Modifier.height(24.dp))
+                            
+                            HapticButton(
+                                onClick = { showContactsOnly = !showContactsOnly }
+                            ) {
+                                AdvancedNeumorphicCard {
+                                    Row(
+                                        modifier = Modifier.padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = if (showContactsOnly) Icons.Default.People else Icons.Default.Contacts,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(24.dp),
+                                            tint = LittleGigPrimary
+                                        )
+                                        
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        
+                                        Text(
+                                            text = if (showContactsOnly) "Show All Users" else "Show Contacts",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = LittleGigPrimary
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            
             // Search Results
             val displayedUsers = remember(searchResults, contactsUsers, allUsers, showContactsOnly, searchQuery) {
                 val base = if (searchQuery.isBlank()) {
