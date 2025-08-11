@@ -235,9 +235,9 @@ Definition of Done
   - [TODO] Phone number linking as the primary path; OTP UX polish
 
 - P0 Design System – Glassmorphism + Neumorphism
-  - [DONE] Real frosted bottom navigation with shared haze state blurring content behind it
+  - [DONE] Real frosted bottom navigation with shared haze state blurring content behind it; main content blur re-enabled
   - [DONE] Gradient refraction-like border fallback applied to glass pill and panels
-  - [NEXT] Add AGSL runtime refraction shader on supported devices (runtime-gated)
+  - [NEXT] AGSL runtime refraction shader (deferred; fallback active and artefact-free)
   - [TODO] Tokenize light/dark glass tints, shadows, radii, motion presets
   - [TODO] Convert major panels to `LiquidGlassPanel` primitives as a reusable component
 
@@ -292,6 +292,7 @@ Definition of Done
   - [NEXT] Event Details content polish (chips, organizer/actions cohesion)
   - [TODO] Account unification (glass panels + soft controls)
   - [DONE] Map filter sheet with glass + category chips
+  - [DONE] Profile route/screen/viewmodel; mentions navigate to `profile/{username}`; follow/unfollow + stats
   - [DONE] Inbox glass header + unread badge + empty state
   - [DONE] Tickets: ticket card with perforation + barcode glass slot
   - [NEXT] Upload/Recaps step panels polish

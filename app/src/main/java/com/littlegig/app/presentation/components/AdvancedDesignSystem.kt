@@ -269,37 +269,27 @@ fun LiquidGlassBottomNavigation(
                 .padding(bottom = 64.dp) // Raise higher above system nav
         ) {
         // GLASSMORPHIC PILL WITH PROPER VISIBILITY
-        Surface(
+        RefractionBorder(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(88.dp)
-                .graphicsLayer { clip = true; shape = RoundedCornerShape(28.dp) }
-                .glassmorphicBackground(
-                    hazeState = hazeState,
-                    alpha = if (isDark) 0.6f else 0.75f,
-                    tint = if (isDark) Color.White.copy(alpha = 0.06f) else Color.White.copy(alpha = 0.12f),
-                    blurRadius = 24.dp
-                )
-                .border(
-                    width = 1.dp,
-                    brush = Brush.linearGradient(
-                        colors = if (isDark) listOf(
-                            Color.White.copy(alpha = 0.18f),
-                            Color.Transparent,
-                            Color.White.copy(alpha = 0.10f)
-                        ) else listOf(
-                            Color.White.copy(alpha = 0.55f),
-                            Color.Transparent,
-                            Color.White.copy(alpha = 0.25f)
-                        ),
-                        start = Offset(0f, 0f),
-                        end = Offset(1000f, 1000f)
-                    ),
-                    shape = RoundedCornerShape(28.dp)
-                ),
-            shape = RoundedCornerShape(28.dp),
-            color = Color.Transparent
+                .height(88.dp),
+            cornerRadius = 28.dp,
+            intensity = 0.35f
         ) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(88.dp)
+                    .graphicsLayer { clip = true; shape = RoundedCornerShape(28.dp) }
+                    .glassmorphicBackground(
+                        hazeState = hazeState,
+                        alpha = if (isDark) 0.6f else 0.75f,
+                        tint = if (isDark) Color.White.copy(alpha = 0.06f) else Color.White.copy(alpha = 0.12f),
+                        blurRadius = 24.dp
+                    ),
+                shape = RoundedCornerShape(28.dp),
+                color = Color.Transparent
+            ) {
             // Clean navigation content - no extra backgrounds needed since blur handles it
             
             // Navigation items with proper spacing
@@ -335,6 +325,7 @@ fun LiquidGlassBottomNavigation(
                         }
                     }
                 }
+            }
             }
         }
     }
@@ -1501,10 +1492,22 @@ fun GlassEmptyState(
 fun RefractionBorder(modifier: Modifier = Modifier, cornerRadius: Dp = 24.dp, intensity: Float = 0.35f, content: @Composable () -> Unit) {
     val isDark = isSystemInDarkTheme()
     val shape = RoundedCornerShape(cornerRadius)
-    val borderColor = if (isDark) Color.White.copy(alpha = 0.12f) else Color.Black.copy(alpha = 0.08f)
-    // Fallback simple border; AGSL shader can be added in a follow-up when device supports RuntimeShader
+    // Gradient-like border to simulate refraction; safe on all devices
+    val brush = Brush.linearGradient(
+        colors = if (isDark) listOf(
+            Color.White.copy(alpha = 0.18f),
+            Color.Transparent,
+            Color.White.copy(alpha = 0.10f)
+        ) else listOf(
+            Color.White.copy(alpha = 0.55f),
+            Color.Transparent,
+            Color.White.copy(alpha = 0.25f)
+        ),
+        start = Offset(0f, 0f),
+        end = Offset(1000f, 1000f)
+    )
     Surface(
-        modifier = modifier.clip(shape).border(BorderStroke(1.dp, borderColor), shape = shape),
+        modifier = modifier.clip(shape).border(BorderStroke(1.dp, brush), shape = shape),
         shape = shape,
         color = Color.Transparent
     ) { content() }
