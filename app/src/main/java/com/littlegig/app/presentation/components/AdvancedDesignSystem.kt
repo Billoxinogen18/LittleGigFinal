@@ -273,13 +273,13 @@ fun LiquidGlassBottomNavigation(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(88.dp)
+                .graphicsLayer { clip = true; shape = RoundedCornerShape(28.dp) }
                 .glassmorphicBackground(
                     hazeState = hazeState,
                     alpha = if (isDark) 0.6f else 0.75f,
                     tint = if (isDark) Color.White.copy(alpha = 0.06f) else Color.White.copy(alpha = 0.12f),
                     blurRadius = 24.dp
                 )
-                .clip(RoundedCornerShape(28.dp))
                 .drawBehind {
                     // Neumorphic shadow for elevation
                     drawRoundRect(

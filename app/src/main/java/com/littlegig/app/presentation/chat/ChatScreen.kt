@@ -342,8 +342,8 @@ fun ChatScreen(
                             }
                         }
                     }
-                    // Main Users list (not searching) when we have users
-                    !showSearch && allUsers.isNotEmpty() -> {
+                    // Main Users list (not searching) only when there are no chats
+                    !showSearch && chats.isEmpty() && allUsers.isNotEmpty() -> {
                         AdvancedGlassmorphicCard {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
