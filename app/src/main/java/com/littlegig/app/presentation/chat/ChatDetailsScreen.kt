@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.platform.ClipboardManager
@@ -35,8 +36,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.littlegig.app.presentation.components.*
-import com.littlegig.app.presentation.components.ChatDateHeader
-import com.littlegig.app.presentation.components.SendingShimmerBubble
 import com.littlegig.app.presentation.theme.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
@@ -103,314 +102,192 @@ fun ChatDetailsScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                if (isDark) {
-                    androidx.compose.ui.graphics.Brush.verticalGradient(
-                        colors = listOf(
+                brush = Brush.verticalGradient(
+                    colors = if (isDark) {
+                        listOf(
                             DarkBackground,
-                            DarkSurface
+                            DarkBackground.copy(alpha = 0.95f)
                         )
-                    )
-                } else {
-                    androidx.compose.ui.graphics.Brush.verticalGradient(
-                        colors = listOf(
+                    } else {
+                        listOf(
                             LightBackground,
-                            LightSurface
+                            LightBackground.copy(alpha = 0.95f)
                         )
-                    )
-                }
+                    }
+                )
             )
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            AdvancedNeumorphicCard {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(
-                        onClick = { navController.popBackStack() }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(LittleGigPrimary.copy(alpha = 0.1f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        when (chat?.chatType) {
-                            com.littlegig.app.data.model.ChatType.DIRECT -> Icon(Icons.Default.Person, contentDescription = null, tint = LittleGigPrimary)
-                            com.littlegig.app.data.model.ChatType.GROUP -> Icon(Icons.Default.Group, contentDescription = null, tint = LittleGigPrimary)
-                            com.littlegig.app.data.model.ChatType.EVENT -> Icon(Icons.Default.Event, contentDescription = null, tint = LittleGigPrimary)
-                            else -> Icon(Icons.Default.Chat, contentDescription = null, tint = LittleGigPrimary)
-                        }
-                    }
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = chat?.name ?: "Chat",
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = "${chat?.participants?.size ?: 0} participants",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    IconButton(onClick = { searchOpen = !searchOpen }) {
-                        Icon(Icons.Default.Search, contentDescription = "Search in chat", tint = LittleGigPrimary)
-                    }
-                }
-            }
-            if (searchOpen) {
-                val uiScope = rememberCoroutineScope()
-                Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    OutlinedTextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
-                        placeholder = { Text("Find in chat...") },
-                        modifier = Modifier.weight(1f)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(text = if (matchPositions.isNotEmpty()) "${currentMatchIndex + 1}/${matchPositions.size}" else "0/0", style = MaterialTheme.typography.labelMedium)
-                    IconButton(onClick = {
-                        if (matchPositions.isNotEmpty()) {
-                            currentMatchIndex = (currentMatchIndex - 1 + matchPositions.size) % matchPositions.size
-                            val pos = matchPositions[currentMatchIndex]
-                            uiScope.launch { listState.animateScrollToItem(pos) }
-                        }
-                    }) { Icon(Icons.Default.ArrowUpward, contentDescription = "Prev") }
-                    IconButton(onClick = {
-                        if (matchPositions.isNotEmpty()) {
-                            currentMatchIndex = (currentMatchIndex + 1) % matchPositions.size
-                            val pos = matchPositions[currentMatchIndex]
-                            uiScope.launch { listState.animateScrollToItem(pos) }
-                        }
-                    }) { Icon(Icons.Default.ArrowDownward, contentDescription = "Next") }
-                }
-            }
+            // Glassmorphic Header
+            GlassmorphicChatHeader(
+                title = chat?.name ?: "Chat",
+                subtitle = chat?.participants?.size?.let { "$it participants" },
+                avatarUrl = null, // Would need to get from participants list
+                isOnline = true,
+                onBackClick = { navController.navigateUp() },
+                onMoreClick = { /* Show chat options */ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
 
-            var lastDate: String? = null
+            // Messages List
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(bottom = 96.dp),
+                    .padding(horizontal = 16.dp),
                 state = listState,
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-                contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(messages) { message ->
-                    val dateText = java.text.SimpleDateFormat("MMM d, yyyy").format(java.util.Date(message.timestamp))
-                    if (dateText != lastDate) {
-                        lastDate = dateText
-                        ChatDateHeader(dateText = dateText, modifier = Modifier.padding(vertical = 8.dp))
-                    }
-                    // mark last incoming as read
-                    if (message.senderId != viewModel.currentUserId) viewModel.markAsReadIfNeeded(chatId, message)
-                    if (message.senderId != viewModel.currentUserId) viewModel.markAsDeliveredIfNeeded(chatId, message)
-                    val isTicketShare = message.messageType == com.littlegig.app.data.model.MessageType.TICKET_SHARE && message.sharedTicket != null
-                    var offsetX by remember(message.id) { mutableStateOf(0f) }
-                    val animatedOffset by animateFloatAsState(targetValue = offsetX, label = "swipe_offset")
-                    Box(modifier = Modifier
-                        .offset { IntOffset(animatedOffset.roundToInt(), 0) }
-                        .pointerInput(Unit) {
-                            detectDragGestures(
-                                onDragEnd = {
-                                    if (offsetX > 120f) {
-                                        viewModel.chooseReplyTarget(message)
-                                    }
-                                    offsetX = 0f
-                                },
-                                onDrag = { change, dragAmount ->
-                                    change.consume()
-                                    val (dx, _) = dragAmount
-                                    if (dx > 0) offsetX = (offsetX + dx).coerceAtMost(180f)
+                    GlassmorphicChatBubble(
+                        message = message,
+                        isFromCurrentUser = message.senderId == viewModel.currentUserId,
+                        onReact = { messageId, emoji ->
+                            viewModel.toggleReaction(chatId, messageId, emoji)
+                        },
+                        onLongPress = { messageId ->
+                            actionSheetFor = messages.find { it.id == messageId }
+                        },
+                        onMentionClick = { username ->
+                            navController.navigate("profile/$username")
+                        },
+                        onShareTicket = { sharedTicket ->
+                            viewModel.redeemTicket(chatId, message.id, sharedTicket.ticketId)
+                        },
+                        onReplyReferenceClick = { replyToId ->
+                            val replyIndex = messages.indexOfFirst { it.id == replyToId }
+                            if (replyIndex != -1) {
+                                uiScope.launch {
+                                    listState.animateScrollToItem(replyIndex)
                                 }
-                            )
-                        }
-                    ) {
-                    if (isTicketShare) {
-                        TicketShareBubble(
-                            messageId = message.id,
-                            ticket = message.sharedTicket!!,
-                            onRedeem = { mid, tid -> viewModel.redeemTicket(chatId, mid, tid) }
+                            }
+                        },
+                        searchQuery = searchQuery
+                    )
+                }
+                
+                // Typing indicator
+                if (typing.isNotEmpty()) {
+                    item {
+                        GlassmorphicTypingIndicator(
+                            isVisible = true,
+                            modifier = Modifier.padding(start = 8.dp, end = 48.dp)
                         )
-                    } else {
-                        NeumorphicChatBubble(
-                            message = message,
-                            isFromCurrentUser = message.senderId == viewModel.currentUserId,
-                            onReact = { msgId, emoji -> viewModel.toggleReaction(chatId, msgId, emoji) },
-                            onLongPress = { actionSheetFor = message },
-                            onMentionClick = { username -> navController.navigate("profile/$username") },
-                            onShareTicket = { /* no-op */ },
-                            onReplyReferenceClick = { refId ->
-                                val index = messages.indexOfFirst { it.id == refId }
-                                if (index >= 0) {
-                                    uiScope.launch { listState.animateScrollToItem(index) }
-                                }
-                            },
-                            searchQuery = if (searchOpen) searchQuery else null,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        // Remove pending shimmer to avoid confusing clocks; messages are persisted immediately
-                    }
                     }
                 }
             }
 
-            // typing indicator
-            if (typing.isNotEmpty()) {
-                val indicators = typing.map { userName -> ModelTypingIndicator(userName = userName, isTyping = true) }
-                NeumorphicTypingIndicator(typingUsers = indicators, modifier = Modifier.align(Alignment.Start))
-            }
-
-            // reply preview above input
-            viewModel.replyTarget?.let { target ->
-                AdvancedGlassmorphicCard(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth()
-                ) {
-                    Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Reply, contentDescription = null, tint = LittleGigPrimary)
-                        Spacer(Modifier.width(8.dp))
-                        Column(Modifier.weight(1f)) {
-                            Text(text = target.senderName, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text(text = target.content.take(80), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
-                        }
-                        IconButton(onClick = { viewModel.clearReplyTarget() }) { Icon(Icons.Default.Close, contentDescription = null) }
-                    }
-                }
-                Spacer(Modifier.height(8.dp))
-            }
-
-            if (actionSheetFor != null) {
-                val m = actionSheetFor!!
-                ModalBottomSheet(onDismissRequest = { actionSheetFor = null }) {
-                    Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TextButton(onClick = { viewModel.chooseReplyTarget(m); actionSheetFor = null }) { Text("Reply") }
-                        TextButton(onClick = { clipboard.setText(AnnotatedString(m.content)); actionSheetFor = null }) { Text("Copy") }
-                        TextButton(onClick = { /* forward placeholder: navigate to chat picker */ actionSheetFor = null }) { Text("Forward") }
-                        if (m.senderId == viewModel.currentUserId) {
-                            TextButton(onClick = { viewModel.deleteMessage(chatId, m.id); actionSheetFor = null }) { Text("Delete", color = MaterialTheme.colorScheme.error) }
-                        }
-                    }
-                }
-            }
-
-            // Chat input anchored above the floating bottom nav pill (3dp gap)
-            NeumorphicChatInput(
+            // Glassmorphic Chat Input
+            GlassmorphicChatInput(
                 message = messageText,
-                onMessageChange = {
-                    messageText = it
-                    // typing indicator updates could be triggered here
-                },
-                onSendMessage = {
-                    if (messageText.isNotBlank()) {
-                        viewModel.sendMessage(chatId, messageText)
+                onMessageChange = { messageText = it },
+                onSend = {
+                    if (messageText.trim().isNotEmpty()) {
+                        viewModel.sendMessage(chatId, messageText.trim())
                         messageText = ""
                     }
                 },
-                onAttachMedia = { imagePicker.launch("image/*") },
+                onAttach = { imagePicker.launch("image/*") },
                 onShareTicket = { showTicketPicker = true },
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 3.dp + 88.dp)
+                    .fillMaxWidth()
+                    .padding(16.dp)
             )
+        }
 
-            if (showTicketPicker) {
-                val ticketsVm: TicketsViewModel = hiltViewModel()
-                val ticketsState by ticketsVm.uiState.collectAsState()
-                ModalBottomSheet(onDismissRequest = { showTicketPicker = false }) {
-                    Column(Modifier.fillMaxWidth().padding(16.dp)) {
-                        Text("Share a ticket", style = MaterialTheme.typography.titleMedium)
-                        Spacer(Modifier.height(8.dp))
-                        ticketsState.tickets.forEach { t: Ticket ->
-                            AdvancedNeumorphicCard {
-                                Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                                    Column(Modifier.weight(1f)) {
-                                        Text(t.eventTitle, style = MaterialTheme.typography.bodyMedium)
-                                        Text("${t.status}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        // Search overlay
+        if (searchOpen) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    GlassmorphicInputField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = "Search messages...",
+                        leadingIcon = Icons.Default.Search,
+                        trailingIcon = Icons.Default.Close,
+                        onTrailingIconClick = { searchOpen = false },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    
+                    if (searchQuery.isNotEmpty() && matchPositions.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        GlassmorphicCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            cornerRadius = 16.dp,
+                            alpha = if (isDark) 0.8f else 0.9f
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "${currentMatchIndex + 1} of ${matchPositions.size}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = if (isDark) Color.White else Color.Black
+                                )
+                                
+                                Row {
+                                    GlassmorphicButton(
+                                        onClick = {
+                                            if (currentMatchIndex > 0) {
+                                                currentMatchIndex--
+                                                val targetIndex = matchPositions[currentMatchIndex]
+                                                uiScope.launch {
+                                                    listState.animateScrollToItem(targetIndex)
+                                                }
+                                            }
+                                        },
+                                        enabled = currentMatchIndex > 0,
+                                        cornerRadius = 20.dp
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.KeyboardArrowUp,
+                                            contentDescription = "Previous",
+                                            tint = if (currentMatchIndex > 0) LittleGigPrimary else Color.Gray,
+                                            modifier = Modifier.size(20.dp)
+                                        )
                                     }
-                                    TextButton(onClick = {
-                                        viewModel.shareTicketToChat(chatId, t)
-                                        showTicketPicker = false
-                                    }) { Text("Share") }
+                                    
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    
+                                    GlassmorphicButton(
+                                        onClick = {
+                                            if (currentMatchIndex < matchPositions.size - 1) {
+                                                currentMatchIndex++
+                                                val targetIndex = matchPositions[currentMatchIndex]
+                                                uiScope.launch {
+                                                    listState.animateScrollToItem(targetIndex)
+                                                }
+                                            }
+                                        },
+                                        enabled = currentMatchIndex < matchPositions.size - 1,
+                                        cornerRadius = 20.dp
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.KeyboardArrowDown,
+                                            contentDescription = "Next",
+                                            tint = if (currentMatchIndex < matchPositions.size - 1) LittleGigPrimary else Color.Gray,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
                                 }
                             }
-                            Spacer(Modifier.height(8.dp))
-                        }
-                        if (ticketsState.tickets.isEmpty()) {
-                            ChatBubbleSkeleton(isMe = true)
-                            ChatBubbleSkeleton(isMe = false)
-                        }
-                    }
-                }
-            }
-        }
-
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f)),
-                contentAlignment = Alignment.Center
-            ) {
-                LoadingPulseAnimation {
-                    CircularProgressIndicator(
-                        color = LittleGigPrimary,
-                        modifier = Modifier.size(48.dp)
-                    )
-                }
-            }
-        }
-
-        if (uiState.error != null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f)),
-                contentAlignment = Alignment.Center
-            ) {
-                AdvancedNeumorphicCard(
-                    modifier = Modifier.padding(32.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Error,
-                            contentDescription = null,
-                            tint = Color(0xFFEF4444),
-                            modifier = Modifier.size(48.dp)
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Error",
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                            color = Color(0xFFEF4444)
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = uiState.error ?: "An error occurred",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        HapticButton(onClick = { viewModel.clearError() }) {
-                            AdvancedNeumorphicCard { Text(text = "Retry", modifier = Modifier.padding(16.dp), color = LittleGigPrimary) }
                         }
                     }
                 }

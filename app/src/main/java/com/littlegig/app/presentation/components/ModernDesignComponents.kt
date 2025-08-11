@@ -312,11 +312,4 @@ private fun DrawScope.drawModernNeumorphicShadow(
         size = size,
         cornerRadius = CornerRadius(cornerRadius)
     )
-}
-
-// Data class for navigation items
-data class BottomNavItem(
-    val route: String,
-    val label: String,
-    val icon: ImageVector
-) 
+} 

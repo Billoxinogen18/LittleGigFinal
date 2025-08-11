@@ -265,8 +265,7 @@ fun NeumorphicCircleButton(
                 drawNeumorphicShadow(
                     isDark = isDark,
                     pressed = animatedPressed > 0.5f,
-                    cornerRadius = size.toPx() / 2,
-                    isCircle = true
+                    cornerRadius = size.toPx() / 2
                 )
             },
             shape = CircleShape,
@@ -350,14 +349,13 @@ fun FrostedGlassBottomBar(
 private fun DrawScope.drawNeumorphicShadow(
     isDark: Boolean,
     pressed: Boolean,
-    cornerRadius: Float,
-    isCircle: Boolean = false
+    cornerRadius: Float
 ) {
     val shadowOffset = if (pressed) 2.dp.toPx() else 8.dp.toPx()
     val shadowBlur = if (pressed) 4.dp.toPx() else 16.dp.toPx()
     
-    val lightShadow = if (isDark) NeumorphicShadowDark else NeumorphicShadowLight
-    val darkShadow = if (isDark) NeumorphicShadowDark else NeumorphicShadowLight
+    val lightShadow = if (isDark) Color.Black.copy(alpha = 0.3f) else Color.White.copy(alpha = 0.8f)
+    val darkShadow = if (isDark) Color.Black.copy(alpha = 0.3f) else Color.Black.copy(alpha = 0.1f)
     
     // Draw dark shadow (bottom-right)
     drawRoundRect(

@@ -50,23 +50,33 @@ fun MainScreen(
     // Haze state shared for real-time blur behind bottom nav
     val hazeState = com.littlegig.app.presentation.components.rememberHazeState()
     
-    // Proper dark/light mode background
+    // Vibrant glassmorphic background inspired by reference images
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                if (isDark) {
-                    Color(0xFF0F0F23)
-                } else {
-                    Color(0xFFF8FAFC)
-                }
+                brush = Brush.verticalGradient(
+                    colors = if (isDark) {
+                        listOf(
+                            DarkBackground,
+                            DarkBackground.copy(alpha = 0.95f),
+                            DarkBackground.copy(alpha = 0.9f)
+                        )
+                    } else {
+                        listOf(
+                            LightBackground,
+                            LightBackground.copy(alpha = 0.98f),
+                            LightBackground.copy(alpha = 0.95f)
+                        )
+                    }
+                )
             )
     ) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Transparent,
             bottomBar = {
-                LiquidGlassBottomNavigation(
+                GlassmorphicBottomNavigation(
                     currentRoute = currentRoute,
                     onNavigate = { route ->
                         currentRoute = route
@@ -102,28 +112,16 @@ fun MainScreen(
                     composable("map") {
                         MapScreen(navController = navController)
                     }
-                    composable("upload") {
-                        UploadScreen(navController = navController)
-                    }
                     composable("chat") {
                         ChatScreen(navController = navController)
                     }
-                    composable("people_discovery") {
-                        com.littlegig.app.presentation.chat.PeopleDiscoveryScreen(navController = navController)
+                    composable("chat_details/{chatId}") { backStackEntry ->
+                        val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+                        ChatDetailsScreen(chatId = chatId, navController = navController)
                     }
-                    composable("inbox") {
-                        com.littlegig.app.presentation.inbox.InboxScreen()
-                    }
-                    composable("auth") {
-                        AuthScreen(
-                            onGoogleSignIn = { 
-                                val mainActivity = navController.context as? com.littlegig.app.presentation.MainActivity
-                                mainActivity?.startGoogleSignIn()
-                            },
-                            onAuthSuccess = { 
-                                navController.popBackStack()
-                            }
-                        )
+                    composable("event_details/{eventId}") { backStackEntry ->
+                        val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
+                        ModernEventDetailsScreen(eventId = eventId, navController = navController)
                     }
                     composable("account") {
                         ModernAccountScreen(
@@ -131,57 +129,46 @@ fun MainScreen(
                             onSignOut = onSignOut
                         )
                     }
-                    composable("event_details/{eventId}") { backStackEntry ->
-                        val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
-                        ModernEventDetailsScreen(
-                            eventId = eventId,
-                            navController = navController
-                        )
-                    }
-                    composable("edit_profile") {
-                        EditProfileScreen(navController = navController)
-                    }
                     composable("settings") {
                         SettingsScreen(
                             onNavigateToEditProfile = { navController.navigate("edit_profile") },
                             onNavigateToPayments = { navController.navigate("payments") },
                             onNavigateToTickets = { navController.navigate("tickets") },
-                            onGoogleSignIn = { 
-                                val mainActivity = navController.context as? com.littlegig.app.presentation.MainActivity
-                                mainActivity?.startGoogleSignIn()
-                            },
+                            onGoogleSignIn = { /* Handle Google sign in */ },
                             onNavigateBack = { navController.popBackStack() }
                         )
+                    }
+                    composable("upload") {
+                        UploadScreen(navController = navController)
                     }
                     composable("payments") {
                         PaymentsScreen(navController = navController)
                     }
-                    composable("receipts") {
-                        com.littlegig.app.presentation.payments.ReceiptsScreen(navController = navController)
-                    }
-                    composable("ticket_details/{ticketId}/{ticketCode}") { backStackEntry ->
-                        val ticketId = backStackEntry.arguments?.getString("ticketId") ?: ""
-                        val ticketCode = backStackEntry.arguments?.getString("ticketCode") ?: ""
-                        com.littlegig.app.presentation.tickets.TicketDetailsScreen(ticketId = ticketId, ticketCode = ticketCode)
-                    }
-                    composable("chat_details/{chatId}") { backStackEntry ->
-                        val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
-                        ChatDetailsScreen(
-                            chatId = chatId,
-                            navController = navController
+                    composable("auth") {
+                        AuthScreen(
+                            onAuthSuccess = { /* Handle auth success */ },
+                            onGoogleSignIn = { /* Handle Google sign in */ }
                         )
                     }
-                    composable("recaps_viewer/{eventId}") { backStackEntry ->
-                        val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
-                        com.littlegig.app.presentation.recaps.RecapsViewerScreen(eventId = eventId)
-                    }
-                    composable("recaps_upload/{eventId}") { backStackEntry ->
-                        val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
-                        com.littlegig.app.presentation.recaps.RecapsUploadScreen(navController = navController)
+                    composable("people_discovery") {
+                        com.littlegig.app.presentation.chat.PeopleDiscoveryScreen(navController = navController)
                     }
                     composable("profile/{username}") { backStackEntry ->
                         val username = backStackEntry.arguments?.getString("username") ?: ""
-                        com.littlegig.app.presentation.profile.ProfileScreen(navController = navController, username = username)
+                        com.littlegig.app.presentation.profile.ProfileScreen(
+                            navController = navController,
+                            username = username
+                        )
+                    }
+                    composable("edit_profile") {
+                        EditProfileScreen(navController = navController)
+                    }
+                    composable("inbox") {
+                        com.littlegig.app.presentation.inbox.InboxScreen()
+                    }
+                    composable("recap_viewer/{recapId}") { backStackEntry ->
+                        val recapId = backStackEntry.arguments?.getString("recapId") ?: ""
+                        com.littlegig.app.presentation.recaps.RecapsViewerScreen(eventId = recapId)
                     }
                 }
             }
