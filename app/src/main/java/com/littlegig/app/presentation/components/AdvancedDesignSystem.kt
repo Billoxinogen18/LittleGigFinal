@@ -280,13 +280,25 @@ fun LiquidGlassBottomNavigation(
                     tint = if (isDark) Color.White.copy(alpha = 0.06f) else Color.White.copy(alpha = 0.12f),
                     blurRadius = 24.dp
                 )
-                ,
+                .border(
+                    width = 1.dp,
+                    brush = Brush.linearGradient(
+                        colors = if (isDark) listOf(
+                            Color.White.copy(alpha = 0.18f),
+                            Color.Transparent,
+                            Color.White.copy(alpha = 0.10f)
+                        ) else listOf(
+                            Color.White.copy(alpha = 0.55f),
+                            Color.Transparent,
+                            Color.White.copy(alpha = 0.25f)
+                        ),
+                        start = Offset(0f, 0f),
+                        end = Offset(1000f, 1000f)
+                    ),
+                    shape = RoundedCornerShape(28.dp)
+                ),
             shape = RoundedCornerShape(28.dp),
-            color = Color.Transparent,
-            border = BorderStroke(
-                width = 1.dp,
-                color = if (isDark) Color.White.copy(alpha = 0.15f) else Color.Black.copy(alpha = 0.08f)
-            )
+            color = Color.Transparent
         ) {
             // Clean navigation content - no extra backgrounds needed since blur handles it
             

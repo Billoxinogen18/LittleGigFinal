@@ -60,7 +60,7 @@ Notes
   - Tickets wallet auto-refresh + success snackbar and quick navigate to Tickets
   - Event Details: recent recaps preview row; subscribe/unsubscribe to event topic
   - Recap upload: route wired, permission prompt, proximity verification hook
-  - Chat: reactions (per-user), mention parsing and highlighting
+  - Chat: reactions (per-user), mention parsing and highlighting; reply preview enrichment restored on send
 
 ## Build & Install
 - Build: `./gradlew assembleDebug`
@@ -236,7 +236,8 @@ Definition of Done
 
 - P0 Design System – Glassmorphism + Neumorphism
   - [DONE] Real frosted bottom navigation with shared haze state blurring content behind it
-  - [TODO] Add AGSL refraction border on supported devices; gradient border fallback on older SDKs
+  - [DONE] Gradient refraction-like border fallback applied to glass pill and panels
+  - [NEXT] Add AGSL runtime refraction shader on supported devices (runtime-gated)
   - [TODO] Tokenize light/dark glass tints, shadows, radii, motion presets
   - [TODO] Convert major panels to `LiquidGlassPanel` primitives as a reusable component
 
