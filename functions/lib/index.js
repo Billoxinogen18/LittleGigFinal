@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.seedDemoUsers = exports.cleanupOldData = exports.sendPushNotification = exports.getActiveUsersNearby = exports.updateUserLocation = exports.calculateUserRanks = exports.getPaymentHistory = exports.upgradeToBusinessAccount = exports.verifyPayment = exports.processTicketPurchase = void 0;
+exports.seedDemoUsers = exports.deleteAllUsers = exports.checkExistingUsers = exports.cleanupOldData = exports.sendPushNotification = exports.getActiveUsersNearby = exports.updateUserLocation = exports.calculateUserRanks = exports.getPaymentHistory = exports.upgradeToBusinessAccount = exports.verifyPayment = exports.processTicketPurchase = void 0;
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const axios_1 = require("axios");
@@ -383,6 +383,53 @@ exports.cleanupOldData = functions.region('us-central1').runWith({ memory: '256M
 });
 // Export chat-related callable functions
 __exportStar(require("./chat"), exports);
+// Function to check existing users and their field structure
+exports.checkExistingUsers = functions.region('us-central1').https.onCall(async (data, context) => {
+    try {
+        const usersSnapshot = await db.collection('users').limit(10).get();
+        const users = [];
+        usersSnapshot.forEach(doc => {
+            const userData = doc.data();
+            users.push({
+                id: doc.id,
+                fields: Object.keys(userData),
+                sampleData: userData
+            });
+        });
+        return {
+            success: true,
+            userCount: usersSnapshot.size,
+            users: users
+        };
+    }
+    catch (error) {
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+});
+// Function to delete all existing users (for cleanup)
+exports.deleteAllUsers = functions.region('us-central1').https.onCall(async (data, context) => {
+    try {
+        const usersSnapshot = await db.collection('users').get();
+        const batch = db.batch();
+        usersSnapshot.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+        await batch.commit();
+        return {
+            success: true,
+            deleted: usersSnapshot.size
+        };
+    }
+    catch (error) {
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+});
 exports.seedDemoUsers = functions.region('us-central1').https.onCall(async (data, context) => {
     const count = Math.max(1, Math.min(20, (data && data.count) || 10));
     const batch = db.batch();

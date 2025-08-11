@@ -431,6 +431,62 @@ export const cleanupOldData = functions.region('us-central1').runWith({ memory: 
 // Export chat-related callable functions
 export * from './chat';
 
+// Function to check existing users and their field structure
+export const checkExistingUsers = functions.region('us-central1').https.onCall(async (data, context) => {
+  try {
+    const usersSnapshot = await db.collection('users').limit(10).get();
+    const users: Array<{
+      id: string;
+      fields: string[];
+      sampleData: any;
+    }> = [];
+    
+    usersSnapshot.forEach(doc => {
+      const userData = doc.data();
+      users.push({
+        id: doc.id,
+        fields: Object.keys(userData),
+        sampleData: userData
+      });
+    });
+    
+    return { 
+      success: true, 
+      userCount: usersSnapshot.size,
+      users: users 
+    };
+  } catch (error: any) {
+    return { 
+      success: false, 
+      error: error.message 
+    };
+  }
+});
+
+// Function to delete all existing users (for cleanup)
+export const deleteAllUsers = functions.region('us-central1').https.onCall(async (data, context) => {
+  try {
+    const usersSnapshot = await db.collection('users').get();
+    const batch = db.batch();
+    
+    usersSnapshot.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+    
+    await batch.commit();
+    
+    return { 
+      success: true, 
+      deleted: usersSnapshot.size 
+    };
+  } catch (error: any) {
+    return { 
+      success: false, 
+      error: error.message 
+    };
+  }
+});
+
 export const seedDemoUsers = functions.region('us-central1').https.onCall(async (data, context) => {
   const count: number = Math.max(1, Math.min(20, (data && data.count) || 10));
   const batch = db.batch();

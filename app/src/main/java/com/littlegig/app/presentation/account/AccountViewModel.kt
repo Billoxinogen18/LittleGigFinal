@@ -463,6 +463,56 @@ class AccountViewModel @Inject constructor(
             }
         }
     }
+    
+    fun checkExistingUsers() {
+        viewModelScope.launch {
+            try {
+                _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+                
+                val result = functions.getHttpsCallable("checkExistingUsers")
+                    .call(mapOf<String, Any>())
+                    .await()
+                
+                println("🔥 DEBUG: Existing users check result: $result")
+                
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    isSuccess = true,
+                    error = null
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = "Failed to check existing users: ${e.message}"
+                )
+            }
+        }
+    }
+    
+    fun deleteAllUsers() {
+        viewModelScope.launch {
+            try {
+                _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+                
+                val result = functions.getHttpsCallable("deleteAllUsers")
+                    .call(mapOf<String, Any>())
+                    .await()
+                
+                println("🔥 DEBUG: Delete all users result: $result")
+                
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    isSuccess = true,
+                    error = null
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = "Failed to delete all users: ${e.message}"
+                )
+            }
+        }
+    }
 }
 
 data class AccountUiState(

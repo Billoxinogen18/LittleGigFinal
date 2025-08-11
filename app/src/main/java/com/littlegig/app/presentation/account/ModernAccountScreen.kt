@@ -72,6 +72,8 @@ fun ModernAccountScreen(
                 onPhoneLinkClick = { viewModel.linkAnonymousAccount() },
                 onBusinessUpgradeClick = { viewModel.upgradeToBusinessAccount() },
                 onCreateDemoUsersClick = { viewModel.createDemoUsers() },
+                onCheckExistingUsersClick = { viewModel.checkExistingUsers() },
+                onDeleteAllUsersClick = { viewModel.deleteAllUsers() },
                 onSettingsClick = { navController.navigate("settings") }
             )
             
@@ -377,6 +379,8 @@ private fun ModernAccountActions(
     onPhoneLinkClick: () -> Unit,
     onBusinessUpgradeClick: () -> Unit,
     onCreateDemoUsersClick: () -> Unit,
+    onCheckExistingUsersClick: () -> Unit,
+    onDeleteAllUsersClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
     Column(
@@ -408,6 +412,22 @@ private fun ModernAccountActions(
             title = "Create Demo Users",
             subtitle = "Add test users for chat functionality",
             onClick = onCreateDemoUsersClick
+        )
+        
+        // Debug: Check existing users
+        ModernActionButton(
+            icon = Icons.Default.Search,
+            title = "Check Existing Users",
+            subtitle = "Debug: Check what users exist in database",
+            onClick = onCheckExistingUsersClick
+        )
+        
+        // Debug: Delete all users
+        ModernActionButton(
+            icon = Icons.Default.Delete,
+            title = "Delete All Users",
+            subtitle = "Debug: Clean up database (WARNING: destructive)",
+            onClick = onDeleteAllUsersClick
         )
         
         // Settings

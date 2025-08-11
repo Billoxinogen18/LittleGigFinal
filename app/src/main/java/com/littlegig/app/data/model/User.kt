@@ -18,7 +18,8 @@ data class User(
     // Map legacy Firestore field "influencer" without creating conflicting getters
     @com.google.firebase.firestore.PropertyName("influencer")
     val influencerLegacy: Boolean? = null,
-    // Primary field used by the app
+    // Primary field used by the app - map to both "influencer" and "isInfluencer" for compatibility
+    @com.google.firebase.firestore.PropertyName("influencer")
     val isInfluencer: Boolean = false,
     val businessId: String? = null,
     val rank: UserRank = UserRank.NOVICE,
