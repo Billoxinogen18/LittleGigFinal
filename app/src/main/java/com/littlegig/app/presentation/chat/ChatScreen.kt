@@ -86,8 +86,8 @@ fun ChatScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Glassmorphic Header
-            GlassmorphicChatHeader(
+            // Liquid Glass Header
+            LiquidGlassChatHeader(
                 title = "Chat",
                 subtitle = "${chats.size} conversations",
                 onBackClick = { /* Navigation handled by parent */ },
@@ -103,7 +103,7 @@ fun ChatScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                GlassmorphicChip(
+                LiquidGlassChip(
                     text = "Conversations",
                     onClick = { showSearch = false },
                     isSelected = !showSearch,
@@ -113,7 +113,7 @@ fun ChatScreen(
                 
                 Spacer(modifier = Modifier.width(12.dp))
                 
-                GlassmorphicChip(
+                LiquidGlassChip(
                     text = "Find People",
                     onClick = { showSearch = true },
                     isSelected = showSearch,
@@ -133,7 +133,7 @@ fun ChatScreen(
                 if (showSearch) {
                     // People discovery with glassmorphic design
                     if (allUsers.isEmpty() && searchResults.isEmpty()) {
-                        GlassmorphicEmptyState(
+                        LiquidGlassEmptyState(
                             icon = Icons.Default.PersonSearch,
                             title = "Find People",
                             message = "Search for users to start conversations",
@@ -158,7 +158,7 @@ fun ChatScreen(
                                 }
                                 
                                 items(allUsers) { user ->
-                                    GlassmorphicUserCard(
+                                    LiquidGlassUserCard(
                                         user = user,
                                         onClick = {
                                             viewModel.createChatWithUser(user.id)
@@ -179,7 +179,7 @@ fun ChatScreen(
                                 }
                                 
                                 items(searchResults) { user ->
-                                    GlassmorphicUserCard(
+                                    LiquidGlassUserCard(
                                         user = user,
                                         onClick = {
                                             viewModel.createChatWithUser(user.id)
@@ -193,7 +193,7 @@ fun ChatScreen(
                 } else {
                     // Chat conversations with glassmorphic design
                     if (chats.isEmpty()) {
-                        GlassmorphicEmptyState(
+                        LiquidGlassEmptyState(
                             icon = Icons.Default.Chat,
                             title = "No Conversations",
                             message = "Start chatting with people to see your conversations here",
@@ -206,7 +206,7 @@ fun ChatScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(chats) { chat ->
-                                GlassmorphicChatCard(
+                                LiquidGlassChatCard(
                                     chat = chat,
                                     onClick = {
                                         navController.navigate("chat_details/${chat.id}")
@@ -226,7 +226,7 @@ fun ChatScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                GlassmorphicInputField(
+                LiquidGlassInputField(
                     value = searchQuery,
                     onValueChange = {
                         searchQuery = it

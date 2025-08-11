@@ -76,7 +76,7 @@ fun MainScreen(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Transparent,
             bottomBar = {
-                GlassmorphicBottomNavigation(
+                LiquidGlassBottomNavigation(
                     currentRoute = currentRoute,
                     onNavigate = { route ->
                         currentRoute = route

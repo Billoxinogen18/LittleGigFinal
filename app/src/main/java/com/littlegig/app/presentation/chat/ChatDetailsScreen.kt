@@ -120,12 +120,11 @@ fun ChatDetailsScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Glassmorphic Header
-            GlassmorphicChatHeader(
+            // Liquid Glass Header
+            LiquidGlassChatHeader(
                 title = chat?.name ?: "Chat",
                 subtitle = chat?.participants?.size?.let { "$it participants" },
                 avatarUrl = null, // Would need to get from participants list
-                isOnline = true,
                 onBackClick = { navController.navigateUp() },
                 onMoreClick = { /* Show chat options */ },
                 modifier = Modifier
@@ -143,56 +142,40 @@ fun ChatDetailsScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(messages) { message ->
-                    GlassmorphicChatBubble(
-                        message = message,
-                        isFromCurrentUser = message.senderId == viewModel.currentUserId,
-                        onReact = { messageId, emoji ->
-                            viewModel.toggleReaction(chatId, messageId, emoji)
-                        },
-                        onLongPress = { messageId ->
-                            actionSheetFor = messages.find { it.id == messageId }
-                        },
-                        onMentionClick = { username ->
-                            navController.navigate("profile/$username")
-                        },
-                        onShareTicket = { sharedTicket ->
-                            viewModel.redeemTicket(chatId, message.id, sharedTicket.ticketId)
-                        },
-                        onReplyReferenceClick = { replyToId ->
-                            val replyIndex = messages.indexOfFirst { it.id == replyToId }
-                            if (replyIndex != -1) {
-                                uiScope.launch {
-                                    listState.animateScrollToItem(replyIndex)
-                                }
-                            }
-                        },
-                        searchQuery = searchQuery
+                    LiquidGlassChatBubble(
+                        message = message.content,
+                        isFromMe = message.senderId == viewModel.currentUserId,
+                        timestamp = message.timestamp,
+                        showAvatar = true,
+                        avatarUrl = null,
+                        isRead = message.status == com.littlegig.app.data.model.MessageStatus.READ,
+                        isDelivered = message.status == com.littlegig.app.data.model.MessageStatus.DELIVERED,
+                        onLongClick = {
+                            actionSheetFor = message
+                        }
                     )
                 }
                 
                 // Typing indicator
                 if (typing.isNotEmpty()) {
                     item {
-                        GlassmorphicTypingIndicator(
-                            isVisible = true,
+                        LiquidGlassTypingIndicator(
                             modifier = Modifier.padding(start = 8.dp, end = 48.dp)
                         )
                     }
                 }
             }
 
-            // Glassmorphic Chat Input
-            GlassmorphicChatInput(
-                message = messageText,
-                onMessageChange = { messageText = it },
+            // Liquid Glass Chat Input
+            LiquidGlassChatInput(
+                value = messageText,
+                onValueChange = { messageText = it },
                 onSend = {
                     if (messageText.trim().isNotEmpty()) {
                         viewModel.sendMessage(chatId, messageText.trim())
                         messageText = ""
                     }
                 },
-                onAttach = { imagePicker.launch("image/*") },
-                onShareTicket = { showTicketPicker = true },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
