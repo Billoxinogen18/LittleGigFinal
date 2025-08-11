@@ -248,10 +248,10 @@ fun FloatingActionButton(
 fun LiquidGlassBottomNavigation(
     currentRoute: String?,
     onNavigate: (String) -> Unit,
-    inboxUnreadCount: Int = 0
+    inboxUnreadCount: Int = 0,
+    hazeState: dev.chrisbanes.haze.HazeState
 ) {
     val isDark = isSystemInDarkTheme()
-    val hazeState = com.littlegig.app.presentation.components.rememberHazeState()
     
     val items = listOf(
         BottomNavItem("events", "Events", Icons.Default.Event),
@@ -274,6 +274,12 @@ fun LiquidGlassBottomNavigation(
                 .fillMaxWidth()
                 .height(88.dp)
                 .clip(RoundedCornerShape(28.dp))
+                .glassmorphicBackground(
+                    hazeState = hazeState,
+                    alpha = if (isDark) 0.6f else 0.75f,
+                    tint = if (isDark) Color.White.copy(alpha = 0.06f) else Color.White.copy(alpha = 0.12f),
+                    blurRadius = 24.dp
+                )
                 .drawBehind {
                     // Neumorphic shadow for elevation
                     drawRoundRect(
@@ -284,7 +290,7 @@ fun LiquidGlassBottomNavigation(
                     )
                 },
             shape = RoundedCornerShape(28.dp),
-            color = if (isDark) Color(0xFF141B2E).copy(alpha = 0.7f) else Color(0xFFFFFFFF).copy(alpha = 0.8f),
+            color = Color.Transparent,
             border = BorderStroke(
                 width = 1.dp,
                 color = if (isDark) Color.White.copy(alpha = 0.15f) else Color.Black.copy(alpha = 0.08f)

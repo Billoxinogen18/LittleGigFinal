@@ -47,15 +47,18 @@ fun MainScreen(
     val unreadCount by inboxViewModel.unreadCount.collectAsState(initial = 0)
     LaunchedEffect(Unit) { inboxViewModel.load() }
     
+    // Haze state shared for real-time blur behind bottom nav
+    val hazeState = com.littlegig.app.presentation.components.rememberHazeState()
+    
     // Proper dark/light mode background
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 if (isDark) {
-                    Color(0xFF0F0F23) // Pure dark blue, no grey
+                    Color(0xFF0F0F23)
                 } else {
-                    Color(0xFFF8FAFC) // Pure light color, no grey
+                    Color(0xFFF8FAFC)
                 }
             )
     ) {
@@ -75,7 +78,8 @@ fun MainScreen(
                             restoreState = true
                         }
                     },
-                    inboxUnreadCount = unreadCount
+                    inboxUnreadCount = unreadCount,
+                    hazeState = hazeState
                 )
             }
         ) { paddingValues ->
@@ -83,6 +87,8 @@ fun MainScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
+                    // Mark content as blurrable so the bottom bar can blur it
+                    .blurrable(hazeState)
             ) {
                 NavHost(
                     navController = navController,
@@ -109,12 +115,10 @@ fun MainScreen(
                     composable("auth") {
                         AuthScreen(
                             onGoogleSignIn = { 
-                                // 🔥 REAL GOOGLE SIGN-IN HANDLING! 🔥
                                 val mainActivity = navController.context as? com.littlegig.app.presentation.MainActivity
                                 mainActivity?.startGoogleSignIn()
                             },
                             onAuthSuccess = { 
-                                // Navigate back to previous screen after successful auth
                                 navController.popBackStack()
                             }
                         )
@@ -141,7 +145,6 @@ fun MainScreen(
                             onNavigateToPayments = { navController.navigate("payments") },
                             onNavigateToTickets = { navController.navigate("tickets") },
                             onGoogleSignIn = { 
-                                // 🔥 REAL GOOGLE SIGN-IN HANDLING! 🔥
                                 val mainActivity = navController.context as? com.littlegig.app.presentation.MainActivity
                                 mainActivity?.startGoogleSignIn()
                             },
