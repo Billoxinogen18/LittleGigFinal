@@ -87,8 +87,7 @@ fun MainScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    // TEMPORARILY REMOVED BLUR TO DEBUG CHAT SCREEN
-                    // .blurrable(hazeState)
+                    .blurrable(hazeState)
             ) {
                 NavHost(
                     navController = navController,
@@ -179,6 +178,10 @@ fun MainScreen(
                     composable("recaps_upload/{eventId}") { backStackEntry ->
                         val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
                         com.littlegig.app.presentation.recaps.RecapsUploadScreen(navController = navController)
+                    }
+                    composable("profile/{username}") { backStackEntry ->
+                        val username = backStackEntry.arguments?.getString("username") ?: ""
+                        com.littlegig.app.presentation.profile.ProfileScreen(navController = navController, username = username)
                     }
                 }
             }

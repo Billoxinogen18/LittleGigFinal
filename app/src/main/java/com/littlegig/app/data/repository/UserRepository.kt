@@ -236,6 +236,20 @@ class UserRepository @Inject constructor(
         }
     }
     
+    suspend fun getUserByUsername(username: String): Result<User?> {
+        return try {
+            val q = username.trim().lowercase()
+            val snapshot = firestore.collection("users")
+                .whereEqualTo("username_lower", q)
+                .limit(1)
+                .get()
+                .await()
+            val doc = snapshot.documents.firstOrNull()
+            val user = doc?.toObject(User::class.java)?.copy(id = doc.id)
+            Result.success(user)
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
     suspend fun followUser(followerId: String, followingId: String): Result<Unit> {
         return try {
             val followerRef = firestore.collection("users").document(followerId)
