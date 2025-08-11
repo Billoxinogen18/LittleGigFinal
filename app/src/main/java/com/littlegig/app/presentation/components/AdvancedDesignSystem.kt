@@ -1457,4 +1457,66 @@ fun NeumorphicActiveNowToggle(
     }
 }
 
+// Design tokens for radii and motion
+object DesignRadii {
+    val Small = 12.dp
+    val Medium = 16.dp
+    val Large = 24.dp
+    val XLarge = 28.dp
+}
+
+object Motion {
+    val BounceSpring: SpringSpec<Float> = spring(
+        dampingRatio = Spring.DampingRatioMediumBouncy,
+        stiffness = Spring.StiffnessLow
+    )
+    val FastEase: FiniteAnimationSpec<Int> = tween(200)
+    val Shimmer: InfiniteRepeatableSpec<Float> = infiniteRepeatable(animation = tween(1500, easing = LinearEasing), repeatMode = RepeatMode.Restart)
+}
+
+@Composable
+fun GlassEmptyState(
+    icon: ImageVector,
+    title: String,
+    message: String,
+    primaryActionLabel: String? = null,
+    onPrimaryAction: (() -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    AdvancedGlassmorphicCard(modifier = modifier) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val shimmer = rememberInfiniteTransition(label = "empty_state").animateFloat(
+                initialValue = 0.6f, targetValue = 1f, animationSpec = Motion.Shimmer, label = "alpha"
+            )
+            Icon(icon, contentDescription = null, tint = LittleGigPrimary.copy(alpha = shimmer.value), modifier = Modifier.size(48.dp))
+            Spacer(Modifier.height(12.dp))
+            Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+            Spacer(Modifier.height(6.dp))
+            Text(message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (primaryActionLabel != null && onPrimaryAction != null) {
+                Spacer(Modifier.height(16.dp))
+                HapticButton(onClick = onPrimaryAction) {
+                    AdvancedNeumorphicCard { Text(primaryActionLabel, modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp), color = LittleGigPrimary) }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RefractionBorder(modifier: Modifier = Modifier, cornerRadius: Dp = 24.dp, intensity: Float = 0.35f, content: @Composable () -> Unit) {
+    val isDark = isSystemInDarkTheme()
+    val shape = RoundedCornerShape(cornerRadius)
+    val borderColor = if (isDark) Color.White.copy(alpha = 0.12f) else Color.Black.copy(alpha = 0.08f)
+    // Fallback simple border; AGSL shader can be added in a follow-up when device supports RuntimeShader
+    Surface(
+        modifier = modifier.clip(shape).border(BorderStroke(1.dp, borderColor), shape = shape),
+        shape = shape,
+        color = Color.Transparent
+    ) { content() }
+}
+
  

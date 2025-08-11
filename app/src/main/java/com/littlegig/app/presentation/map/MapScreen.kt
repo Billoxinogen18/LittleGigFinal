@@ -108,7 +108,7 @@ fun MapScreen(
             }
         }
         
-        // Header Card with neumorphic design
+        // Header Card with glass filter chips
         AdvancedGlassmorphicCard(
             modifier = Modifier
                 .fillMaxWidth()
@@ -148,6 +148,17 @@ fun MapScreen(
                         Icon(
                             imageVector = Icons.Default.MyLocation,
                             contentDescription = "My Location"
+                        )
+                    }
+                }
+                Spacer(Modifier.height(12.dp))
+                // Simple category filters
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf("Music","Food","Business","Sports").forEach { c ->
+                        FilterChip(
+                            selected = uiState.activeCategory == c,
+                            onClick = { viewModel.setCategory(c) },
+                            label = { Text(c) }
                         )
                     }
                 }

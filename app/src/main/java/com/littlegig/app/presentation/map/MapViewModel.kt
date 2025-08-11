@@ -25,6 +25,8 @@ class MapViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MapUiState())
     val uiState: StateFlow<MapUiState> = _uiState.asStateFlow()
     
+    private var allEvents: List<Event> = emptyList()
+    
     init {
         loadEventsWithLocation()
     }
@@ -33,24 +35,27 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             
-            eventRepository.getAllEvents().collect { allEvents ->
+            eventRepository.getAllEvents().collect { all ->
                 // Filter events that have valid location coordinates
-                val eventsWithLocation = allEvents.filter { event ->
+                allEvents = all.filter { event ->
                     event.location.latitude != 0.0 && event.location.longitude != 0.0
                 }
-                
-                _uiState.value = _uiState.value.copy(
-                    events = eventsWithLocation,
-                    isLoading = false
-                )
+                applyCategoryFilter(_uiState.value.activeCategory)
             }
         }
     }
     
+    private fun applyCategoryFilter(category: String?) {
+        val filtered = if (category.isNullOrBlank()) allEvents else allEvents.filter { it.category.name.equals(category, ignoreCase = true) }
+        _uiState.value = _uiState.value.copy(events = filtered, isLoading = false)
+    }
+    
+    fun setCategory(category: String?) {
+        _uiState.value = _uiState.value.copy(activeCategory = category)
+        applyCategoryFilter(category)
+    }
+    
     fun getCurrentLocation() {
-        // In a real implementation, you would request location permission
-        // and get the actual user location using LocationManager or FusedLocationProviderClient
-        // For now, we'll use a default location (Nairobi, Kenya)
         val defaultLocation = LatLng(-1.2921, 36.8219)
         _uiState.value = _uiState.value.copy(userLocation = defaultLocation)
     }
@@ -78,8 +83,8 @@ class MapViewModel @Inject constructor(
     
     fun searchEventsNearLocation(location: LatLng, radiusKm: Double = 10.0) {
         viewModelScope.launch {
-            eventRepository.getAllEvents().collect { allEvents ->
-                val nearbyEvents = allEvents.filter { event ->
+            eventRepository.getAllEvents().collect { all ->
+                val nearbyEvents = all.filter { event ->
                     if (event.location.latitude == 0.0 || event.location.longitude == 0.0) {
                         false
                     } else {
@@ -90,8 +95,8 @@ class MapViewModel @Inject constructor(
                         distance <= radiusKm
                     }
                 }
-                
-                _uiState.value = _uiState.value.copy(events = nearbyEvents)
+                allEvents = nearbyEvents
+                applyCategoryFilter(_uiState.value.activeCategory)
             }
         }
     }
@@ -100,32 +105,24 @@ class MapViewModel @Inject constructor(
         lat1: Double, lon1: Double,
         lat2: Double, lon2: Double
     ): Double {
-        val earthRadius = 6371.0 // Earth's radius in kilometers
-        
+        val earthRadius = 6371.0 // km
         val dLat = Math.toRadians(lat2 - lat1)
         val dLon = Math.toRadians(lon2 - lon1)
-        
         val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2)
-        
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-        
         return earthRadius * c
     }
     
-    fun refreshEvents() {
-        loadEventsWithLocation()
-    }
-    
-    fun clearError() {
-        _uiState.value = _uiState.value.copy(error = null)
-    }
+    fun refreshEvents() { loadEventsWithLocation() }
+    fun clearError() { _uiState.value = _uiState.value.copy(error = null) }
 }
 
 data class MapUiState(
     val events: List<Event> = emptyList(),
     val userLocation: LatLng? = null,
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val activeCategory: String? = null
 )
