@@ -141,6 +141,21 @@ fun RecapsUploadScreen(
                 }
             }
             
+            Spacer(modifier = Modifier.height(12.dp))
+            // Glass step progress - Event → Media → Caption → Location → Upload
+            val currentStep = remember(selectedEvent, selectedImages, caption, isLocationValid) {
+                var step = 1
+                if (selectedEvent != null) step = 2
+                if (selectedImages.isNotEmpty()) step = 3
+                if (caption.isNotBlank()) step = 4
+                if (isLocationValid) step = 5
+                step
+            }
+            GlassStepProgress(
+                steps = listOf("Event", "Media", "Caption", "Location", "Upload"),
+                currentStep = currentStep
+            )
+
             Spacer(modifier = Modifier.height(20.dp))
             
             // Event Selection
@@ -455,6 +470,37 @@ fun EventSelectionCard(
                 text = event.dateTime.toString(),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+} 
+
+@Composable
+private fun GlassStepProgress(steps: List<String>, currentStep: Int) {
+    AdvancedGlassmorphicCard {
+        Column(Modifier.fillMaxWidth().padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                steps.forEachIndexed { idx, label ->
+                    val active = (idx + 1) <= currentStep
+                    AssistChip(
+                        onClick = {},
+                        label = { Text(label) },
+                        leadingIcon = { if (active) Icon(Icons.Default.Check, contentDescription = null, tint = LittleGigPrimary) },
+                        enabled = false
+                    )
+                }
+            }
+            Spacer(Modifier.height(12.dp))
+            val progress = (currentStep - 1).coerceIn(0, steps.lastIndex) / steps.lastIndex.toFloat()
+            LinearProgressIndicator(
+                progress = progress,
+                modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(8.dp)),
+                color = LittleGigPrimary,
+                trackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
             )
         }
     }

@@ -93,81 +93,45 @@ fun ChatScreen(
                     .fillMaxWidth()
             ) {
                 if (showSearch) {
-                    println("🔥 DEBUG: Search mode - searchResults.size: ${searchResults.size}, allUsers.size: ${allUsers.size}")
-                    
-                    // 🔥 SUPER SIMPLE DEBUG UI - GUARANTEED VISIBLE 🔥
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Magenta.copy(alpha = 0.5f))
-                            .padding(16.dp)
-                    ) {
-                        Text(
-                            text = "🔥 SEARCH MODE ACTIVE 🔥",
-                            color = Color.White,
-                            style = MaterialTheme.typography.headlineLarge,
-                            modifier = Modifier.background(Color.Red)
+                    // People discovery inline: glass cards and chips
+                    if (allUsers.isEmpty() && searchResults.isEmpty()) {
+                        GlassEmptyState(
+                            icon = Icons.Default.PersonSearch,
+                            title = "Find people",
+                            message = "Search by name, username or phone",
+                            primaryActionLabel = "Discover",
+                            onPrimaryAction = { navController.navigate("people_discovery") },
+                            modifier = Modifier.align(Alignment.Center)
                         )
-                        
-                        if (searchResults.isNotEmpty()) {
-                            Text(
-                                text = "FOUND ${searchResults.size} RESULTS:",
-                                color = Color.White,
-                                style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier.background(Color.Blue)
-                            )
-                            
-                            LazyColumn {
-                                items(searchResults) { user ->
-                                    Card(
-                                        onClick = {
-                                            viewModel.createChatWithUser(user.id)
-                                            showSearch = false
-                                        },
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(4.dp),
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = Color.Yellow
-                                        )
-                                    ) {
-                                        Text(
-                                            text = "${user.displayName} (@${user.username})",
-                                            modifier = Modifier.padding(16.dp),
-                                            color = Color.Black,
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
-                                    }
-                                }
-                            }
-                        } else {
-                            Text(
-                                text = "SHOWING ${allUsers.size} ALL USERS:",
-                                color = Color.White,
-                                style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier.background(Color.Green)
-                            )
-                            
-                            LazyColumn {
-                                items(allUsers.take(10)) { user -> // Only show first 10 for debug
-                                    Card(
-                                        onClick = {
-                                            viewModel.createChatWithUser(user.id)
-                                            showSearch = false
-                                        },
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(4.dp),
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = Color.Cyan
-                                        )
-                                    ) {
-                                        Text(
-                                            text = "${user.displayName} (@${user.username})",
-                                            modifier = Modifier.padding(16.dp),
-                                            color = Color.Black,
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
+                    } else {
+                        AdvancedGlassmorphicCard {
+                            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                                val itemsSrc = if (searchQuery.isNotBlank()) searchResults else allUsers
+                                items(itemsSrc) { user ->
+                                    Surface(onClick = {
+                                        viewModel.createChatWithUser(user.id)
+                                        showSearch = false
+                                    }, color = Color.Transparent) {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(12.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Box(
+                                                modifier = Modifier.size(40.dp).clip(CircleShape)
+                                                    .background(LittleGigPrimary.copy(alpha = 0.15f)),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Text(user.displayName.firstOrNull()?.uppercase() ?: "?")
+                                            }
+                                            Spacer(Modifier.width(12.dp))
+                                            Column(Modifier.weight(1f)) {
+                                                Text(user.displayName, style = MaterialTheme.typography.bodyMedium)
+                                                Text("@${user.username}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            }
+                                            AssistChip(onClick = { }, label = { Text("Chat") })
+                                        }
                                     }
                                 }
                             }
