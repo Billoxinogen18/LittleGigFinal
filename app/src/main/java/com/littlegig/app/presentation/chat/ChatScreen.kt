@@ -60,7 +60,7 @@ fun ChatScreen(
     val context = LocalContext.current
     var showSearch by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-    var showContactsOnly by remember { mutableStateOf(true) }
+    var showContactsOnly by remember { mutableStateOf(false) }
 
     LaunchedEffect(contactsUsers.size, allUsers.size) {
         Timber.i("ChatSearch counts: contacts=${contactsUsers.size}, all=${allUsers.size}")
