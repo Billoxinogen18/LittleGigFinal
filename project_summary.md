@@ -133,7 +133,9 @@
   - [NEXT] Event Details content polish (chips, organizer/actions cohesion)
   - [TODO] Account unification (glass panels + soft controls)
   - [DONE] Map filter sheet with glass + category chips
-  - [TODO] Inbox glass and badges; Tickets/Receipts ticket card styles; Upload/Recaps step panels
+  - [DONE] Inbox glass header + unread badge + empty state
+  - [DONE] Tickets: ticket card with perforation + barcode glass slot
+  - [NEXT] Upload/Recaps step panels polish
 
 - Phase 4 — Accessibility, Performance, and Polish
   - [TODO] Contrast, TalkBack labels, large-text tests
