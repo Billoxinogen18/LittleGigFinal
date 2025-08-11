@@ -109,6 +109,9 @@ fun MainScreen(
                     composable("chat") {
                         ChatScreen(navController = navController)
                     }
+                    composable("people_discovery") {
+                        com.littlegig.app.presentation.chat.PeopleDiscoveryScreen(navController = navController)
+                    }
                     composable("inbox") {
                         com.littlegig.app.presentation.inbox.InboxScreen()
                     }

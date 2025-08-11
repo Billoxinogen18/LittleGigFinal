@@ -151,19 +151,7 @@ fun ChatScreen(
                             
                             IconButton(
                                 onClick = { 
-                                    showSearch = true
-                                    viewModel.startNewChat() 
-                                    val hasPermission = ContextCompat.checkSelfPermission(
-                                        context, Manifest.permission.READ_CONTACTS
-                                    ) == PackageManager.PERMISSION_GRANTED
-                                    if (hasPermission) {
-                                        val phones = fetchPhoneNumbersFromContacts(context)
-                                        viewModel.loadContacts(phones)
-                                    } else {
-                                        permissionLauncher.launch(Manifest.permission.READ_CONTACTS)
-                                    }
-                                    // Always load all users in parallel for the toggle
-                                    viewModel.loadAllUsers()
+                                    navController.navigate("people_discovery")
                                 }
                             ) {
                                 Icon(
@@ -704,26 +692,24 @@ fun ChatScreen(
     }
 }
 
-private fun fetchPhoneNumbersFromContacts(context: android.content.Context): List<String> {
+fun fetchPhoneNumbersFromContacts(context: android.content.Context): List<String> {
     val phones = mutableSetOf<String>()
     val resolver = context.contentResolver
-    val projection = arrayOf(
-        ContactsContract.CommonDataKinds.Phone.NUMBER
-    )
     val cursor = resolver.query(
-        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-        projection,
+        android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        arrayOf(
+            android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER
+        ),
         null,
         null,
         null
     )
-    cursor?.use {
-        val idx = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-        while (it.moveToNext()) {
-            val raw = it.getString(idx) ?: continue
-            val normalized = raw.filter { ch -> ch.isDigit() || ch == '+' }
-            if (normalized.isNotBlank()) phones.add(normalized)
+    if (cursor != null) {
+        while (cursor.moveToNext()) {
+            val phone = cursor.getString(0)
+            if (!phone.isNullOrBlank()) phones.add(phone)
         }
+        cursor.close()
     }
     return phones.toList()
 }
