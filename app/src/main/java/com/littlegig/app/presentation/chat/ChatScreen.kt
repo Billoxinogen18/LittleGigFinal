@@ -342,43 +342,27 @@ fun ChatScreen(
                             }
                         }
                     }
-                    // Main Users (not searching) and non-empty
-                    !showSearch && (if (showContactsOnly) contactsUsers else allUsers).isNotEmpty() -> {
-                        val mainDisplayedUsers = remember(contactsUsers, allUsers, showContactsOnly) {
-                            if (showContactsOnly) contactsUsers else allUsers
-                        }
+                    // Main Users list (not searching) when we have users
+                    !showSearch && allUsers.isNotEmpty() -> {
                         AdvancedGlassmorphicCard {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = if (showContactsOnly) "Your Contacts" else "All Users",
-                                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                    HapticButton(onClick = { showContactsOnly = !showContactsOnly }) {
-                                        Text(
-                                            text = if (showContactsOnly) "Show All" else "Show Contacts",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = LittleGigPrimary
-                                        )
-                                    }
-                                }
+                                Text(
+                                    text = "People on LittleGig",
+                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
                                 Spacer(modifier = Modifier.height(12.dp))
                                 val userListState = rememberLazyListState()
                                 LaunchedEffect(userListState) {
                                     snapshotFlow { userListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index to userListState.layoutInfo.totalItemsCount }
                                         .collect { (last, total) ->
-                                            if (last != null && total > 0 && last >= total - 3 && !showContactsOnly) {
+                                            if (last != null && total > 0 && last >= total - 3) {
                                                 viewModel.loadMoreAllUsers()
                                             }
                                         }
                                 }
                                 LazyColumn(state = userListState, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    items(mainDisplayedUsers) { user ->
+                                    items(allUsers) { user ->
                                         HapticButton(onClick = { viewModel.createChatWithUser(user.id) }) {
                                             AdvancedNeumorphicCard(modifier = Modifier.fillMaxWidth()) {
                                                 Row(
@@ -387,7 +371,6 @@ fun ChatScreen(
                                                         .padding(12.dp),
                                                     verticalAlignment = Alignment.CenterVertically
                                                 ) {
-                                                    // User Avatar
                                                     Box(
                                                         modifier = Modifier
                                                             .size(40.dp)
@@ -411,32 +394,18 @@ fun ChatScreen(
                                                             )
                                                         }
                                                     }
-                                                    
                                                     Spacer(modifier = Modifier.width(12.dp))
-                                                    
                                                     Column(modifier = Modifier.weight(1f)) {
                                                         Text(
                                                             text = user.displayName.ifEmpty { user.name },
-                                                            style = MaterialTheme.typography.bodyLarge.copy(
-                                                                fontWeight = FontWeight.Medium
-                                                            ),
+                                                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
                                                             color = MaterialTheme.colorScheme.onSurface
                                                         )
-                                                        
                                                         Text(
-                                                            text = user.email,
+                                                            text = "@${user.username}",
                                                             style = MaterialTheme.typography.bodySmall,
                                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                                         )
-                                                    }
-                                                    
-                                                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                                        IconButton(onClick = { viewModel.blockUser(user.id) }) {
-                                                            Icon(Icons.Default.Block, contentDescription = "Block", tint = MaterialTheme.colorScheme.error)
-                                                        }
-                                                        IconButton(onClick = { viewModel.reportUser(user.id, "abuse") }) {
-                                                            Icon(Icons.Default.Report, contentDescription = "Report", tint = MaterialTheme.colorScheme.tertiary)
-                                                        }
                                                     }
                                                 }
                                             }
