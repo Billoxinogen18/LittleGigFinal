@@ -123,15 +123,17 @@
   - [TODO] Contacts discovery as separate screen
 
 - Phase 2 — Design System Hardening
-  - [TODO] Tokenize glass/neumorphic (light/dark tints, borders, radii, motion)
-  - [TODO] AGSL refraction borders + fallbacks
-  - [TODO] Standard `GlassEmptyState` and shimmer/pulse loaders
+  - [DONE] Tokenize radii & motion; initial glass utilities
+  - [DONE] Refraction border fallback (AGSL-ready placeholder)
+  - [DONE] Standard `GlassEmptyState` with shimmer/pulse
+  - [NEXT] Promote tokens into all screens; introduce AGSL runtime shader when supported
 
 - Phase 3 — Screen Overhauls (No functional removal)
   - [DONE] Event Details header uplift (scrim + glass overlay)
   - [NEXT] Event Details content polish (chips, organizer/actions cohesion)
   - [TODO] Account unification (glass panels + soft controls)
-  - [TODO] Inbox glass and badges; Tickets/Receipts ticket card styles; Map filter sheet; Upload/Recaps step panels
+  - [DONE] Map filter sheet with glass + category chips
+  - [TODO] Inbox glass and badges; Tickets/Receipts ticket card styles; Upload/Recaps step panels
 
 - Phase 4 — Accessibility, Performance, and Polish
   - [TODO] Contrast, TalkBack labels, large-text tests
