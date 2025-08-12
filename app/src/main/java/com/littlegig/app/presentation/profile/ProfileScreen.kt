@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.littlegig.app.presentation.components.AdvancedGlassmorphicCard
+import com.littlegig.app.presentation.components.AdvancedLiquidGlassCard
 import com.littlegig.app.presentation.components.AdvancedNeumorphicCard
 import com.littlegig.app.presentation.components.HapticButton
 import com.littlegig.app.presentation.theme.LittleGigPrimary
@@ -59,7 +59,7 @@ fun ProfileScreen(
             }
         }
         Spacer(Modifier.height(16.dp))
-        AdvancedGlassmorphicCard {
+        AdvancedLiquidGlassCard {
             Column(Modifier.fillMaxWidth().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 AsyncImage(
                     model = user?.profileImageUrl,

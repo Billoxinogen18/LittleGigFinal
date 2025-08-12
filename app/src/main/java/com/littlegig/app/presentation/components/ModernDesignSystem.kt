@@ -79,7 +79,7 @@ fun GlassOnSurfaceVariant(): Color {
  * Modern Glassmorphic Card with backdrop blur effect
  */
 @Composable
-fun ModernGlassmorphicCard(
+fun ModernLiquidGlassCard(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     shape: RoundedCornerShape = RoundedCornerShape(24.dp),
@@ -188,7 +188,7 @@ fun NeumorphicButton(
 fun GlassFAB(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    icon: ImageVector = Icons.Default.Add,
+    
     containerColor: Color = GlassPrimary,
     contentColor: Color = Color.White
 ) {
@@ -254,7 +254,7 @@ fun ModernEventCard(
     badge: String? = null,
     attendeeCount: Int? = null
 ) {
-    ModernGlassmorphicCard(
+    ModernLiquidGlassCard(
         modifier = modifier
             .fillMaxWidth()
             .height(280.dp),
@@ -302,7 +302,7 @@ fun ModernEventCard(
                     verticalAlignment = Alignment.Top
                 ) {
                     badge?.let {
-                        ModernGlassmorphicCard(
+                        ModernLiquidGlassCard(
                             shape = RoundedCornerShape(12.dp)
                         ) {
                             Text(
@@ -375,7 +375,7 @@ fun ModernBottomNavigation(
     onItemSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ModernGlassmorphicCard(
+    ModernLiquidGlassCard(
         modifier = modifier
             .fillMaxWidth()
             .height(80.dp),
@@ -402,7 +402,7 @@ fun ModernBottomNavigation(
 @Composable
 private fun BottomNavIcon(
     item: ModernBottomNavItem,
-    isSelected: Boolean,
+    
     onClick: () -> Unit
 ) {
     val animatedScale by animateFloatAsState(
@@ -453,7 +453,7 @@ private fun BottomNavIcon(
 data class ModernBottomNavItem(
     val route: String,
     val label: String,
-    val icon: ImageVector,
+    val 
     val badgeCount: Int = 0
 )
 

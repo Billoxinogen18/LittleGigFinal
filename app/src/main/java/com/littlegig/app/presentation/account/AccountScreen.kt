@@ -387,7 +387,7 @@ fun LegacyAccountScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountMenuItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    
     title: String,
     subtitle: String,
     onClick: () -> Unit,

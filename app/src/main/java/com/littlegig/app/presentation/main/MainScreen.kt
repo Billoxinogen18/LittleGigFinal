@@ -20,7 +20,7 @@ import com.littlegig.app.presentation.account.EditProfileScreen
 import com.littlegig.app.presentation.chat.ChatDetailsScreen
 import com.littlegig.app.presentation.chat.ChatScreen
 import com.littlegig.app.presentation.components.*
-import com.littlegig.app.presentation.components.blurrable
+
 import com.littlegig.app.presentation.events.EventsScreen
 import com.littlegig.app.presentation.events.ModernEventsScreen
 import com.littlegig.app.presentation.events.EventDetailsScreen
@@ -47,8 +47,7 @@ fun MainScreen(
     val unreadCount by inboxViewModel.unreadCount.collectAsState(initial = 0)
     LaunchedEffect(Unit) { inboxViewModel.load() }
     
-    // Haze state shared for real-time blur behind bottom nav
-    val hazeState = com.littlegig.app.presentation.components.rememberHazeState()
+
     
     // Vibrant glassmorphic background inspired by reference images
     Box(
@@ -88,8 +87,7 @@ fun MainScreen(
                             restoreState = true
                         }
                     },
-                    inboxUnreadCount = unreadCount,
-                    hazeState = hazeState
+                    inboxUnreadCount = unreadCount
                 )
             }
         ) { paddingValues ->

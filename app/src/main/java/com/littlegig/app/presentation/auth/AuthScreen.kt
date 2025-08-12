@@ -124,7 +124,7 @@ fun AuthScreen(
             Spacer(modifier = Modifier.height(48.dp))
             
             // Toggle between Sign Up and Sign In wrapped in glass
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -170,7 +170,7 @@ fun AuthScreen(
             Spacer(modifier = Modifier.height(32.dp))
             
             // Form Fields in a glass card
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -336,7 +336,7 @@ fun AuthScreen(
             // Anonymous account linking section
             currentUser?.let { user ->
                 if (user.email.isEmpty()) {
-                    AdvancedGlassmorphicCard {
+                    AdvancedLiquidGlassCard {
                         Column(
                             modifier = Modifier.padding(20.dp)
                         ) {
@@ -508,7 +508,7 @@ fun FloatingOrbs() {
                         )
                     )
                 )
-                .blur(2.dp)
+                
         )
     }
 }
@@ -609,7 +609,7 @@ fun NeumorphicTextField(
 @Composable
 fun NeumorphicChip(
     onClick: () -> Unit,
-    isSelected: Boolean,
+    
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {

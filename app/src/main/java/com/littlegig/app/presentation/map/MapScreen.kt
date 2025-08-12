@@ -109,7 +109,7 @@ fun MapScreen(
         }
         
         // Header Card with glass filter chips
-        AdvancedGlassmorphicCard(
+        AdvancedLiquidGlassCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)

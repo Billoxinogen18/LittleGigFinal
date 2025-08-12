@@ -233,7 +233,7 @@ fun LiquidGlassAccountScreen(
             
             item {
                 // Account Settings section with neumorphic header
-                AdvancedGlassmorphicCard {
+                AdvancedLiquidGlassCard {
                     Column(
                         modifier = Modifier.padding(20.dp)
                     ) {
@@ -294,7 +294,7 @@ fun LiquidGlassAccountScreen(
             
             item {
                 // General section with neumorphic header
-                AdvancedGlassmorphicCard {
+                AdvancedLiquidGlassCard {
                     Column(
                         modifier = Modifier.padding(20.dp)
                     ) {
@@ -374,7 +374,7 @@ fun LiquidGlassAccountScreen(
             // Account linking section for anonymous users
             if (currentUser?.email.isNullOrEmpty()) {
                 item {
-                    AdvancedGlassmorphicCard {
+                    AdvancedLiquidGlassCard {
                         Column(
                             modifier = Modifier.padding(20.dp)
                         ) {
@@ -439,7 +439,7 @@ fun LiquidGlassAccountScreen(
 
 @Composable
 private fun AccountOptionItem(
-    icon: ImageVector,
+    
     title: String,
     subtitle: String,
     onClick: () -> Unit

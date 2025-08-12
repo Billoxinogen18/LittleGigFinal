@@ -112,7 +112,7 @@ fun EditProfileScreen(
             Spacer(modifier = Modifier.height(24.dp))
             
             // Profile Picture Section
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
                 Column(
                     modifier = Modifier.padding(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -198,7 +198,7 @@ fun EditProfileScreen(
             Spacer(modifier = Modifier.height(20.dp))
             
             // Profile Information
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
                 Column(
                     modifier = Modifier.padding(20.dp)
                 ) {
@@ -276,7 +276,7 @@ fun EditProfileScreen(
             Spacer(modifier = Modifier.height(20.dp))
             
             // Account Type Section
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
                 Column(
                     modifier = Modifier.padding(20.dp)
                 ) {
@@ -428,7 +428,7 @@ fun EditProfileScreen(
             // Success/Error Messages
             if (uiState.isSuccess) {
                 Spacer(modifier = Modifier.height(16.dp))
-                AdvancedGlassmorphicCard {
+                AdvancedLiquidGlassCard {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -455,7 +455,7 @@ fun EditProfileScreen(
             
             if (uiState.error != null) {
                 Spacer(modifier = Modifier.height(16.dp))
-                AdvancedGlassmorphicCard {
+                AdvancedLiquidGlassCard {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

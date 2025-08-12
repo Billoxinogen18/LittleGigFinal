@@ -249,7 +249,7 @@ fun BusinessDashboardScreen(
 fun AnalyticsCard(
     title: String,
     value: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    
     color: androidx.compose.ui.graphics.Color,
     modifier: Modifier = Modifier
 ) {

@@ -29,7 +29,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.littlegig.app.presentation.components.AdvancedGlassmorphicCard
+import com.littlegig.app.presentation.components.AdvancedLiquidGlassCard
 import com.littlegig.app.presentation.components.AdvancedNeumorphicCard
 import com.littlegig.app.presentation.components.HapticButton
 import com.littlegig.app.presentation.theme.LittleGigPrimary
@@ -144,7 +144,7 @@ fun PeopleDiscoveryScreen(
 
             if (baseUsers.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    AdvancedGlassmorphicCard {
+                    AdvancedLiquidGlassCard {
                         Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
                                 imageVector = if (showContactsOnly) Icons.Default.Contacts else Icons.Default.Person,
@@ -171,7 +171,7 @@ fun PeopleDiscoveryScreen(
                     }
                 }
             } else {
-                AdvancedGlassmorphicCard {
+                AdvancedLiquidGlassCard {
                     Column(Modifier.padding(12.dp)) {
                         val listState = androidx.compose.foundation.lazy.rememberLazyListState()
                         LazyColumn(state = listState, verticalArrangement = Arrangement.spacedBy(8.dp)) {

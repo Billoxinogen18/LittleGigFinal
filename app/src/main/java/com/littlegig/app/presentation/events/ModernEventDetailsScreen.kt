@@ -157,7 +157,7 @@ private fun ModernEventHero(
                 .padding(20.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-                    ModernGlassmorphicCard(
+                    ModernLiquidGlassCard(
             onClick = onBackClick
         ) {
                 Icon(
@@ -173,7 +173,7 @@ private fun ModernEventHero(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                            ModernGlassmorphicCard(
+                            ModernLiquidGlassCard(
                 onClick = onLikeClick
             ) {
                     Icon(
@@ -186,7 +186,7 @@ private fun ModernEventHero(
                     )
                 }
                 
-                ModernGlassmorphicCard(
+                ModernLiquidGlassCard(
                     onClick = onShareClick
                 ) {
                     Icon(
@@ -208,7 +208,7 @@ private fun ModernEventHero(
                 .padding(20.dp)
         ) {
             // Category Badge
-            ModernGlassmorphicCard() {
+            ModernLiquidGlassCard() {
                 Text(
                     text = event.category.name,
                     style = MaterialTheme.typography.labelMedium.copy(
@@ -237,7 +237,7 @@ private fun ModernEventHero(
 private fun ModernEventInfoCard(
     event: com.littlegig.app.data.model.Event
 ) {
-    ModernGlassmorphicCard() {
+    ModernLiquidGlassCard() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -306,14 +306,14 @@ private fun ModernEventInfoCard(
 
 @Composable
 private fun ModernInfoRow(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    
     title: String,
     subtitle: String
 ) {
     Row(
         verticalAlignment = Alignment.Top
     ) {
-        ModernGlassmorphicCard() {
+        ModernLiquidGlassCard() {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
@@ -348,7 +348,7 @@ private fun ModernInfoRow(
 private fun ModernOrganizerCard(
     event: com.littlegig.app.data.model.Event
 ) {
-    ModernGlassmorphicCard(
+    ModernLiquidGlassCard(
         shape = RoundedCornerShape(20.dp)
     ) {
         Row(
@@ -514,7 +514,7 @@ private fun ModernActionButtons(
 private fun ModernRecapsPreview(
     onViewAllClick: () -> Unit
 ) {
-    ModernGlassmorphicCard(
+    ModernLiquidGlassCard(
         shape = RoundedCornerShape(20.dp)
     ) {
         Column(

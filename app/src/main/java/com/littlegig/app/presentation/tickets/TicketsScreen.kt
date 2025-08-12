@@ -189,7 +189,7 @@ fun TicketsScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        AdvancedGlassmorphicCard {
+                        AdvancedLiquidGlassCard {
                             Column(
                                 modifier = Modifier.padding(32.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
@@ -215,7 +215,7 @@ fun TicketsScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        AdvancedGlassmorphicCard {
+                        AdvancedLiquidGlassCard {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -399,7 +399,7 @@ fun BeautifulTicketCard(
                     }
             )
             Spacer(Modifier.height(12.dp))
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
                 Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                     Column(Modifier.weight(1f)) {
                         Text("${ticket.eventLocation}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

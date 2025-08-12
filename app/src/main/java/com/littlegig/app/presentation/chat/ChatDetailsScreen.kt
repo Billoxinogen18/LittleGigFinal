@@ -194,7 +194,7 @@ fun ChatDetailsScreen(
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
-                    GlassmorphicInputField(
+                    LiquidGlassInputField(
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
                         placeholder = "Search messages...",
@@ -207,7 +207,7 @@ fun ChatDetailsScreen(
                     if (searchQuery.isNotEmpty() && matchPositions.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(16.dp))
                         
-                        GlassmorphicCard(
+                        LiquidGlassCard(
                             modifier = Modifier.fillMaxWidth(),
                             cornerRadius = 16.dp,
                             alpha = if (isDark) 0.8f else 0.9f
@@ -226,7 +226,7 @@ fun ChatDetailsScreen(
                                 )
                                 
                                 Row {
-                                    GlassmorphicButton(
+                                    LiquidGlassButton(
                                         onClick = {
                                             if (currentMatchIndex > 0) {
                                                 currentMatchIndex--
@@ -249,7 +249,7 @@ fun ChatDetailsScreen(
                                     
                                     Spacer(modifier = Modifier.width(8.dp))
                                     
-                                    GlassmorphicButton(
+                                    LiquidGlassButton(
                                         onClick = {
                                             if (currentMatchIndex < matchPositions.size - 1) {
                                                 currentMatchIndex++

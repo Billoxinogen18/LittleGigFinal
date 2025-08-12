@@ -74,7 +74,7 @@ fun AccountDashboard(
     ) {
         item {
             // Active Now toggle with permission prompt
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
                         text = "Active Now",
@@ -109,7 +109,7 @@ fun AccountDashboard(
 
         item {
             // Profile Header
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
                 Column(
                     modifier = Modifier.padding(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -212,7 +212,7 @@ fun AccountDashboard(
         
         item {
             // Account Actions
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
                 Column(
                     modifier = Modifier.padding(20.dp)
                 ) {
@@ -276,7 +276,7 @@ fun AccountDashboard(
         
         item {
             // Analytics Section
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
                 Column(
                     modifier = Modifier.padding(20.dp)
                 ) {
@@ -405,7 +405,7 @@ fun AccountDashboard(
 fun StatCard(
     title: String,
     value: String,
-    icon: ImageVector,
+    
     modifier: Modifier = Modifier
 ) {
     AdvancedNeumorphicCard(
@@ -443,7 +443,7 @@ fun StatCard(
 
 @Composable
 fun AccountActionItem(
-    icon: ImageVector,
+    
     title: String,
     subtitle: String,
     onClick: () -> Unit

@@ -105,7 +105,7 @@ fun ModernAccountScreen(
                     .background(Color.Black.copy(alpha = 0.3f)),
                 contentAlignment = Alignment.Center
             ) {
-                ModernGlassmorphicCard() {
+                ModernLiquidGlassCard() {
                     Column(
                         modifier = Modifier.padding(32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -141,7 +141,7 @@ private fun ModernAccountHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ModernGlassmorphicCard(
+        ModernLiquidGlassCard(
             onClick = onBackClick
         ) {
             Icon(
@@ -173,7 +173,7 @@ private fun ModernProfileCard(
     user: com.littlegig.app.data.model.User,
     onEditClick: () -> Unit
 ) {
-    ModernGlassmorphicCard() {
+    ModernLiquidGlassCard() {
         Box {
             // Background gradient
             Box(
@@ -228,7 +228,7 @@ private fun ModernProfileCard(
                     }
                     
                     // Edit button
-                    ModernGlassmorphicCard(
+                    ModernLiquidGlassCard(
                         onClick = onEditClick,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
@@ -265,7 +265,7 @@ private fun ModernProfileCard(
                 Spacer(modifier = Modifier.height(12.dp))
                 
                 // Account Type Badge
-                ModernGlassmorphicCard() {
+                ModernLiquidGlassCard() {
                     Text(
                         text = when (user.userType) {
                             UserType.BUSINESS -> "Business Account"
@@ -288,7 +288,7 @@ private fun ModernProfileCard(
 private fun ModernStatsCard(
     uiState: AccountUiState
 ) {
-    ModernGlassmorphicCard() {
+    ModernLiquidGlassCard() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -337,13 +337,13 @@ private fun ModernStatsCard(
 private fun StatItem(
     value: String,
     label: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    
     color: Color
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ModernGlassmorphicCard() {
+        ModernLiquidGlassCard() {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
@@ -441,12 +441,12 @@ private fun ModernAccountActions(
 
 @Composable
 private fun ModernActionButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    
     title: String,
     subtitle: String,
     onClick: () -> Unit
 ) {
-    ModernGlassmorphicCard(
+    ModernLiquidGlassCard(
         onClick = onClick
     ) {
         Row(
@@ -455,7 +455,7 @@ private fun ModernActionButton(
                 .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ModernGlassmorphicCard() {
+            ModernLiquidGlassCard() {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,

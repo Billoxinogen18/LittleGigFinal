@@ -159,7 +159,7 @@ fun RecapsUploadScreen(
             Spacer(modifier = Modifier.height(20.dp))
             
             // Event Selection
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
                 Column(
                     modifier = Modifier.padding(20.dp)
                 ) {
@@ -203,7 +203,7 @@ fun RecapsUploadScreen(
             Spacer(modifier = Modifier.height(20.dp))
             
             // Media Upload
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
                 Column(
                     modifier = Modifier.padding(20.dp)
                 ) {
@@ -276,7 +276,7 @@ fun RecapsUploadScreen(
             Spacer(modifier = Modifier.height(20.dp))
             
             // Caption
-            AdvancedGlassmorphicCard {
+            AdvancedLiquidGlassCard {
                 Column(
                     modifier = Modifier.padding(20.dp)
                 ) {
@@ -308,7 +308,7 @@ fun RecapsUploadScreen(
             
             // Location Verification
             if (selectedEvent != null) {
-                AdvancedGlassmorphicCard {
+                AdvancedLiquidGlassCard {
                     Column(
                         modifier = Modifier.padding(20.dp)
                     ) {
@@ -375,7 +375,7 @@ fun RecapsUploadScreen(
             // Success/Error Messages
             if (uiState.isSuccess) {
                 Spacer(modifier = Modifier.height(16.dp))
-                AdvancedGlassmorphicCard {
+                AdvancedLiquidGlassCard {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -400,7 +400,7 @@ fun RecapsUploadScreen(
             
             if (uiState.error != null) {
                 Spacer(modifier = Modifier.height(16.dp))
-                AdvancedGlassmorphicCard {
+                AdvancedLiquidGlassCard {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -430,7 +430,7 @@ fun RecapsUploadScreen(
 @Composable
 fun EventSelectionCard(
     event: Event,
-    isSelected: Boolean,
+    
     onClick: () -> Unit
 ) {
     Card(
@@ -477,7 +477,7 @@ fun EventSelectionCard(
 
 @Composable
 private fun GlassStepProgress(steps: List<String>, currentStep: Int) {
-    AdvancedGlassmorphicCard {
+    AdvancedLiquidGlassCard {
         Column(Modifier.fillMaxWidth().padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),

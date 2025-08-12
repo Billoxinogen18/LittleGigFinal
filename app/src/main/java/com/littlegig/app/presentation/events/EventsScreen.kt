@@ -94,7 +94,7 @@ fun EventsScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
             // Header with search and account - Beautiful neumorphic design
-            AdvancedGlassmorphicCard(
+            AdvancedLiquidGlassCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -158,7 +158,7 @@ fun EventsScreen(
             }
             
             // Category filters - Beautiful neumorphic design
-            AdvancedGlassmorphicCard(
+            AdvancedLiquidGlassCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)

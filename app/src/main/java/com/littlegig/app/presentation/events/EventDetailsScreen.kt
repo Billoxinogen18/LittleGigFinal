@@ -165,7 +165,7 @@ fun EventDetailsScreen(
                                     )
                             )
                             // Glass overlay with key info
-                            AdvancedGlassmorphicCard(
+                            AdvancedLiquidGlassCard(
                                 modifier = Modifier
                                     .align(Alignment.BottomStart)
                                     .padding(16.dp)
@@ -219,7 +219,7 @@ fun EventDetailsScreen(
                     
                     item {
                         // Event Details Card
-                        AdvancedGlassmorphicCard(
+                        AdvancedLiquidGlassCard(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Column(
@@ -340,7 +340,7 @@ fun EventDetailsScreen(
                     
                     item {
                         // Organizer Info
-                        AdvancedGlassmorphicCard(
+                        AdvancedLiquidGlassCard(
                             modifier = Modifier.padding(horizontal = 16.dp)
                         ) {
                             Row(
@@ -524,7 +524,7 @@ fun EventDetailsScreen(
                     item {
                         // Recent recaps preview
                         Spacer(Modifier.height(12.dp))
-                        AdvancedGlassmorphicCard {
+                        AdvancedLiquidGlassCard {
                             Column(Modifier.padding(16.dp)) {
                                 Text("Recent Recaps", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                 Spacer(Modifier.height(8.dp))

@@ -69,7 +69,7 @@ fun GlassmorphicChatBubble(
         horizontalAlignment = if (isFromCurrentUser) Alignment.End else Alignment.Start
     ) {
         // Message bubble with glassmorphic design
-        GlassmorphicCard(
+        LiquidGlassCard(
             modifier = Modifier
                 .padding(
                     start = if (isFromCurrentUser) 48.dp else 8.dp,
@@ -100,7 +100,7 @@ fun GlassmorphicChatBubble(
             ) {
                 // Inline reply reference (if any)
                 if (!message.replyToMessageId.isNullOrBlank() && message.replyPreview != null) {
-                    GlassmorphicCard(
+                    LiquidGlassCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp)
@@ -266,7 +266,7 @@ fun GlassmorphicTicketShareBubble(
 ) {
     val isDark = isSystemInDarkTheme()
     
-    GlassmorphicCard(
+    LiquidGlassCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onShareTicket(sharedTicket) },
@@ -327,7 +327,7 @@ fun GlassmorphicChatInput(
 ) {
     val isDark = isSystemInDarkTheme()
     
-    GlassmorphicCard(
+    LiquidGlassCard(
         modifier = modifier,
         cornerRadius = 24.dp,
         alpha = if (isDark) 0.7f else 0.8f,
@@ -389,7 +389,7 @@ fun GlassmorphicChatInput(
             Spacer(modifier = Modifier.width(12.dp))
             
             // Send button
-            GlassmorphicButton(
+            LiquidGlassButton(
                 onClick = onSend,
                 enabled = message.trim().isNotEmpty(),
                 cornerRadius = 20.dp
@@ -421,7 +421,7 @@ fun GlassmorphicChatHeader(
 ) {
     val isDark = isSystemInDarkTheme()
     
-    GlassmorphicCard(
+    LiquidGlassCard(
         modifier = modifier,
         cornerRadius = 20.dp,
         alpha = if (isDark) 0.7f else 0.8f,
@@ -447,7 +447,7 @@ fun GlassmorphicChatHeader(
             
             // Avatar
             Box {
-                GlassmorphicAvatar(
+                LiquidGlassAvatar(
                     imageUrl = avatarUrl,
                     size = 40.dp
                 )
@@ -511,7 +511,7 @@ fun GlassmorphicTypingIndicator(
     
     val isDark = isSystemInDarkTheme()
     
-    GlassmorphicCard(
+    LiquidGlassCard(
         modifier = modifier,
         cornerRadius = 20.dp,
         alpha = if (isDark) 0.6f else 0.7f,

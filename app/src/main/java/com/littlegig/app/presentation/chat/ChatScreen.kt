@@ -250,7 +250,7 @@ fun GlassmorphicUserCard(
 ) {
     val isDark = isSystemInDarkTheme()
     
-    GlassmorphicCard(
+    LiquidGlassCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
@@ -265,7 +265,7 @@ fun GlassmorphicUserCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Avatar
-            GlassmorphicAvatar(
+            LiquidGlassAvatar(
                 imageUrl = user.profileImageUrl,
                 size = 48.dp
             )
@@ -294,7 +294,7 @@ fun GlassmorphicUserCard(
             }
             
             // Start chat button
-            GlassmorphicButton(
+            LiquidGlassButton(
                 onClick = onClick,
                 cornerRadius = 20.dp
             ) {
@@ -316,7 +316,7 @@ fun GlassmorphicChatCard(
 ) {
     val isDark = isSystemInDarkTheme()
     
-    GlassmorphicCard(
+    LiquidGlassCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
@@ -332,7 +332,7 @@ fun GlassmorphicChatCard(
         ) {
             // Chat avatar (group or individual)
             Box {
-                GlassmorphicAvatar(
+                LiquidGlassAvatar(
                     imageUrl = null, // Chat doesn't have direct avatar, would need to get from participants
                     size = 48.dp
                 )

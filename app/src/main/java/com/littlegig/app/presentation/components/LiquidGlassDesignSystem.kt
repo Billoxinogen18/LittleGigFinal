@@ -17,138 +17,57 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.littlegig.app.presentation.theme.*
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.graphics.drawscope.Stroke
-import kotlin.math.*
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
+import coil.compose.AsyncImage
 
-// 🌊 LIQUID GLASS DESIGN SYSTEM 🌊
-// Advanced glassmorphism with real-time refraction, dynamic blur, and liquid effects
-// Inspired by iOS 26/macOS 26 sophisticated glass panels
+// 🌟 CLEAN GLASSMORPHIC DESIGN SYSTEM 🌟
+// Based on working EventDetailsScreen approach - NO BLUR EFFECTS
 
 @Composable
 fun LiquidGlassCard(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 20.dp,
     alpha: Float = 0.95f,
-    blurRadius: Dp = 4.dp,
     borderWidth: Dp = 1.5.dp,
     borderColor: Color = Color.Transparent,
-    refractionIntensity: Float = 0.3f,
-    liquidFlow: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val isDark = isSystemInDarkTheme()
-    val density = LocalDensity.current
     
-    // Real-time liquid flow animation
-    val liquidFlowAnimation by rememberInfiniteTransition(label = "liquid_flow").animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(4000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "liquid_flow"
-    )
-    
-    // Dynamic refraction effect
-    val refractionAnimation by rememberInfiniteTransition(label = "refraction").animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(3000, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "refraction"
-    )
-    
-    // Sophisticated glass layering with real-time effects
     Surface(
         modifier = modifier
             .clip(RoundedCornerShape(cornerRadius))
-            .drawBehind {
-                // Primary glass layer with dynamic transparency
-                drawRect(
-                    brush = Brush.radialGradient(
-                        colors = if (isDark) {
-                            listOf(
-                                GlassmorphicDark.copy(alpha = alpha * 0.9f),
-                                GlassmorphicDark.copy(alpha = alpha * 0.7f),
-                                GlassmorphicDark.copy(alpha = alpha * 0.5f)
-                            )
-                        } else {
-                            listOf(
-                                GlassmorphicLight.copy(alpha = alpha * 0.95f),
-                                GlassmorphicLight.copy(alpha = alpha * 0.8f),
-                                GlassmorphicLight.copy(alpha = alpha * 0.6f)
-                            )
-                        },
-                        center = Offset(size.width * 0.3f, size.height * 0.3f),
-                        radius = size.minDimension * 0.8f
-                    )
-                )
-                
-                // Liquid flow effect layer
-                if (liquidFlow) {
-                    rotate(liquidFlowAnimation * 360f) {
-                        drawRect(
-                            brush = Brush.linearGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    Color.White.copy(alpha = 0.1f * refractionIntensity),
-                                    Color.Transparent,
-                                    Color.White.copy(alpha = 0.05f * refractionIntensity),
-                                    Color.Transparent
-                                ),
-                                start = Offset(-size.width * 0.5f, -size.height * 0.5f),
-                                end = Offset(size.width * 1.5f, size.height * 1.5f)
-                            )
+            .background(
+                brush = Brush.radialGradient(
+                    colors = if (isDark) {
+                        listOf(
+                            GlassmorphicDark.copy(alpha = alpha),
+                            GlassmorphicDark.copy(alpha = alpha * 0.8f)
+                        )
+                    } else {
+                        listOf(
+                            GlassmorphicLight.copy(alpha = alpha),
+                            GlassmorphicLight.copy(alpha = alpha * 0.8f)
                         )
                     }
-                }
-                
-                // Real-time refraction edge effects
-                val refractionOffset = sin(refractionAnimation * 2 * PI.toFloat()) * 2f
-                drawRect(
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            if (isDark) Color.White.copy(alpha = 0.15f * refractionIntensity) else Color.Black.copy(alpha = 0.08f * refractionIntensity),
-                            Color.Transparent
-                        ),
-                        start = Offset(refractionOffset, 0f),
-                        end = Offset(1000f + refractionOffset, 1000f)
-                    )
                 )
-                
-                // Sophisticated border with refraction
-                drawRoundRect(
-                    color = borderColor.copy(alpha = 0.6f),
-                    topLeft = androidx.compose.ui.geometry.Offset.Zero,
-                    size = size,
-                    style = androidx.compose.ui.graphics.drawscope.Stroke(
-                        width = borderWidth.toPx()
-                    )
-                )
-            }
-            .blur(2.dp),
+            )
+            .border(
+                width = borderWidth,
+                color = borderColor,
+                shape = RoundedCornerShape(cornerRadius)
+            ),
         shape = RoundedCornerShape(cornerRadius),
         color = Color.Transparent
     ) {
@@ -158,19 +77,17 @@ fun LiquidGlassCard(
                     brush = Brush.linearGradient(
                         colors = if (isDark) {
                             listOf(
-                                Color.White.copy(alpha = 0.08f),
+                                Color.White.copy(alpha = 0.1f),
                                 Color.Transparent,
-                                Color.White.copy(alpha = 0.03f)
+                                Color.White.copy(alpha = 0.05f)
                             )
                         } else {
                             listOf(
-                                Color.White.copy(alpha = 0.25f),
+                                Color.White.copy(alpha = 0.3f),
                                 Color.Transparent,
-                                Color.White.copy(alpha = 0.08f)
+                                Color.White.copy(alpha = 0.1f)
                             )
-                        },
-                        start = Offset(0f, 0f),
-                        end = Offset(1000f, 1000f)
+                        }
                     )
                 )
         ) {
@@ -185,7 +102,6 @@ fun LiquidGlassButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     cornerRadius: Dp = 20.dp,
-    liquidFlow: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val isDark = isSystemInDarkTheme()
@@ -223,8 +139,7 @@ fun LiquidGlassButton(
             Color.White.copy(alpha = 0.25f)
         } else {
             Color.Black.copy(alpha = 0.12f)
-        },
-        liquidFlow = liquidFlow && !isPressed
+        }
     ) {
         content()
     }
@@ -244,74 +159,48 @@ fun LiquidGlassInputField(
     
     LiquidGlassCard(
         modifier = modifier,
-        cornerRadius = 24.dp,
-        alpha = if (isDark) 0.7f else 0.8f,
-        borderColor = if (isDark) {
-            Color.White.copy(alpha = 0.2f)
-        } else {
-            Color.Black.copy(alpha = 0.1f)
-        },
-        liquidFlow = false // No liquid flow for input fields
+        cornerRadius = 16.dp,
+        alpha = if (isDark) 0.8f else 0.9f,
+        borderColor = if (isDark) Color.White.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.1f)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (leadingIcon != null) {
-                Icon(
-                    imageVector = leadingIcon,
-                    contentDescription = null,
-                    tint = if (isDark) Color.White.copy(alpha = 0.8f) else Color.Black.copy(alpha = 0.6f),
-                    modifier = Modifier.size(22.dp)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-            }
-            
-            androidx.compose.material3.TextField(
-                value = value,
-                onValueChange = onValueChange,
-                placeholder = {
-                    Text(
-                        text = placeholder,
-                        color = if (isDark) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.4f)
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = { Text(placeholder) },
+            leadingIcon = leadingIcon?.let { { Icon(it, contentDescription = null) } },
+            trailingIcon = trailingIcon?.let { icon ->
+                {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(22.dp)
+                            .clickable { onTrailingIconClick?.invoke() }
                     )
-                },
-                colors = androidx.compose.material3.TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    focusedTextColor = if (isDark) Color.White else Color.Black,
-                    unfocusedTextColor = if (isDark) Color.White else Color.Black
-                ),
-                modifier = Modifier.weight(1f)
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent
             )
-            
-            if (trailingIcon != null) {
-                Spacer(modifier = Modifier.width(16.dp))
-                Icon(
-                    imageVector = trailingIcon,
-                    contentDescription = null,
-                    tint = if (isDark) Color.White.copy(alpha = 0.8f) else Color.Black.copy(alpha = 0.6f),
-                    modifier = Modifier
-                        .size(22.dp)
-                        .clickable { onTrailingIconClick?.invoke() }
-                )
-            }
-        }
+        )
     }
 }
+
+data class BottomNavItem(
+    val route: String,
+    val title: String,
+    val icon: ImageVector
+)
 
 @Composable
 fun LiquidGlassBottomNavigation(
     currentRoute: String?,
     onNavigate: (String) -> Unit,
-    inboxUnreadCount: Int = 0,
-    hazeState: HazeState
+    inboxUnreadCount: Int = 0
 ) {
     val isDark = isSystemInDarkTheme()
     
@@ -331,16 +220,14 @@ fun LiquidGlassBottomNavigation(
         LiquidGlassCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(96.dp)
-    ,
+                .height(96.dp),
             cornerRadius = 32.dp,
             alpha = if (isDark) 0.9f else 0.95f,
             borderColor = if (isDark) {
                 Color.White.copy(alpha = 0.2f)
             } else {
                 Color.Black.copy(alpha = 0.1f)
-            },
-            liquidFlow = true
+            }
         ) {
             Row(
                 modifier = Modifier
@@ -364,7 +251,7 @@ fun LiquidGlassBottomNavigation(
 @Composable
 fun LiquidGlassNavItem(
     item: BottomNavItem,
-    isSelected: Boolean,
+    
     onClick: () -> Unit
 ) {
     val isDark = isSystemInDarkTheme()
@@ -397,25 +284,24 @@ fun LiquidGlassNavItem(
         ) {
             Icon(
                 imageVector = item.icon,
-                contentDescription = item.label,
+                contentDescription = item.title,
                 tint = if (isSelected) {
-                    LittleGigPrimary
+                    if (isDark) Color.White else Color.Black
                 } else {
-                    if (isDark) Color.White.copy(alpha = animatedAlpha) else Color.Black.copy(alpha = animatedAlpha)
+                    if (isDark) Color.White.copy(alpha = 0.6f) else Color.Black.copy(alpha = 0.6f)
                 },
-                modifier = Modifier.size(26.dp)
+                modifier = Modifier.size(24.dp)
             )
-            
-            Spacer(modifier = Modifier.height(6.dp))
-            
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = item.label,
+                text = item.title,
                 style = MaterialTheme.typography.labelSmall,
                 color = if (isSelected) {
-                    LittleGigPrimary
+                    if (isDark) Color.White else Color.Black
                 } else {
-                    if (isDark) Color.White.copy(alpha = animatedAlpha) else Color.Black.copy(alpha = animatedAlpha)
-                }
+                    if (isDark) Color.White.copy(alpha = 0.6f) else Color.Black.copy(alpha = 0.6f)
+                },
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
             )
         }
     }
@@ -426,13 +312,12 @@ fun LiquidGlassChip(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isSelected: Boolean = false,
-    icon: ImageVector? = null
+    selected: Boolean = false
 ) {
     val isDark = isSystemInDarkTheme()
     
-    val animatedScale by animateFloatAsState(
-        targetValue = if (isSelected) 1.08f else 1f,
+    val scale by animateFloatAsState(
+        targetValue = if (selected) 1.05f else 1f,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
@@ -442,51 +327,23 @@ fun LiquidGlassChip(
     
     LiquidGlassCard(
         modifier = modifier
-            .scale(animatedScale)
+            .scale(scale)
             .clickable { onClick() },
-        cornerRadius = 24.dp,
-        alpha = if (isSelected) {
-            if (isDark) 0.85f else 0.9f
+        cornerRadius = 20.dp,
+        alpha = if (selected) 0.9f else 0.8f,
+        borderColor = if (selected) {
+            if (isDark) Color.White.copy(alpha = 0.4f) else Color.Black.copy(alpha = 0.2f)
         } else {
-            if (isDark) 0.6f else 0.7f
-        },
-        borderColor = if (isSelected) {
-            LittleGigPrimary.copy(alpha = 0.6f)
-        } else {
-            if (isDark) Color.White.copy(alpha = 0.15f) else Color.Black.copy(alpha = 0.08f)
-        },
-        liquidFlow = isSelected
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (icon != null) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = if (isSelected) {
-                        LittleGigPrimary
-                    } else {
-                        if (isDark) Color.White.copy(alpha = 0.8f) else Color.Black.copy(alpha = 0.6f)
-                    },
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-            }
-            
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
-                ),
-                color = if (isSelected) {
-                    LittleGigPrimary
-                } else {
-                    if (isDark) Color.White.copy(alpha = 0.9f) else Color.Black.copy(alpha = 0.8f)
-                }
-            )
+            if (isDark) Color.White.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.1f)
         }
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (isDark) Color.White else Color.Black,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+        )
     }
 }
 
@@ -494,226 +351,242 @@ fun LiquidGlassChip(
 fun LiquidGlassAvatar(
     imageUrl: String?,
     modifier: Modifier = Modifier,
-    size: Dp = 52.dp,
-    placeholderIcon: ImageVector = Icons.Default.Person
+    size: Dp = 48.dp
 ) {
     val isDark = isSystemInDarkTheme()
     
     LiquidGlassCard(
         modifier = modifier.size(size),
         cornerRadius = size / 2,
-        alpha = if (isDark) 0.7f else 0.8f,
-        borderColor = if (isDark) {
-            Color.White.copy(alpha = 0.25f)
-        } else {
-            Color.Black.copy(alpha = 0.12f)
-        },
-        liquidFlow = false
+        alpha = if (isDark) 0.8f else 0.9f,
+        borderColor = if (isDark) Color.White.copy(alpha = 0.3f) else Color.Black.copy(alpha = 0.15f)
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            if (imageUrl != null) {
-                coil.compose.AsyncImage(
-                    model = imageUrl,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(CircleShape),
-                    contentScale = androidx.compose.ui.layout.ContentScale.Crop
-                )
-            } else {
-                Icon(
-                    imageVector = placeholderIcon,
-                    contentDescription = null,
-                    tint = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.5f),
-                    modifier = Modifier.size(size * 0.5f)
-                )
-            }
+        if (imageUrl != null) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = "Avatar",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "Default Avatar",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp),
+                tint = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.7f)
+            )
         }
     }
 }
 
 @Composable
 fun LiquidGlassEmptyState(
-    icon: ImageVector,
     title: String,
     message: String,
-    primaryActionLabel: String? = null,
-    onPrimaryAction: (() -> Unit)? = null,
+    
     modifier: Modifier = Modifier
 ) {
+    val isDark = isSystemInDarkTheme()
+    
     LiquidGlassCard(
-        modifier = modifier,
-        cornerRadius = 28.dp,
-        alpha = if (isSystemInDarkTheme()) 0.8f else 0.85f,
-        liquidFlow = true
+        modifier = modifier.padding(16.dp),
+        cornerRadius = 24.dp,
+        alpha = if (isDark) 0.8f else 0.9f,
+        borderColor = if (isDark) Color.White.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.1f)
     ) {
         Column(
-            modifier = Modifier.padding(36.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            val shimmer = rememberInfiniteTransition(label = "empty_state").animateFloat(
-                initialValue = 0.7f,
-                targetValue = 1f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(2000, easing = LinearEasing),
-                    repeatMode = RepeatMode.Reverse
-                ),
-                label = "alpha"
-            )
-            
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = LittleGigPrimary.copy(alpha = shimmer.value),
-                modifier = Modifier.size(72.dp)
+                modifier = Modifier.size(64.dp),
+                tint = if (isDark) Color.White.copy(alpha = 0.6f) else Color.Black.copy(alpha = 0.6f)
             )
-            
-            Spacer(modifier = Modifier.height(20.dp))
-            
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.SemiBold
-                ),
-                color = MaterialTheme.colorScheme.onSurface
+                style = MaterialTheme.typography.headlineSmall,
+                color = if (isDark) Color.White else Color.Black,
+                fontWeight = FontWeight.Bold
             )
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                color = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center
             )
-            
-            if (primaryActionLabel != null && onPrimaryAction != null) {
-                Spacer(modifier = Modifier.height(28.dp))
-                
-                LiquidGlassButton(
-                    onClick = onPrimaryAction,
-                    cornerRadius = 24.dp
-                ) {
-                    Text(
-                        text = primaryActionLabel,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        color = LittleGigPrimary,
-                        modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp)
-                    )
-                }
-            }
         }
     }
 }
 
-// Advanced liquid glass panel with real-time refraction
+// 🌟 MISSING COMPONENTS FOR COMPILATION FIXES 🌟
+
 @Composable
-fun LiquidGlassPanel(
+fun AdvancedLiquidGlassCard(
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 24.dp,
-    alpha: Float = 0.9f,
-    blurRadius: Dp = 4.dp,
-    refractionIntensity: Float = 0.4f,
+    cornerRadius: Dp = 16.dp,
+    alpha: Float = 0.95f,
+    borderWidth: Dp = 1.dp,
+    borderColor: Color = Color.Transparent,
     content: @Composable () -> Unit
 ) {
-    val isDark = isSystemInDarkTheme()
-    
-    // Real-time refraction animation
-    val refractionAnimation by rememberInfiniteTransition(label = "panel_refraction").animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(5000, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "refraction"
+    LiquidGlassCard(
+        modifier = modifier,
+        cornerRadius = cornerRadius,
+        alpha = alpha,
+        borderWidth = borderWidth,
+        borderColor = borderColor,
+        content = content
+    )
+}
+
+@Composable
+fun HapticButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    content: @Composable () -> Unit
+) {
+    LiquidGlassButton(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        content = content
+    )
+}
+
+@Composable
+fun NeumorphicRankBadge(
+    rank: String,
+    modifier: Modifier = Modifier
+) {
+    LiquidGlassChip(
+        text = rank,
+        onClick = { /* Rank badge is not clickable */ },
+        modifier = modifier
+    )
+}
+
+@Composable
+fun ShimmerLoadingCard(
+    modifier: Modifier = Modifier
+) {
+    val shimmerColors = listOf(
+        Color.LightGray.copy(alpha = 0.6f),
+        Color.LightGray.copy(alpha = 0.2f),
+        Color.LightGray.copy(alpha = 0.6f)
     )
     
-    Surface(
-        modifier = modifier
-            .clip(RoundedCornerShape(cornerRadius))
-            .drawBehind {
-                // Multi-layer glass effect with real-time refraction
-                val refractionOffset = sin(refractionAnimation * 2 * PI.toFloat()) * 3f
-                
-                // Primary glass layer
-                drawRect(
-                    brush = Brush.radialGradient(
-                        colors = if (isDark) {
-                            listOf(
-                                GlassmorphicDark.copy(alpha = alpha * 0.95f),
-                                GlassmorphicDark.copy(alpha = alpha * 0.8f),
-                                GlassmorphicDark.copy(alpha = alpha * 0.6f)
-                            )
-                        } else {
-                            listOf(
-                                GlassmorphicLight.copy(alpha = alpha * 0.98f),
-                                GlassmorphicLight.copy(alpha = alpha * 0.85f),
-                                GlassmorphicLight.copy(alpha = alpha * 0.7f)
-                            )
-                        },
-                        center = Offset(500f, 500f),
-                        radius = 500f
-                    )
-                )
-                
-                // Real-time refraction layer
-                drawRect(
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            if (isDark) Color.White.copy(alpha = 0.12f * refractionIntensity) else Color.Black.copy(alpha = 0.06f * refractionIntensity),
-                            Color.Transparent,
-                            if (isDark) Color.White.copy(alpha = 0.08f * refractionIntensity) else Color.Black.copy(alpha = 0.04f * refractionIntensity),
-                            Color.Transparent
-                        ),
-                        start = Offset(refractionOffset, 0f),
-                        end = Offset(1000f + refractionOffset, 1000f)
-                    )
-                )
-                
-                // Sophisticated border with dynamic refraction
-                drawRoundRect(
-                    color = if (isDark) Color.White.copy(alpha = 0.4f) else Color.Black.copy(alpha = 0.2f),
-                    topLeft = androidx.compose.ui.geometry.Offset.Zero,
-                    size = size,
-                    style = androidx.compose.ui.graphics.drawscope.Stroke(
-                        width = 2f
-                    )
-                )
-            }
-            .blur(2.dp),
-        shape = RoundedCornerShape(cornerRadius),
-        color = Color.Transparent
+    val transition = rememberInfiniteTransition()
+    val translateAnim = transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Restart
+        )
+    )
+    
+    LiquidGlassCard(
+        modifier = modifier.height(120.dp)
     ) {
         Box(
             modifier = Modifier
+                .fillMaxSize()
                 .background(
                     brush = Brush.linearGradient(
-                        colors = if (isDark) {
-                            listOf(
-                                Color.White.copy(alpha = 0.06f),
-                                Color.Transparent,
-                                Color.White.copy(alpha = 0.02f)
-                            )
-                        } else {
-                            listOf(
-                                Color.White.copy(alpha = 0.2f),
-                                Color.Transparent,
-                                Color.White.copy(alpha = 0.06f)
-                            )
-                        },
-                        start = Offset(0f, 0f),
-                        end = Offset(1000f, 1000f)
+                        colors = shimmerColors,
+                        start = Offset(translateAnim.value - 1000f, 0f),
+                        end = Offset(translateAnim.value, 0f)
                     )
                 )
-        ) {
-            content()
-        }
+        )
     }
+}
+
+@Composable
+fun LoadingPulseAnimation(
+    modifier: Modifier = Modifier
+) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 0.8f,
+        targetValue = 1.2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    
+    Box(
+        modifier = modifier.scale(scale),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            color = if (isSystemInDarkTheme()) Color.White else Color.Black
+        )
+    }
+}
+
+@Composable
+fun FloatingActionButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    
+    contentDescription: String? = null
+) {
+    LiquidGlassButton(
+        onClick = onClick,
+        modifier = modifier.size(56.dp),
+        cornerRadius = 28.dp
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            modifier = Modifier.size(24.dp),
+            tint = if (isSystemInDarkTheme()) Color.White else Color.Black
+        )
+    }
+}
+
+@Composable
+fun GlassEmptyState(
+    title: String,
+    message: String,
+    
+    modifier: Modifier = Modifier
+) {
+    LiquidGlassEmptyState(
+        title = title,
+        message = message,
+        icon = icon,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun AdvancedNeumorphicCard(
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = 16.dp,
+    alpha: Float = 0.95f,
+    borderWidth: Dp = 1.dp,
+    borderColor: Color = Color.Transparent,
+    content: @Composable () -> Unit
+) {
+    LiquidGlassCard(
+        modifier = modifier,
+        cornerRadius = cornerRadius,
+        alpha = alpha,
+        borderWidth = borderWidth,
+        borderColor = borderColor,
+        content = content
+    )
 }

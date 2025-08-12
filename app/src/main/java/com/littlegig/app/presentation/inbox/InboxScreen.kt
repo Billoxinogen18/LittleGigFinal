@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.littlegig.app.presentation.components.AdvancedGlassmorphicCard
+import com.littlegig.app.presentation.components.AdvancedLiquidGlassCard
 import com.littlegig.app.presentation.components.AdvancedNeumorphicCard
 import com.littlegig.app.presentation.components.GlassEmptyState
 
@@ -29,7 +29,7 @@ fun InboxScreen(viewModel: InboxViewModel = hiltViewModel()) {
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        AdvancedGlassmorphicCard { Column(Modifier.padding(16.dp)) {
+        AdvancedLiquidGlassCard { Column(Modifier.padding(16.dp)) {
             Text(text = "Inbox", style = MaterialTheme.typography.headlineMedium)
             Spacer(Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {

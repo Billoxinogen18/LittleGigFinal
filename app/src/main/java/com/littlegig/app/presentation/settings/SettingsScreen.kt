@@ -432,7 +432,7 @@ fun FloatingOrbs() {
                         )
                     )
                 )
-                .blur(2.dp)
+                
         )
     }
 }

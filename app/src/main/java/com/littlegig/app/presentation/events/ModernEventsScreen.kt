@@ -186,7 +186,7 @@ private fun ModernEventsHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Search button
-            ModernGlassmorphicCard(
+            ModernLiquidGlassCard(
                 
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -201,7 +201,7 @@ private fun ModernEventsHeader(
             }
             
             // Notification button with badge
-            ModernGlassmorphicCard(
+            ModernLiquidGlassCard(
                 
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -226,7 +226,7 @@ private fun ModernEventsHeader(
             }
             
             // Profile button
-            ModernGlassmorphicCard(
+            ModernLiquidGlassCard(
                 
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -300,7 +300,7 @@ private fun ModernFullScreenEventCard(
     onLikeClick: () -> Unit,
     onShareClick: () -> Unit
 ) {
-    ModernGlassmorphicCard(
+    ModernLiquidGlassCard(
         modifier = modifier,
         
         shape = RoundedCornerShape(24.dp)
@@ -347,7 +347,7 @@ private fun ModernFullScreenEventCard(
                     verticalAlignment = Alignment.Top
                 ) {
                     // Category badge
-                    ModernGlassmorphicCard(
+                    ModernLiquidGlassCard(
                         shape = RoundedCornerShape(20.dp)
                     ) {
                         Text(
@@ -364,7 +364,7 @@ private fun ModernFullScreenEventCard(
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        ModernGlassmorphicCard(
+                        ModernLiquidGlassCard(
                             
                             shape = RoundedCornerShape(16.dp)
                         ) {
@@ -378,7 +378,7 @@ private fun ModernFullScreenEventCard(
                             )
                         }
                         
-                        ModernGlassmorphicCard(
+                        ModernLiquidGlassCard(
                             
                             shape = RoundedCornerShape(16.dp)
                         ) {

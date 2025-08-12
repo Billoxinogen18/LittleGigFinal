@@ -66,7 +66,7 @@ fun NeumorphicChatBubble(
         horizontalAlignment = if (isFromCurrentUser) Alignment.End else Alignment.Start
     ) {
         // Message bubble
-        AdvancedGlassmorphicCard(
+        AdvancedLiquidGlassCard(
             modifier = Modifier
                 .padding(
                     start = if (isFromCurrentUser) 48.dp else 8.dp,
@@ -530,7 +530,7 @@ fun SendingShimmerBubble(modifier: Modifier = Modifier) {
         animationSpec = infiniteRepeatable(animation = tween(800), repeatMode = RepeatMode.Reverse),
         label = "sending_alpha"
     )
-    AdvancedGlassmorphicCard(modifier = modifier) {
+    AdvancedLiquidGlassCard(modifier = modifier) {
         Box(Modifier.size(width = 140.dp, height = 20.dp).alpha(alphaAnim.value)) {}
     }
 }
@@ -545,7 +545,7 @@ fun NeumorphicTypingIndicator(
     
     val isDark = isSystemInDarkTheme()
     
-    AdvancedGlassmorphicCard(
+    AdvancedLiquidGlassCard(
         modifier = modifier.padding(8.dp)
     ) {
         Row(
@@ -593,7 +593,7 @@ fun NeumorphicChatInput(
 ) {
     val isDark = isSystemInDarkTheme()
     
-    AdvancedGlassmorphicCard(
+    AdvancedLiquidGlassCard(
         modifier = modifier
     ) {
         Row(
@@ -673,7 +673,7 @@ fun NeumorphicChatInput(
 
 @Composable
 fun ChatBubbleSkeleton(isMe: Boolean, modifier: Modifier = Modifier) {
-    AdvancedGlassmorphicCard(modifier = modifier.padding(
+    AdvancedLiquidGlassCard(modifier = modifier.padding(
         start = if (isMe) 48.dp else 8.dp,
         end = if (isMe) 8.dp else 48.dp,
         top = 4.dp,
