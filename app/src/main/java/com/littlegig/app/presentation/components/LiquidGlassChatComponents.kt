@@ -502,8 +502,7 @@ fun LiquidGlassUserCard(
             Color.White.copy(alpha = 0.15f)
         } else {
             Color.Black.copy(alpha = 0.08f)
-        },
-        liquidFlow = false
+        }
     ) {
         Row(
             modifier = Modifier
@@ -566,8 +565,7 @@ fun LiquidGlassChatCard(
             Color.White.copy(alpha = 0.15f)
         } else {
             Color.Black.copy(alpha = 0.08f)
-        },
-        liquidFlow = false
+        }
     ) {
         Row(
             modifier = Modifier
