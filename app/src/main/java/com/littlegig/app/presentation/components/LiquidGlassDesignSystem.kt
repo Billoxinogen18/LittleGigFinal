@@ -46,8 +46,8 @@ import kotlin.math.*
 fun LiquidGlassCard(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 20.dp,
-    alpha: Float = 0.85f,
-    blurRadius: Dp = 24.dp,
+    alpha: Float = 0.95f,
+    blurRadius: Dp = 4.dp,
     borderWidth: Dp = 1.5.dp,
     borderColor: Color = Color.Transparent,
     refractionIntensity: Float = 0.3f,
@@ -148,7 +148,7 @@ fun LiquidGlassCard(
                     )
                 )
             }
-            .blur(blurRadius),
+            .blur(2.dp),
         shape = RoundedCornerShape(cornerRadius),
         color = Color.Transparent
     ) {
@@ -332,9 +332,9 @@ fun LiquidGlassBottomNavigation(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(96.dp)
-                .haze(hazeState),
+    ,
             cornerRadius = 32.dp,
-            alpha = if (isDark) 0.7f else 0.8f,
+            alpha = if (isDark) 0.9f else 0.95f,
             borderColor = if (isDark) {
                 Color.White.copy(alpha = 0.2f)
             } else {
@@ -617,7 +617,7 @@ fun LiquidGlassPanel(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 24.dp,
     alpha: Float = 0.9f,
-    blurRadius: Dp = 32.dp,
+    blurRadius: Dp = 4.dp,
     refractionIntensity: Float = 0.4f,
     content: @Composable () -> Unit
 ) {
@@ -687,7 +687,7 @@ fun LiquidGlassPanel(
                     )
                 )
             }
-            .blur(blurRadius),
+            .blur(2.dp),
         shape = RoundedCornerShape(cornerRadius),
         color = Color.Transparent
     ) {

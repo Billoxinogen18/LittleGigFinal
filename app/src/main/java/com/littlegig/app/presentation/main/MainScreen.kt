@@ -97,7 +97,7 @@ fun MainScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .blurrable(hazeState)
+
             ) {
                 NavHost(
                     navController = navController,

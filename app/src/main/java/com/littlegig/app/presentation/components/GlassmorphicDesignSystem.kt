@@ -39,7 +39,7 @@ fun GlassmorphicCard(
     cornerRadius: Dp = 16.dp,
     alpha: Float = 0.8f,
     tint: Color = Color.Transparent,
-    blurRadius: Dp = 20.dp,
+    blurRadius: Dp = 2.dp,
     borderWidth: Dp = 1.dp,
     borderColor: Color = Color.Transparent,
     content: @Composable () -> Unit
@@ -523,7 +523,7 @@ data class BottomNavItem(
 fun AdvancedGlassmorphicCard(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 16.dp,
-    alpha: Float = 0.8f,
+    alpha: Float = 0.95f,
     borderWidth: Dp = 1.dp,
     borderColor: Color = Color.Transparent,
     content: @Composable () -> Unit
