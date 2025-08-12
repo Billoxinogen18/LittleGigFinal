@@ -484,57 +484,44 @@ fun NeumorphicCategoryChip(
         label = "chip_scale"
     )
     
-    Surface(
+    Box(
         modifier = modifier
             .graphicsLayer {
                 alpha = animatedAlpha
                 scaleX = animatedScale
                 scaleY = animatedScale
-            },
-        shape = RoundedCornerShape(20.dp),
-        color = if (selected) {
-            if (isDark) DarkSurface else LightSurface
-        } else {
-                                    if (isDark) DarkSurface else LightSurface
-        },
-        border = if (selected) {
-            androidx.compose.foundation.BorderStroke(
-                1.dp,
-                Brush.linearGradient(
-                    colors = listOf(
-                        LittleGigPrimary.copy(alpha = 0.5f),
-                        LittleGigSecondary.copy(alpha = 0.5f)
-                    )
-                )
-            )
-        } else null
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    if (selected) {
-                        Brush.linearGradient(
-                            colors = listOf(
-                                LittleGigPrimary.copy(alpha = 0.1f),
-                                LittleGigSecondary.copy(alpha = 0.1f)
-                            )
+            }
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                brush = if (selected) {
+                    Brush.linearGradient(
+                        colors = listOf(
+                            LittleGigPrimary.copy(alpha = 0.1f),
+                            LittleGigSecondary.copy(alpha = 0.1f)
                         )
-                    } else Brush.linearGradient(
-                        colors = listOf(Color.Transparent, Color.Transparent)
                     )
-                )
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-        ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium
-                ),
-                color = if (selected) LittleGigPrimary else {
-                    if (isDark) DarkOnSurfaceVariant else LightOnSurfaceVariant
+                } else {
+                    Brush.linearGradient(
+                        colors = listOf(
+                            if (isDark) DarkSurface else LightSurface,
+                            if (isDark) DarkSurface else LightSurface
+                        )
+                    )
                 }
             )
-        }
+
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium
+            ),
+            color = if (selected) LittleGigPrimary else {
+                if (isDark) DarkOnSurfaceVariant else LightOnSurfaceVariant
+            }
+        )
     }
 }
 
