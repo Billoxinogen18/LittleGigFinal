@@ -15,17 +15,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.littlegig.app.presentation.account.AccountScreen
 import com.littlegig.app.presentation.account.EditProfileScreen
-import com.littlegig.app.presentation.chat.ChatDetailsScreen
-import com.littlegig.app.presentation.chat.ChatScreen
 import com.littlegig.app.presentation.components.*
 
 import com.littlegig.app.presentation.events.EventsScreen
 import com.littlegig.app.presentation.events.ModernEventsScreen
 import com.littlegig.app.presentation.events.EventDetailsScreen
 import com.littlegig.app.presentation.events.ModernEventDetailsScreen
-import com.littlegig.app.presentation.account.ModernAccountScreen
 
 import com.littlegig.app.presentation.map.MapScreen
 import com.littlegig.app.presentation.settings.SettingsScreen
@@ -111,21 +107,35 @@ fun MainScreen(
                         MapScreen(navController = navController)
                     }
                     composable("chat") {
-                        ChatScreen(navController = navController)
+                        // Temporarily simplified for testing
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Chat Screen - Coming Soon")
+                        }
                     }
                     composable("chat_details/{chatId}") { backStackEntry ->
-                        val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
-                        ChatDetailsScreen(chatId = chatId, navController = navController)
+                        // Temporarily simplified for testing
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Chat Details - Coming Soon")
+                        }
                     }
                     composable("event_details/{eventId}") { backStackEntry ->
                         val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
                         ModernEventDetailsScreen(eventId = eventId, navController = navController)
                     }
                     composable("account") {
-                        ModernAccountScreen(
-                            navController = navController,
-                            onSignOut = onSignOut
-                        )
+                        // Temporarily simplified for testing
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Account Screen - Coming Soon")
+                        }
                     }
                     composable("settings") {
                         SettingsScreen(
@@ -149,7 +159,13 @@ fun MainScreen(
                         )
                     }
                     composable("people_discovery") {
-                        com.littlegig.app.presentation.chat.PeopleDiscoveryScreen(navController = navController)
+                        // Temporarily simplified for testing
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("People Discovery - Coming Soon")
+                        }
                     }
                     composable("profile/{username}") { backStackEntry ->
                         val username = backStackEntry.arguments?.getString("username") ?: ""

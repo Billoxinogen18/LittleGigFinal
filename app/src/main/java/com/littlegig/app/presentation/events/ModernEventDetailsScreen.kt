@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -306,7 +307,7 @@ private fun ModernEventInfoCard(
 
 @Composable
 private fun ModernInfoRow(
-    
+    icon: ImageVector,
     title: String,
     subtitle: String
 ) {

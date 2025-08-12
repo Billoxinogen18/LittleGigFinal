@@ -93,9 +93,7 @@ fun LiquidGlassChatBubble(
                     LittleGigPrimary.copy(alpha = 0.3f)
                 } else {
                     if (isDark) Color.White.copy(alpha = 0.15f) else Color.Black.copy(alpha = 0.08f)
-                },
-                refractionIntensity = 0.25f,
-                liquidFlow = true
+                }
             ) {
                 Column(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
@@ -197,9 +195,7 @@ fun LiquidGlassTicketShareBubble(
                     LittleGigPrimary.copy(alpha = 0.4f)
                 } else {
                     if (isDark) Color.White.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.1f)
-                },
-                refractionIntensity = 0.3f,
-                liquidFlow = true
+                }
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp)
@@ -245,8 +241,7 @@ fun LiquidGlassTicketShareBubble(
                     
                     LiquidGlassButton(
                         onClick = onRedeem,
-                        cornerRadius = 16.dp,
-                        liquidFlow = false
+                        cornerRadius = 16.dp
                     ) {
                         Text(
                             text = "Redeem Ticket",
@@ -298,8 +293,7 @@ fun LiquidGlassChatInput(
             Color.White.copy(alpha = 0.2f)
         } else {
             Color.Black.copy(alpha = 0.1f)
-        },
-        liquidFlow = false
+        }
     ) {
         Row(
             modifier = Modifier
@@ -334,8 +328,7 @@ fun LiquidGlassChatInput(
             
             LiquidGlassButton(
                 onClick = onSend,
-                cornerRadius = 20.dp,
-                liquidFlow = true
+                cornerRadius = 20.dp
             ) {
                 Icon(
                     imageVector = Icons.Default.Send,
@@ -382,8 +375,7 @@ fun LiquidGlassTypingIndicator(
                 Color.White.copy(alpha = 0.15f)
             } else {
                 Color.Black.copy(alpha = 0.08f)
-            },
-            liquidFlow = false
+            }
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),

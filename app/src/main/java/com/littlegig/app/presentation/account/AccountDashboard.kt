@@ -405,7 +405,7 @@ fun AccountDashboard(
 fun StatCard(
     title: String,
     value: String,
-    
+    icon: ImageVector,
     modifier: Modifier = Modifier
 ) {
     AdvancedNeumorphicCard(
@@ -443,7 +443,7 @@ fun StatCard(
 
 @Composable
 fun AccountActionItem(
-    
+    icon: ImageVector,
     title: String,
     subtitle: String,
     onClick: () -> Unit

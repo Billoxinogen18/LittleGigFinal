@@ -311,7 +311,9 @@ fun LiquidGlassChip(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    selected: Boolean = false
+    selected: Boolean = false,
+    isSelected: Boolean = false,
+    icon: ImageVector? = null
 ) {
     val isDark = isSystemInDarkTheme()
     
@@ -354,13 +356,26 @@ fun LiquidGlassChip(
             )
             .clickable { onClick() }
     ) {
-        Text(
-            text = text,
+        Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            style = MaterialTheme.typography.bodyMedium,
-            color = if (isDark) Color.White else Color.Black,
-            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
-        )
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = if (isDark) Color.White else Color.Black,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (isDark) Color.White else Color.Black,
+                fontWeight = if (selected || isSelected) FontWeight.Bold else FontWeight.Normal
+            )
+        }
     }
 }
 
@@ -421,8 +436,10 @@ fun LiquidGlassAvatar(
 fun LiquidGlassEmptyState(
     title: String,
     message: String,
-    
-    modifier: Modifier = Modifier
+    icon: ImageVector = Icons.Default.Info,
+    modifier: Modifier = Modifier,
+    primaryActionLabel: String? = null,
+    onPrimaryAction: (() -> Unit)? = null
 ) {
     val isDark = isSystemInDarkTheme()
     
@@ -478,6 +495,21 @@ fun LiquidGlassEmptyState(
                 color = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
             )
+            
+            if (primaryActionLabel != null && onPrimaryAction != null) {
+                Spacer(modifier = Modifier.height(16.dp))
+                LiquidGlassButton(
+                    onClick = onPrimaryAction,
+                    cornerRadius = 20.dp
+                ) {
+                    Text(
+                        text = primaryActionLabel,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = if (isDark) Color.White else Color.Black
+                    )
+                }
+            }
         }
     }
 }
@@ -625,6 +657,93 @@ fun GlassEmptyState(
         icon = icon,
         modifier = modifier
     )
+}
+
+@Composable
+fun StatCard(
+    title: String,
+    value: String,
+    icon: ImageVector,
+    modifier: Modifier = Modifier
+) {
+    LiquidGlassCard(
+        modifier = modifier,
+        cornerRadius = 16.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = GlassPrimary,
+                modifier = Modifier.size(24.dp)
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                text = value,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = GlassOnSurface()
+            )
+            
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodySmall,
+                color = GlassOnSurface().copy(alpha = 0.7f)
+            )
+        }
+    }
+}
+
+@Composable
+fun AccountActionItem(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = GlassPrimary,
+            modifier = Modifier.size(20.dp)
+        )
+        
+        Spacer(modifier = Modifier.width(12.dp))
+        
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                color = GlassOnSurface()
+            )
+            
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = GlassOnSurface().copy(alpha = 0.7f)
+            )
+        }
+        
+        Icon(
+            imageVector = Icons.Default.ChevronRight,
+            contentDescription = null,
+            tint = GlassOnSurface().copy(alpha = 0.5f),
+            modifier = Modifier.size(16.dp)
+        )
+    }
 }
 
 @Composable
