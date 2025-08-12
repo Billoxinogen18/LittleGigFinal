@@ -98,7 +98,7 @@ fun MainScreen(
                     startDestination = "events"
                 ) {
                     composable("events") {
-                        ModernEventsScreen(navController = navController)
+                        EventsScreen(navController = navController)
                     }
                     composable("tickets") {
                         TicketsScreen(navController = navController)

@@ -264,6 +264,9 @@ class EventsViewModel @Inject constructor(
     fun clearSnackbar() {
         _uiState.value = _uiState.value.copy(snackbarMessage = null)
     }
+    
+    val currentUserId: String?
+        get() = authRepository.currentUser.value?.id
 }
 
 data class EventsUiState(

@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.littlegig.app.data.repository.AuthRepository
+import javax.inject.Inject
 import coil.compose.AsyncImage
 import com.littlegig.app.presentation.components.*
 import kotlinx.coroutines.launch
@@ -298,11 +300,11 @@ private fun ModernFullScreenEventCard(
     modifier: Modifier = Modifier,
     onEventClick: () -> Unit,
     onLikeClick: () -> Unit,
-    onShareClick: () -> Unit
+    onShareClick: () -> Unit,
+    viewModel: EventsViewModel = hiltViewModel()
 ) {
     ModernLiquidGlassCard(
-        modifier = modifier,
-        
+        modifier = modifier.clickable { onEventClick() },
         shape = RoundedCornerShape(24.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -365,13 +367,13 @@ private fun ModernFullScreenEventCard(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         ModernLiquidGlassCard(
-                            
+                            modifier = Modifier.clickable { onLikeClick() },
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.FavoriteBorder, // Will implement isLiked later
+                                imageVector = if (event.likedBy.contains(viewModel.currentUserId)) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                 contentDescription = "Like",
-                                tint = Color.White,
+                                tint = if (event.likedBy.contains(viewModel.currentUserId)) Color.Red else Color.White,
                                 modifier = Modifier
                                     .padding(12.dp)
                                     .size(20.dp)
@@ -379,7 +381,7 @@ private fun ModernFullScreenEventCard(
                         }
                         
                         ModernLiquidGlassCard(
-                            
+                            modifier = Modifier.clickable { onShareClick() },
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Icon(
