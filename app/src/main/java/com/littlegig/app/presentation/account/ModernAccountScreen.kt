@@ -337,7 +337,7 @@ private fun ModernStatsCard(
 private fun StatItem(
     value: String,
     label: String,
-    
+    icon: ImageVector,
     color: Color
 ) {
     Column(
@@ -441,7 +441,7 @@ private fun ModernAccountActions(
 
 @Composable
 private fun ModernActionButton(
-    
+    icon: ImageVector,
     title: String,
     subtitle: String,
     onClick: () -> Unit

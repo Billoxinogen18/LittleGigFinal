@@ -439,7 +439,7 @@ fun LiquidGlassAccountScreen(
 
 @Composable
 private fun AccountOptionItem(
-    
+    icon: ImageVector,
     title: String,
     subtitle: String,
     onClick: () -> Unit

@@ -238,7 +238,7 @@ fun ModernNavItem(
         ) {
             Icon(
                 imageVector = item.icon,
-                contentDescription = item.label,
+                contentDescription = item.title,
                 tint = if (isSelected) {
                     LittleGigPrimary
                 } else {
@@ -251,7 +251,7 @@ fun ModernNavItem(
         Spacer(modifier = Modifier.height(4.dp))
         
         Text(
-            text = item.label,
+            text = item.title,
             style = MaterialTheme.typography.labelSmall,
             color = if (isSelected) {
                 LittleGigPrimary
