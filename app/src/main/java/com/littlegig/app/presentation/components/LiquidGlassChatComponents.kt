@@ -21,6 +21,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import kotlin.math.roundToInt
 import com.littlegig.app.presentation.theme.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,31 +46,51 @@ fun LiquidGlassChatBubble(
     avatarUrl: String? = null,
     isRead: Boolean = false,
     isDelivered: Boolean = false,
-    onLongClick: (() -> Unit)? = null
+    onLongClick: (() -> Unit)? = null,
+    onDoubleClick: (() -> Unit)? = null,
+    onReply: (() -> Unit)? = null,
+    onReact: ((String) -> Unit)? = null,
+    reactions: Map<String, String> = emptyMap(),
+    isReplyingTo: com.littlegig.app.data.model.Message? = null
 ) {
     val isDark = isSystemInDarkTheme()
-    
-    // Real-time liquid flow animation for chat bubbles
-    val liquidFlowAnimation by rememberInfiniteTransition(label = "chat_liquid").animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(6000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "liquid_flow"
+    var showReactions by remember { mutableStateOf(false) }
+    var offsetX by remember { mutableStateOf(0f) }
+    val animatedOffsetX by animateFloatAsState(
+        targetValue = offsetX,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = "swipe_offset"
     )
     
-    // Dynamic refraction effect
-    val refractionAnimation by rememberInfiniteTransition(label = "chat_refraction").animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(4000, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "refraction"
-    )
+    // Swipe to reply gesture
+    val swipeableModifier = if (onReply != null) {
+        Modifier
+            .offset { IntOffset(animatedOffsetX.roundToInt(), 0) }
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragEnd = {
+                        if (offsetX < -100f) {
+                            onReply()
+                        }
+                        offsetX = 0f
+                    }
+                ) { _, dragAmount ->
+                    if (dragAmount.x < 0) {
+                        offsetX = (offsetX + dragAmount.x).coerceAtMost(0f)
+                    }
+                }
+            }
+    } else {
+        Modifier
+    }
+    
+    // Double click and long click gestures
+    val gestureModifier = Modifier.pointerInput(Unit) {
+        detectTapGestures(
+            onDoubleTap = { onDoubleClick?.invoke() },
+            onLongPress = { onLongClick?.invoke() }
+        )
+    }
     
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -79,10 +107,40 @@ fun LiquidGlassChatBubble(
         Column(
             horizontalAlignment = if (isFromMe) Alignment.End else Alignment.Start
         ) {
+            // Reply preview
+            if (isReplyingTo != null) {
+                LiquidGlassCard(
+                    modifier = Modifier
+                        .widthIn(max = 280.dp)
+                        .padding(bottom = 4.dp),
+                    cornerRadius = 12.dp,
+                    alpha = if (isDark) 0.6f else 0.7f
+                ) {
+                    Row(
+                        modifier = Modifier.padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Reply,
+                            contentDescription = "Replying to",
+                            tint = LittleGigPrimary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = isReplyingTo.content.take(50) + if (isReplyingTo.content.length > 50) "..." else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.6f)
+                        )
+                    }
+                }
+            }
+            
+            // Main message bubble
             LiquidGlassCard(
-                modifier = Modifier
+                modifier = swipeableModifier
                     .widthIn(max = 280.dp)
-                    .clickable { onLongClick?.invoke() },
+                    .then(gestureModifier),
                 cornerRadius = 20.dp,
                 alpha = if (isFromMe) {
                     if (isDark) 0.8f else 0.85f
@@ -110,6 +168,24 @@ fun LiquidGlassChatBubble(
                     
                     Spacer(modifier = Modifier.height(4.dp))
                     
+                    // Reactions row
+                    if (reactions.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier.padding(bottom = 4.dp),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            reactions.forEach { (emoji, users) ->
+                                if (users.isNotEmpty()) {
+                                    LiquidGlassChip(
+                                        text = "$emoji ${users.split(",").size}",
+                                        onClick = { },
+                                        modifier = Modifier.padding(end = 4.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End
@@ -132,13 +208,45 @@ fun LiquidGlassChatBubble(
                                     isDelivered -> Icons.Default.Done
                                     else -> Icons.Default.Schedule
                                 },
-                                contentDescription = null,
+                                contentDescription = when {
+                                    isRead -> "Read"
+                                    isDelivered -> "Delivered"
+                                    else -> "Sending"
+                                },
                                 tint = when {
                                     isRead -> LittleGigPrimary
                                     isDelivered -> if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.6f)
                                     else -> if (isDark) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.4f)
                                 },
                                 modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+                }
+            }
+            
+            // Reaction options (appears on long press)
+            if (showReactions && onReact != null) {
+                LiquidGlassCard(
+                    modifier = Modifier.padding(top = 4.dp),
+                    cornerRadius = 16.dp,
+                    alpha = if (isDark) 0.9f else 0.95f
+                ) {
+                    Row(
+                        modifier = Modifier.padding(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        listOf("👍", "❤️", "😂", "😮", "😢", "😡").forEach { emoji ->
+                            Text(
+                                text = emoji,
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clickable {
+                                        onReact(emoji)
+                                        showReactions = false
+                                    }
+                                    .padding(4.dp),
+                                style = MaterialTheme.typography.titleMedium
                             )
                         }
                     }
@@ -281,20 +389,65 @@ fun LiquidGlassChatInput(
     onSend: () -> Unit,
     modifier: Modifier = Modifier,
     placeholder: String = "Type a message...",
-    isTyping: Boolean = false
+    isTyping: Boolean = false,
+    replyTo: com.littlegig.app.data.model.Message? = null,
+    onCancelReply: (() -> Unit)? = null
 ) {
     val isDark = isSystemInDarkTheme()
     
-    LiquidGlassCard(
-        modifier = modifier,
-        cornerRadius = 28.dp,
-        alpha = if (isDark) 0.75f else 0.8f,
-        borderColor = if (isDark) {
-            Color.White.copy(alpha = 0.2f)
-        } else {
-            Color.Black.copy(alpha = 0.1f)
+    Column {
+        // Reply preview
+        if (replyTo != null) {
+            LiquidGlassCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                cornerRadius = 16.dp,
+                alpha = if (isDark) 0.8f else 0.9f
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Reply,
+                        contentDescription = "Replying to",
+                        tint = LittleGigPrimary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = replyTo.content.take(50) + if (replyTo.content.length > 50) "..." else "",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.6f),
+                        modifier = Modifier.weight(1f)
+                    )
+                    if (onCancelReply != null) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Cancel reply",
+                            tint = if (isDark) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.4f),
+                            modifier = Modifier
+                                .size(16.dp)
+                                .clickable { onCancelReply() }
+                        )
+                    }
+                }
+            }
         }
-    ) {
+        
+        LiquidGlassCard(
+            modifier = modifier,
+            cornerRadius = 28.dp,
+            alpha = if (isDark) 0.75f else 0.8f,
+            borderColor = if (isDark) {
+                Color.White.copy(alpha = 0.2f)
+            } else {
+                Color.Black.copy(alpha = 0.1f)
+            }
+        ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -338,6 +491,7 @@ fun LiquidGlassChatInput(
                 )
             }
         }
+    }
     }
 }
 

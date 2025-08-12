@@ -152,6 +152,20 @@ fun ChatDetailsScreen(
                         isDelivered = message.status == com.littlegig.app.data.model.MessageStatus.DELIVERED,
                         onLongClick = {
                             actionSheetFor = message
+                        },
+                        onDoubleClick = {
+                            // Like/react to message on double click
+                            viewModel.reactToMessage(chatId, message.id, "❤️")
+                        },
+                        onReply = {
+                            viewModel.replyTarget = message
+                        },
+                        onReact = { emoji ->
+                            viewModel.reactToMessage(chatId, message.id, emoji)
+                        },
+                        reactions = message.reactions ?: emptyMap(),
+                        isReplyingTo = message.replyToMessageId?.let { replyId ->
+                            messages.find { it.id == replyId }
                         }
                     )
                 }
@@ -176,6 +190,8 @@ fun ChatDetailsScreen(
                         messageText = ""
                     }
                 },
+                replyTo = viewModel.replyTarget,
+                onCancelReply = { viewModel.clearReplyTarget() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -514,6 +530,18 @@ class ChatDetailsViewModel @Inject constructor(
     }
 
     fun chooseReplyTarget(message: com.littlegig.app.data.model.Message) { replyTarget = message }
+    
+    fun reactToMessage(chatId: String, messageId: String, emoji: String) {
+        viewModelScope.launch {
+            try {
+                chatRepository.toggleReaction(chatId, messageId, currentUserId ?: return@launch, emoji)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = e.message)
+            }
+        }
+    }
+    
+
     fun clearReplyTarget() { replyTarget = null }
 
     override fun onCleared() {
