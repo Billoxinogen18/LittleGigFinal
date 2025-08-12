@@ -45,7 +45,7 @@ fun LiquidGlassCard(
 ) {
     val isDark = isSystemInDarkTheme()
     
-    Surface(
+    Box(
         modifier = modifier
             .clip(RoundedCornerShape(cornerRadius))
             .background(
@@ -67,32 +67,9 @@ fun LiquidGlassCard(
                 width = borderWidth,
                 color = borderColor,
                 shape = RoundedCornerShape(cornerRadius)
-            ),
-        shape = RoundedCornerShape(cornerRadius),
-        color = Color.Transparent
+            )
     ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = if (isDark) {
-                            listOf(
-                                Color.White.copy(alpha = 0.1f),
-                                Color.Transparent,
-                                Color.White.copy(alpha = 0.05f)
-                            )
-                        } else {
-                            listOf(
-                                Color.White.copy(alpha = 0.3f),
-                                Color.Transparent,
-                                Color.White.copy(alpha = 0.1f)
-                            )
-                        }
-                    )
-                )
-        ) {
-            content()
-        }
+        content()
     }
 }
 
@@ -117,29 +94,37 @@ fun LiquidGlassButton(
         label = "button_scale"
     )
     
-    val alpha by animateFloatAsState(
-        targetValue = if (isPressed) 0.95f else 0.85f,
-        animationSpec = tween(150),
-        label = "button_alpha"
-    )
-    
-    LiquidGlassCard(
+    Box(
         modifier = modifier
             .scale(scale)
+            .clip(RoundedCornerShape(cornerRadius))
+            .background(
+                brush = Brush.radialGradient(
+                    colors = if (isDark) {
+                        listOf(
+                            GlassmorphicDark.copy(alpha = 0.9f),
+                            GlassmorphicDark.copy(alpha = 0.7f)
+                        )
+                    } else {
+                        listOf(
+                            GlassmorphicLight.copy(alpha = 0.95f),
+                            GlassmorphicLight.copy(alpha = 0.8f)
+                        )
+                    }
+                )
+            )
+            .border(
+                width = 1.5.dp,
+                color = if (isDark) Color.White.copy(alpha = 0.25f) else Color.Black.copy(alpha = 0.12f),
+                shape = RoundedCornerShape(cornerRadius)
+            )
             .clickable(
                 interactionSource = interactionSource,
                 indication = rememberRipple(
                     color = if (isDark) Color.White.copy(alpha = 0.15f) else Color.Black.copy(alpha = 0.08f),
                     bounded = true
                 )
-            ) { onClick() },
-        cornerRadius = cornerRadius,
-        alpha = alpha,
-        borderColor = if (isDark) {
-            Color.White.copy(alpha = 0.25f)
-        } else {
-            Color.Black.copy(alpha = 0.12f)
-        }
+            ) { onClick() }
     ) {
         content()
     }
@@ -217,17 +202,31 @@ fun LiquidGlassBottomNavigation(
             .padding(horizontal = 20.dp)
             .padding(bottom = 64.dp)
     ) {
-        LiquidGlassCard(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(96.dp),
-            cornerRadius = 32.dp,
-            alpha = if (isDark) 0.9f else 0.95f,
-            borderColor = if (isDark) {
-                Color.White.copy(alpha = 0.2f)
-            } else {
-                Color.Black.copy(alpha = 0.1f)
-            }
+                .height(96.dp)
+                .clip(RoundedCornerShape(32.dp))
+                .background(
+                    brush = Brush.radialGradient(
+                        colors = if (isDark) {
+                            listOf(
+                                GlassmorphicDark.copy(alpha = 0.9f),
+                                GlassmorphicDark.copy(alpha = 0.7f)
+                            )
+                        } else {
+                            listOf(
+                                GlassmorphicLight.copy(alpha = 0.95f),
+                                GlassmorphicLight.copy(alpha = 0.8f)
+                            )
+                        }
+                    )
+                )
+                .border(
+                    width = 1.5.dp,
+                    color = if (isDark) Color.White.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.1f),
+                    shape = RoundedCornerShape(32.dp)
+                )
         ) {
             Row(
                 modifier = Modifier
@@ -325,17 +324,35 @@ fun LiquidGlassChip(
         label = "chip_scale"
     )
     
-    LiquidGlassCard(
+    Box(
         modifier = modifier
             .scale(scale)
-            .clickable { onClick() },
-        cornerRadius = 20.dp,
-        alpha = if (selected) 0.9f else 0.8f,
-        borderColor = if (selected) {
-            if (isDark) Color.White.copy(alpha = 0.4f) else Color.Black.copy(alpha = 0.2f)
-        } else {
-            if (isDark) Color.White.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.1f)
-        }
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                brush = Brush.radialGradient(
+                    colors = if (isDark) {
+                        listOf(
+                            GlassmorphicDark.copy(alpha = if (selected) 0.9f else 0.8f),
+                            GlassmorphicDark.copy(alpha = if (selected) 0.7f else 0.6f)
+                        )
+                    } else {
+                        listOf(
+                            GlassmorphicLight.copy(alpha = if (selected) 0.95f else 0.85f),
+                            GlassmorphicLight.copy(alpha = if (selected) 0.8f else 0.7f)
+                        )
+                    }
+                )
+            )
+            .border(
+                width = 1.5.dp,
+                color = if (selected) {
+                    if (isDark) Color.White.copy(alpha = 0.4f) else Color.Black.copy(alpha = 0.2f)
+                } else {
+                    if (isDark) Color.White.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.1f)
+                },
+                shape = RoundedCornerShape(20.dp)
+            )
+            .clickable { onClick() }
     ) {
         Text(
             text = text,
@@ -355,11 +372,30 @@ fun LiquidGlassAvatar(
 ) {
     val isDark = isSystemInDarkTheme()
     
-    LiquidGlassCard(
-        modifier = modifier.size(size),
-        cornerRadius = size / 2,
-        alpha = if (isDark) 0.8f else 0.9f,
-        borderColor = if (isDark) Color.White.copy(alpha = 0.3f) else Color.Black.copy(alpha = 0.15f)
+    Box(
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(
+                brush = Brush.radialGradient(
+                    colors = if (isDark) {
+                        listOf(
+                            GlassmorphicDark.copy(alpha = 0.8f),
+                            GlassmorphicDark.copy(alpha = 0.6f)
+                        )
+                    } else {
+                        listOf(
+                            GlassmorphicLight.copy(alpha = 0.9f),
+                            GlassmorphicLight.copy(alpha = 0.7f)
+                        )
+                    }
+                )
+            )
+            .border(
+                width = 1.5.dp,
+                color = if (isDark) Color.White.copy(alpha = 0.3f) else Color.Black.copy(alpha = 0.15f),
+                shape = CircleShape
+            )
     ) {
         if (imageUrl != null) {
             AsyncImage(
@@ -390,11 +426,30 @@ fun LiquidGlassEmptyState(
 ) {
     val isDark = isSystemInDarkTheme()
     
-    LiquidGlassCard(
-        modifier = modifier.padding(16.dp),
-        cornerRadius = 24.dp,
-        alpha = if (isDark) 0.8f else 0.9f,
-        borderColor = if (isDark) Color.White.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.1f)
+    Box(
+        modifier = modifier
+            .padding(16.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(
+                brush = Brush.radialGradient(
+                    colors = if (isDark) {
+                        listOf(
+                            GlassmorphicDark.copy(alpha = 0.8f),
+                            GlassmorphicDark.copy(alpha = 0.6f)
+                        )
+                    } else {
+                        listOf(
+                            GlassmorphicLight.copy(alpha = 0.9f),
+                            GlassmorphicLight.copy(alpha = 0.7f)
+                        )
+                    }
+                )
+            )
+            .border(
+                width = 1.5.dp,
+                color = if (isDark) Color.White.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.1f),
+                shape = RoundedCornerShape(24.dp)
+            )
     ) {
         Column(
             modifier = Modifier
