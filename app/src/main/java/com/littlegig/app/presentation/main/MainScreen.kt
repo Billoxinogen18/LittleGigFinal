@@ -107,35 +107,24 @@ fun MainScreen(
                         MapScreen(navController = navController)
                     }
                     composable("chat") {
-                        // Temporarily simplified for testing
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Chat Screen - Coming Soon")
-                        }
+                        com.littlegig.app.presentation.chat.ChatScreen(navController = navController)
                     }
                     composable("chat_details/{chatId}") { backStackEntry ->
-                        // Temporarily simplified for testing
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Chat Details - Coming Soon")
-                        }
+                        val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+                        com.littlegig.app.presentation.chat.ChatDetailsScreen(
+                            chatId = chatId,
+                            navController = navController
+                        )
                     }
                     composable("event_details/{eventId}") { backStackEntry ->
                         val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
                         ModernEventDetailsScreen(eventId = eventId, navController = navController)
                     }
                     composable("account") {
-                        // Temporarily simplified for testing
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Account Screen - Coming Soon")
-                        }
+                        com.littlegig.app.presentation.account.AccountScreen(
+                            navController = navController,
+                            onSignOut = onSignOut
+                        )
                     }
                     composable("settings") {
                         SettingsScreen(
@@ -159,13 +148,7 @@ fun MainScreen(
                         )
                     }
                     composable("people_discovery") {
-                        // Temporarily simplified for testing
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("People Discovery - Coming Soon")
-                        }
+                        com.littlegig.app.presentation.chat.PeopleDiscoveryScreen(navController = navController)
                     }
                     composable("profile/{username}") { backStackEntry ->
                         val username = backStackEntry.arguments?.getString("username") ?: ""

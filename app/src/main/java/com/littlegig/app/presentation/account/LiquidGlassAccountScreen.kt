@@ -263,7 +263,7 @@ fun LiquidGlassAccountScreen(
                         
                         // Account options with neumorphic design
                         AccountOptionItem(
-                            icon = Icons.Default.Person,
+                            Icons.Default.Person,
                             title = "Edit Profile",
                             subtitle = "Update your personal information",
                             onClick = { 
@@ -272,7 +272,7 @@ fun LiquidGlassAccountScreen(
                         )
                         
                         AccountOptionItem(
-                            icon = Icons.Default.Business,
+                            Icons.Default.Business,
                             title = "Business Dashboard",
                             subtitle = "Manage your events and analytics",
                             onClick = { 
@@ -281,7 +281,7 @@ fun LiquidGlassAccountScreen(
                         )
                         
                         AccountOptionItem(
-                            icon = Icons.Default.AttachMoney,
+                            Icons.Default.AttachMoney,
                             title = "Revenue Analytics",
                             subtitle = "View your earnings and commissions",
                             onClick = { 

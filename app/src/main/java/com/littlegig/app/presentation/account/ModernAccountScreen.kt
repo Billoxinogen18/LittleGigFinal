@@ -311,21 +311,21 @@ private fun ModernStatsCard(
                 StatItem(
                     value = uiState.eventsCreated.toString(),
                     label = "Events",
-                    icon = Icons.Default.Event,
+                    Icons.Default.Event,
                     color = GlassPrimary
                 )
                 
                 StatItem(
                     value = uiState.ticketsBought.toString(),
                     label = "Tickets",
-                    icon = Icons.Default.ConfirmationNumber,
+                    Icons.Default.ConfirmationNumber,
                     color = GlassSecondary
                 )
                 
                 StatItem(
                     value = uiState.recapsShared.toString(),
                     label = "Recaps",
-                    icon = Icons.Default.PhotoCamera,
+                    Icons.Default.PhotoCamera,
                     color = GlassAccent
                 )
             }
@@ -388,7 +388,7 @@ private fun ModernAccountActions(
         // Phone linking (if not linked)
         if (currentUser?.phoneNumber.isNullOrEmpty()) {
             ModernActionButton(
-                icon = Icons.Default.Phone,
+                Icons.Default.Phone,
                 title = "Link Phone Number",
                 subtitle = "Secure your account with phone verification",
                 onClick = onPhoneLinkClick
@@ -398,7 +398,7 @@ private fun ModernAccountActions(
         // Business upgrade (for regular users)
         if (currentUser?.userType == UserType.REGULAR) {
             ModernActionButton(
-                icon = Icons.Default.Upgrade,
+                Icons.Default.Upgrade,
                 title = "Upgrade to Business",
                 subtitle = "Start creating events and earning revenue",
                 onClick = onBusinessUpgradeClick
@@ -407,7 +407,7 @@ private fun ModernAccountActions(
         
         // Create demo users (for testing)
         ModernActionButton(
-            icon = Icons.Default.Group,
+            Icons.Default.Group,
             title = "Create Demo Users",
             subtitle = "Add test users for chat functionality",
             onClick = onCreateDemoUsersClick
@@ -415,7 +415,7 @@ private fun ModernAccountActions(
         
         // Debug: Check existing users
         ModernActionButton(
-            icon = Icons.Default.Search,
+            Icons.Default.Search,
             title = "Check Existing Users",
             subtitle = "Debug: Check what users exist in database",
             onClick = onCheckExistingUsersClick
@@ -423,7 +423,7 @@ private fun ModernAccountActions(
         
         // Debug: Delete all users
         ModernActionButton(
-            icon = Icons.Default.Delete,
+            Icons.Default.Delete,
             title = "Delete All Users",
             subtitle = "Debug: Clean up database (WARNING: destructive)",
             onClick = onDeleteAllUsersClick
@@ -431,7 +431,7 @@ private fun ModernAccountActions(
         
         // Settings
         ModernActionButton(
-            icon = Icons.Default.Settings,
+            Icons.Default.Settings,
             title = "Settings",
             subtitle = "App preferences and privacy",
             onClick = onSettingsClick

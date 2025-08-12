@@ -418,8 +418,7 @@ fun LiquidGlassChatHeader(
         modifier = modifier,
         cornerRadius = 0.dp,
         alpha = if (isDark) 0.8f else 0.85f,
-        borderColor = Color.Transparent,
-        liquidFlow = false
+        borderColor = Color.Transparent
     ) {
         Row(
             modifier = Modifier
@@ -429,8 +428,7 @@ fun LiquidGlassChatHeader(
         ) {
             LiquidGlassButton(
                 onClick = onBackClick,
-                cornerRadius = 16.dp,
-                liquidFlow = false
+                cornerRadius = 16.dp
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
@@ -471,8 +469,7 @@ fun LiquidGlassChatHeader(
             if (onMoreClick != null) {
                 LiquidGlassButton(
                     onClick = onMoreClick,
-                    cornerRadius = 16.dp,
-                    liquidFlow = false
+                    cornerRadius = 16.dp
                 ) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,

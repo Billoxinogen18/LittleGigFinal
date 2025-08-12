@@ -201,7 +201,7 @@ fun ModernBottomNavigation(
 @Composable
 fun ModernNavItem(
     item: BottomNavItem,
-    
+    isSelected: Boolean,
     onClick: () -> Unit
 ) {
     val isDark = isSystemInDarkTheme()
