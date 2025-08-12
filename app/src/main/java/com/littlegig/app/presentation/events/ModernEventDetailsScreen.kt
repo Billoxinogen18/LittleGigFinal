@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.littlegig.app.presentation.components.*
+import com.littlegig.app.presentation.theme.*
 import androidx.browser.customtabs.CustomTabsIntent
 import android.net.Uri
 import kotlinx.coroutines.launch

@@ -106,8 +106,7 @@ fun ChatScreen(
                 LiquidGlassChip(
                     text = "Conversations",
                     onClick = { showSearch = false },
-                    isSelected = !showSearch,
-                    icon = Icons.Default.Chat,
+                    selected = !showSearch,
                     modifier = Modifier.weight(1f)
                 )
                 
@@ -116,8 +115,7 @@ fun ChatScreen(
                 LiquidGlassChip(
                     text = "Find People",
                     onClick = { showSearch = true },
-                    isSelected = showSearch,
-                    icon = Icons.Default.PersonSearch,
+                    selected = showSearch,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -137,8 +135,6 @@ fun ChatScreen(
                             icon = Icons.Default.PersonSearch,
                             title = "Find People",
                             message = "Search for users to start conversations",
-                            primaryActionLabel = "Discover People",
-                            onPrimaryAction = { navController.navigate("people_discovery") },
                             modifier = Modifier.fillMaxSize()
                         )
                     } else {
@@ -197,8 +193,7 @@ fun ChatScreen(
                             icon = Icons.Default.Chat,
                             title = "No Conversations",
                             message = "Start chatting with people to see your conversations here",
-                            primaryActionLabel = "Find People",
-                            onPrimaryAction = { showSearch = true },
+
                             modifier = Modifier.fillMaxSize()
                         )
                     } else {

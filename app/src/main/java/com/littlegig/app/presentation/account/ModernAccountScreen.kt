@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.littlegig.app.data.model.UserType
 import com.littlegig.app.presentation.components.*
+import com.littlegig.app.presentation.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

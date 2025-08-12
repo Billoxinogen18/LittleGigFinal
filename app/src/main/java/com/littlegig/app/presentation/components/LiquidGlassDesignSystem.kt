@@ -251,7 +251,7 @@ fun LiquidGlassBottomNavigation(
 @Composable
 fun LiquidGlassNavItem(
     item: BottomNavItem,
-    
+    isSelected: Boolean = false,
     onClick: () -> Unit
 ) {
     val isDark = isSystemInDarkTheme()
@@ -385,7 +385,7 @@ fun LiquidGlassAvatar(
 fun LiquidGlassEmptyState(
     title: String,
     message: String,
-    
+    icon: ImageVector = Icons.Default.Info,
     modifier: Modifier = Modifier
 ) {
     val isDark = isSystemInDarkTheme()
@@ -540,7 +540,7 @@ fun LoadingPulseAnimation(
 fun FloatingActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    
+    icon: ImageVector = Icons.Default.Add,
     contentDescription: String? = null
 ) {
     LiquidGlassButton(
@@ -561,7 +561,7 @@ fun FloatingActionButton(
 fun GlassEmptyState(
     title: String,
     message: String,
-    
+    icon: ImageVector = Icons.Default.Info,
     modifier: Modifier = Modifier
 ) {
     LiquidGlassEmptyState(

@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.littlegig.app.presentation.components.*
+import com.littlegig.app.presentation.theme.*
 import kotlinx.coroutines.launch
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -187,7 +188,7 @@ private fun ModernEventsHeader(
         ) {
             // Search button
             ModernLiquidGlassCard(
-                
+                onClick = onSearchClick,
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Icon(
@@ -202,7 +203,7 @@ private fun ModernEventsHeader(
             
             // Notification button with badge
             ModernLiquidGlassCard(
-                
+                onClick = onNotificationClick,
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Box {
@@ -227,7 +228,7 @@ private fun ModernEventsHeader(
             
             // Profile button
             ModernLiquidGlassCard(
-                
+                onClick = onProfileClick,
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Icon(

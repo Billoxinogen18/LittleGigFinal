@@ -188,7 +188,7 @@ fun NeumorphicButton(
 fun GlassFAB(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    
+    icon: ImageVector = Icons.Default.Add,
     containerColor: Color = GlassPrimary,
     contentColor: Color = Color.White
 ) {
