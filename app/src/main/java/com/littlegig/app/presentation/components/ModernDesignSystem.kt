@@ -188,7 +188,7 @@ fun NeumorphicButton(
 fun GlassFAB(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    
+    icon: ImageVector = Icons.Default.Add,
     containerColor: Color = GlassPrimary,
     contentColor: Color = Color.White
 ) {
@@ -402,7 +402,7 @@ fun ModernBottomNavigation(
 @Composable
 private fun BottomNavIcon(
     item: ModernBottomNavItem,
-    
+    isSelected: Boolean = false,
     onClick: () -> Unit
 ) {
     val animatedScale by animateFloatAsState(
@@ -453,7 +453,7 @@ private fun BottomNavIcon(
 data class ModernBottomNavItem(
     val route: String,
     val label: String,
-    val 
+    val icon: ImageVector,
     val badgeCount: Int = 0
 )
 

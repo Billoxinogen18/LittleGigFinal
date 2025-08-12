@@ -187,7 +187,7 @@ private fun ModernEventsHeader(
         ) {
             // Search button
             ModernLiquidGlassCard(
-                
+                onClick = onSearchClick,
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Icon(
@@ -202,7 +202,7 @@ private fun ModernEventsHeader(
             
             // Notification button with badge
             ModernLiquidGlassCard(
-                
+                onClick = onNotificationClick,
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Box {
@@ -227,7 +227,7 @@ private fun ModernEventsHeader(
             
             // Profile button
             ModernLiquidGlassCard(
-                
+                onClick = onProfileClick,
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Icon(
